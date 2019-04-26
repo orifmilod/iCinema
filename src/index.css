@@ -14,5 +14,13 @@ code {
 }
 .navbar
 {
-margin-bottom:30px;
+  margin-bottom:30px;
+}
+.active-cyan-4 input[type=text]:focus:not([readonly]) {
+  border: 1px solid #2692f7;
+  box-shadow: 0 0 0 1px #2692f7;
+}
+.active-cyan-3 input[type=text] {
+  border: 1px solid #2692f7;
+  box-shadow: 0 0 0 1px #2692f7;
 }

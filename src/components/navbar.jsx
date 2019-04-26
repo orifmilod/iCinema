@@ -6,7 +6,7 @@ const Navbar = () =>
 {
     return(
         <React.Fragment>
-        <nav className="navbar navbar-expand-lg navbar navbar-dark bg-dark">
+        <nav className="navbar navbar-expand-lg  navbar-dark bg-dark">
             <Link className="navbar-brand" to="/">Vidly</Link>
             
             <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">

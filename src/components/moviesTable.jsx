@@ -16,13 +16,15 @@ class MoviesTable extends Component {
         { path: 'genre.name', label: 'Genre' },
         { path: 'numberInStock', label: 'Stock' },
         { path: 'dailyRentalRate', label: 'Rate' },
-        { label: 'Favourite', key: "fav", 
-            content: movie => <Like liked={movie.liked} onLike={() => this.props.onLike(movie)}/> },
-       
-        { label: 'Remove', key: "remove", 
+        { 
+            label: 'Favourite', key: "fav", 
+            content: movie => <Like liked={movie.liked} onLike={() => this.props.onLike(movie)}/> 
+        },
+    
+        { 
+            label: 'Remove', key: "remove", 
             content: movie => 
-            <button onClick={() => this.props.onDelete(movie)} className="btn btn-danger btn-sm" >
-            Delete</button> 
+            <button onClick={() => this.props.onDelete(movie)} className="btn btn-danger btn-sm">Delete</button> 
         }
     ]
 
@@ -30,7 +32,7 @@ class MoviesTable extends Component {
 
         const { movies, onSort, sortColumn} = this.props;
         return ( 
-            <table className="table">
+            <table className="table mb-5">
                 <TableMaker
                     sortColumn={sortColumn}
                     columns={this.columns}

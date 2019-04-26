@@ -1,11 +1,11 @@
 import React from 'react';
 import Form from './common/form';
-import Joi from 'joi-browser';
+import Joi from '@hapi/joi';
 import getGenres from '../services/fakeGenreService';
-import { getMovies } from '../services/fakeMovieService';
+import { saveMovie } from '../services/fakeMovieService';
+
 
 class AddMovieForm extends Form {
-
     state = {
         data:{
             title:"",
@@ -21,20 +21,25 @@ class AddMovieForm extends Form {
         id: Joi.string(),
         title: Joi.string().required().label("Title"),
         genreID: Joi.string().required().label("Genre"),
-        numberInStock: Joi.number().min(0).max(999).required().label("Number In Stocks"),
+        numberInStock: Joi.number().min(0).required().label("Number In Stocks"),
         dailyRentalRate: Joi.number().min(0).max(10).required().label("Rate")
     }
 
-    doSubmit()
-    {
-        console.log("added the movie")
-        this.props.history.push("./movie")
+    //Overriding handleSubmit method
+    handleSubmit = (e) => {
+        e.preventDefault();
+        const errors = this.validate();
+        this.setState({ errors: errors || {} }); //If error occur set it in state or if its not set empty object
+        if(errors) return;
+
+        saveMovie(this.state.data);
+        this.props.history.push("/movies");
     }
 
     componentDidMount()
     {
         const genres = getGenres();
-        this.setState( {genres} );
+        this.setState({ genres });
 
         // const movieID = this.props.match.params.id;
 
@@ -42,11 +47,9 @@ class AddMovieForm extends Form {
 
         // const movie = getMovies(movieID);
         // if(!movie) return this.props.history.replace("not-replace");
-        
     }
     
-    mapToViewModel(movie)
-    {
+    mapToViewModel(movie) {
         return {
             _id: movie._id,
             genreID: movie.genre._id,
@@ -55,22 +58,21 @@ class AddMovieForm extends Form {
             dailyRentalRate: movie.dailyRentalRate
         }
     }
-    render()
-    {
+
+    render() {
         return ( 
-            <div>
-            <h1 style={{marginBottom:'50px'}}>Add a new movie</h1>
+            <div className="container">
+                <h1>Add a new movie</h1>
                <form onSubmit={this.handleSubmit}>
                    {this.renderInput("title", "Title")}
                    {this.renderSelect("genreID", "Genre", this.state.genres)}
                    {this.renderInput("numberInStock", "Number In Stock", "number")}
                    {this.renderInput("dailyRentalRate", "Rate", "number")}
 
-                   {this.renderButton("Add Movie")}
+                   {this.renderSubmitButton("Add Movie")}
                </form>
             </div>
         );
     }
-
 }
 export default AddMovieForm;

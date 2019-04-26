@@ -7,8 +7,8 @@ class TableMaker extends Component {
         const { sortColumn }= this.props;
 
         if(column.path !== sortColumn.path) return null;
-        if(sortColumn.order === 'asc') return <i className="fa fa-sort-asc"></i>
-        return <i className="fa fa-sort-desc"></i>
+        if(sortColumn.order === 'asc') return <i className="fa fa-sort-up"></i>
+        return <i className="fa fa-sort-down"></i>
     }
 
     raiseSort = path => {
@@ -16,11 +16,8 @@ class TableMaker extends Component {
         // path is the columnd like Title, Genre, Stock, Rate
         const sortColumn = {...this.props.sortColumn}
         
-        if(path === sortColumn.path) 
-            sortColumn.order = sortColumn.order === 'asc' ? 'desc' : 'asc';
-        
-        else 
-        { 
+        if(path === sortColumn.path) sortColumn.order = sortColumn.order === 'asc' ? 'desc' : 'asc';
+        else { 
             sortColumn.path = path
             sortColumn.order = 'asc'
         }
@@ -35,7 +32,7 @@ class TableMaker extends Component {
                     { 
                         this.props.columns.map(column => 
                         <th  
-                            className = 'clickable'
+                            className='clickable'
                             key={column.path || column.key}
                             onClick={() => this.raiseSort( column.path )} 
                             style={{textAlign:'center'}}

@@ -1,12 +1,10 @@
-import React,{Component } from 'react';
-import Joi from 'joi-browser';
+import React,{ Component } from 'react';
+import Joi from '@hapi/joi';
 import Input from './input';
-import Select from '../select';
+import Select from './select';
 
 class Form extends Component {
-    //So this class is inherited to the other classes and take all the data from there
-    //This state take the data from the inhereted class if it has it if not it will ignore it
-
+  
     state = { 
         data: {},
         errors: {},
@@ -42,18 +40,18 @@ class Form extends Component {
     {
         e.preventDefault();
         const errors = this.validate();
-        this.setState({errors: errors || {} }); //If error occur set it in state or if its not set empty object
+        this.setState({ errors: errors || {} }); //If error occur set it in state or if its not set empty object
         if(errors) return;
-
-        this.doSubmit();
     }
 
-    renderInput(name, label, type='text')
+    renderInput(name, label, type='text', placeholder, autoFocus=false)
     {
         const { data, errors } = this.state;
         return(
             <Input
                 name={name}
+                autoFocus={autoFocus}
+                placeholder={placeholder}
                 label={label}
                 type={type}
                 error={errors[name]}
@@ -63,12 +61,14 @@ class Form extends Component {
         )
     }
 
-    renderButton(label)
+    renderSubmitButton(label)
     {
         return(        
             <button 
+                type="submit"
                 className="btn btn-primary"
-                disabled={this.validate()}>
+                disabled={this.validate()}
+            >
                 {label}
             </button>
         )
@@ -90,7 +90,7 @@ class Form extends Component {
         )
     }
 
-    handleChange = ( {currentTarget: input} ) =>
+    handleChange = ({ currentTarget: input }) =>
     {
         const errors = {...this.state.errors}
         const errorMessage = this.validateProperty(input);
