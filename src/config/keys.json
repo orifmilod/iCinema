@@ -1,6 +1,0 @@
-{
-    "env": {
-        "MONGO_ATLAS_URL": "mongodb+srv://admin:TxSLxLKRYfk2OiHZ@icinema-4p2wg.mongodb.net/iCinema?retryWrites=true",
-        "JWT_KEY": "PASSWORD"
-    }
-}

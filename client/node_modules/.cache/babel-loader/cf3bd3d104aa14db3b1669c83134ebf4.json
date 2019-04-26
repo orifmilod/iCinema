@@ -1,0 +1,1 @@
+{"ast":null,"code":"var asn1 = exports;\nasn1.bignum = require('bn.js');\nasn1.define = require('./asn1/api').define;\nasn1.base = require('./asn1/base');\nasn1.constants = require('./asn1/constants');\nasn1.decoders = require('./asn1/decoders');\nasn1.encoders = require('./asn1/encoders');","map":null,"metadata":{},"sourceType":"script"}

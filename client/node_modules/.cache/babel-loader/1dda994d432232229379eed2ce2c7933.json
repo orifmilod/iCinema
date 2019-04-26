@@ -1,0 +1,1 @@
+{"ast":null,"code":"module.exports = assert;\n\nfunction assert(val, msg) {\n  if (!val) throw new Error(msg || 'Assertion failed');\n}\n\nassert.equal = function assertEqual(l, r, msg) {\n  if (l != r) throw new Error(msg || 'Assertion failed: ' + l + ' != ' + r);\n};","map":null,"metadata":{},"sourceType":"script"}

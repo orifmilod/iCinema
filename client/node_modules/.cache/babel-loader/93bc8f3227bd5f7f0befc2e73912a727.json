@@ -1,0 +1,1 @@
+{"ast":null,"code":"function incr32(iv) {\n  var len = iv.length;\n  var item;\n\n  while (len--) {\n    item = iv.readUInt8(len);\n\n    if (item === 255) {\n      iv.writeUInt8(0, len);\n    } else {\n      item++;\n      iv.writeUInt8(item, len);\n      break;\n    }\n  }\n}\n\nmodule.exports = incr32;","map":null,"metadata":{},"sourceType":"script"}

@@ -1,0 +1,18 @@
+{
+  "projectName": "node-env-run",
+  "projectOwner": "dkundel",
+  "files": [
+    "README.md"
+  ],
+  "imageSize": 100,
+  "commit": false,
+  "contributors": [ {
+      "login": "dkundel",
+      "name": "Dominik Kundel",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/1505101?v=4",
+      "profile": "https://moin.world",
+      "contributions": [
+        "code"
+      ]
+}]
+}

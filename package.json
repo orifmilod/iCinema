@@ -1,44 +1,31 @@
 {
-  "name": "movie-app",
-  "version": "0.1.0",
-  "private": true,
-  "dependencies": {
-    "@hapi/joi": "^15.0.0",
-    "axios": "^0.18.0",
-    "body-parser": "^1.18.3",
-    "bootstrap": "^4.3.1",
-    "express": "^4.16.4",
-    "font-awesome": "^4.7.0",
-    "jquery": "^3.3.1",
-    "lodash": "^4.17.10",
-    "mongoose": "^5.5.3",
-    "prop-types": "^15.6.2",
-    "react": "^16.6.3",
-    "react-columns": "^1.2.0",
-    "react-dom": "^16.6.3",
-    "react-router-dom": "^4.3.1",
-    "react-scripts": "2.1.1",
-    "react-toastify": "^5.1.0",
-    "reactstrap": "^6.5.0",
-    "string-similarity": "^3.0.0"
-  },
+  "name": "devconnector",
+  "version": "1.0.0",
+  "description": "Social network for developers",
+  "main": "server.js",
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
+    "client-install": "cd client && npm install",
+    "start": "node server.js",
     "server": "nodemon server.js",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "client": "npm start --prefix client",
+    "dev": "concurrently \"npm run server\" \"npm run client\"",
+    "heroku-postbuild": "NPM_CONFIG_PRODUCTION=false npm install --prefix client && npm run build --prefix client"
   },
-  "eslintConfig": {
-    "extends": "react-app"
+  "author": "Orif Milod",
+  "license": "MIT",
+  "dependencies": {
+    "bcrypt": "^3.0.6",
+    "body-parser": "^1.19.0",
+    "concurrently": "^3.6.1",
+    "express": "^4.16.4",
+    "gravatar": "^1.8.0",
+    "jsonwebtoken": "^8.5.1",
+    "mongoose": "^5.5.4",
+    "passport": "^0.4.0",
+    "passport-jwt": "^4.0.0",
+    "validator": "^9.4.1"
   },
-  "browserslist": [
-    ">0.2%",
-    "not dead",
-    "not ie <= 11",
-    "not op_mini all"
-  ],
   "devDependencies": {
-    "@fortawesome/fontawesome-free": "^5.5.0"
+    "nodemon": "^1.18.11"
   }
 }

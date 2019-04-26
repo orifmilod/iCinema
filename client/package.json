@@ -1,0 +1,49 @@
+{
+  "name": "movie-app",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "@hapi/joi": "^15.0.0",
+    "axios": "^0.18.0",
+    "bcrypt": "^3.0.6",
+    "body-parser": "^1.18.3",
+    "bootstrap": "^4.3.1",
+    "express": "^4.16.4",
+    "express-pino-logger": "^4.0.0",
+    "font-awesome": "^4.7.0",
+    "jquery": "^3.3.1",
+    "lodash": "^4.17.10",
+    "mongoose": "^5.5.3",
+    "node-env-run": "^3.0.2",
+    "nodemon": "^1.18.11",
+    "npm-run-all": "^4.1.5",
+    "prop-types": "^15.6.2",
+    "react": "^16.6.3",
+    "react-columns": "^1.2.0",
+    "react-dom": "^16.6.3",
+    "react-router-dom": "^4.3.1",
+    "react-scripts": "2.1.1",
+    "react-toastify": "^5.1.0",
+    "reactstrap": "^6.5.0",
+    "string-similarity": "^3.0.0"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject"
+  },
+  "eslintConfig": {
+    "extends": "react-app"
+  },
+  "browserslist": [
+    ">0.2%",
+    "not dead",
+    "not ie <= 11",
+    "not op_mini all"
+  ],
+  "devDependencies": {
+    "@fortawesome/fontawesome-free": "^5.5.0"
+  },
+  "proxy": "http://localhost:5000"
+}

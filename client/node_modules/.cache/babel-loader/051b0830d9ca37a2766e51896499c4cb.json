@@ -1,0 +1,1 @@
+{"ast":null,"code":"var defaultEncoding;\n/* istanbul ignore next */\n\nif (process.browser) {\n  defaultEncoding = 'utf-8';\n} else {\n  var pVersionMajor = parseInt(process.version.split('.')[0].slice(1), 10);\n  defaultEncoding = pVersionMajor >= 6 ? 'utf-8' : 'binary';\n}\n\nmodule.exports = defaultEncoding;","map":null,"metadata":{},"sourceType":"script"}

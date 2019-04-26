@@ -1,0 +1,1 @@
+{"ast":null,"code":"module.exports = function xor(a, b) {\n  var length = Math.min(a.length, b.length);\n  var buffer = new Buffer(length);\n\n  for (var i = 0; i < length; ++i) {\n    buffer[i] = a[i] ^ b[i];\n  }\n\n  return buffer;\n};","map":null,"metadata":{},"sourceType":"script"}

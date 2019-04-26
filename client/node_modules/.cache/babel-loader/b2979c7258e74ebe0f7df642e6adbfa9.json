@@ -1,0 +1,1 @@
+{"ast":null,"code":"exports.pbkdf2 = require('./lib/async');\nexports.pbkdf2Sync = require('./lib/sync');","map":null,"metadata":{},"sourceType":"script"}

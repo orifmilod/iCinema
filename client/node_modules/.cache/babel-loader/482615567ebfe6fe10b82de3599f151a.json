@@ -1,0 +1,1 @@
+{"ast":null,"code":"var MD5 = require('md5.js');\n\nmodule.exports = function (buffer) {\n  return new MD5().update(buffer).digest();\n};","map":null,"metadata":{},"sourceType":"script"}

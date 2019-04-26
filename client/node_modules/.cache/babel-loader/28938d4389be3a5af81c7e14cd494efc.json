@@ -1,0 +1,1 @@
+{"ast":null,"code":"var BN = require('bn.js');\n\nvar Buffer = require('safe-buffer').Buffer;\n\nfunction withPublic(paddedMsg, key) {\n  return Buffer.from(paddedMsg.toRed(BN.mont(key.modulus)).redPow(new BN(key.publicExponent)).fromRed().toArray());\n}\n\nmodule.exports = withPublic;","map":null,"metadata":{},"sourceType":"script"}

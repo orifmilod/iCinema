@@ -1,0 +1,1 @@
+{"ast":null,"code":"exports.encrypt = function (self, block) {\n  return self._cipher.encryptBlock(block);\n};\n\nexports.decrypt = function (self, block) {\n  return self._cipher.decryptBlock(block);\n};","map":null,"metadata":{},"sourceType":"script"}
