@@ -2,37 +2,34 @@
   text-align: center;
 }
 
-.App-logo {
-  animation: App-logo-spin infinite 20s linear;
-  height: 40vmin;
-}
-.background{
-  background: #0F2027;  /* fallback for old browsers */
-  background: -webkit-linear-gradient(to left, #rgb(29, 60, 74), #203A43, #0F2027);  /* Chrome 10-25, Safari 5.1-6 */
-  background: linear-gradient(to left, rgb(29, 60, 74), #203A43, #0F2027); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
-   min-height: 100vh;
-}
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
-}
-
 .App-link {
   color: #61dafb;
+}
+
+.special-btn {
+  padding: 15px 50px;
+  border: 0px;
+  border-radius: 50px;
+  background: #FF416C;  /* fallback for old browsers */
+  background: -webkit-linear-gradient(to top, #FF4B2B, #FF416C);  /* Chrome 10-25, Safari 5.1-6 */
+  background: linear-gradient(to top, #FF4B2B, #FF416C); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+
+}
+.pink {
+  background: rgb(252, 66, 113);
 }
 
 .clickable {
   cursor: pointer;
 }
+.background-container {
+  background: #343a40;
+  min-height: 100vh;
+  height: fit-content;
+}
 
 .main-header{
-  color: rgb(9, 9, 9);
+  color: #ccc;
   font: 50px italic;
   margin-bottom: 20px;
 

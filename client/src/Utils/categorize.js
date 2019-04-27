@@ -1,12 +1,9 @@
 
 export default function categorize(allMovies, genre)
 {
-    if(genre === "All")
-    {
-        return allMovies;
-    }
+    if(genre === "All") return allMovies;
     else {
-        const movies = allMovies.filter(movie => movie.genre.name === genre)
+        const movies = allMovies.filter(movie => movie.genre === genre)
         return movies;
     }
 }

@@ -8,4 +8,4 @@ const movieSchema = mongoose.Schema({
     dailyRentalRate: { type: Number, require: true }, 
 });
 
-module.exports = mongoose.model('Movie', movieSchema);
+module.exports = mongoose.model('Movie', movieSchema, 'movies');

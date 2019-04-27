@@ -36,20 +36,14 @@ class Form extends Component {
     }
 
 
-    handleSubmit = (e) =>
-    {
-        e.preventDefault();
-        const errors = this.validate();
-        this.setState({ errors: errors || {} }); //If error occur set it in state or if its not set empty object
-        if(errors) return;
-    }
 
-    renderInput(name, label, type='text', placeholder, autoFocus=false)
+    renderInput(name, label, type='text', placeholder, iconClass ,autoFocus=false)
     {
         const { data, errors } = this.state;
         return(
             <Input
                 name={name}
+                iconClass={iconClass}
                 autoFocus={autoFocus}
                 placeholder={placeholder}
                 label={label}
@@ -66,7 +60,7 @@ class Form extends Component {
         return(        
             <button 
                 type="submit"
-                className="btn btn-primary"
+                className="btn btn-primary special-btn "
                 disabled={this.validate()}
             >
                 {label}
@@ -76,7 +70,7 @@ class Form extends Component {
 
     renderSelect(name, label, options)
     {
-        const { data, errors} = this.state;
+        const { data, errors } = this.state;
     
         return(
            <Select
@@ -88,6 +82,12 @@ class Form extends Component {
             error={errors[name]}
            />
         )
+    }
+    handleSubmit(e){
+        e.preventDefault();
+        const errors = this.validate();
+        this.setState({ errors: errors || {} }); //If error occur set it in state or if its not set empty object
+        if(errors) return;
     }
 
     handleChange = ({ currentTarget: input }) =>

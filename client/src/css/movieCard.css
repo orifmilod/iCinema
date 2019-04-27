@@ -1,0 +1,26 @@
+.card-box{
+    text-align: left;
+    margin: 20px 0px;
+}
+.card-box > p {
+    margin: 0px 5px;
+    color: white;
+}
+.card-box > img {
+    height: 300px;
+}
+.card-box > small {
+    margin: 5px;
+    font-size: 13px;
+    color: rgba(255, 255, 255, 0.5);
+}
+.card-box > span {
+    position: relative;
+    background: orange;
+    padding: 15px;
+    border-radius: 50%;
+    left: 80%;
+    bottom: 100px; 
+    color: white;
+    font-weight: 700;
+}

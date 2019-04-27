@@ -5,9 +5,7 @@ const Categories = props =>
     const {
         onGenreChange,
         currentGenre,
-        allGenres, 
-        textProperty, 
-        valueProperty
+        allGenres
     } = props;
 
     return ( 
@@ -22,9 +20,9 @@ const Categories = props =>
             {
                 allGenres.map(element => (
                 <li 
-                    key={element[valueProperty]} 
-                    className={CheckClass(element.name, currentGenre)}
-                    onClick={() => onGenreChange(element[textProperty])}
+                    key={element._id} 
+                    className={CheckClass(element.genre, currentGenre)}
+                    onClick={() => onGenreChange(element.genre)}
                 >
                     {element.genre}
                 </li>
@@ -34,16 +32,9 @@ const Categories = props =>
 
 }
 
-//its will be default if nothing passed to the props
-Categories.defaultProps={
-    valueProperty: "_id",
-    textProperty: "name"
-};
-
-function CheckClass(genre, currentGenre)
-{
+function CheckClass(genre, currentGenre) {
     const classButtons = "list-group-item";
-    return genre === currentGenre? classButtons + ' active' :  classButtons;
+    return genre === currentGenre ? classButtons + ' pink text-white' :  classButtons;
 }
  
 export default Categories;

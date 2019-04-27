@@ -3,7 +3,7 @@ import Like from "./common/like.jsx";
 import TableMaker from '../components/common/TableMaker.jsx';
 import TableBody from '../components/common/tableBody.jsx';
 import { Link } from 'react-router-dom';
-
+import MovieCard from './common/movieCard';
 
 class MoviesTable extends Component {
 
@@ -28,10 +28,12 @@ class MoviesTable extends Component {
     ]
 
     render() { 
-        const { movies, onSort, sortColumn} = this.props;
+        const { movies, onSort, sortColumn } = this.props;
         return ( 
-            <table className="table mb-5">
-                <TableMaker
+                <div className="row">
+                {movies.map(movie => <MovieCard movie={movie}/>)}
+                {movies.map(movie => <MovieCard movie={movie}/>)}
+                {/* <TableMaker
                     sortColumn={sortColumn}
                     columns={this.columns}
                     onSort={onSort}
@@ -39,8 +41,8 @@ class MoviesTable extends Component {
                 <TableBody
                     data={movies}
                     columns={this.columns}
-                />
-            </table>
+                /> */}
+            </div>
         );
     }
 }

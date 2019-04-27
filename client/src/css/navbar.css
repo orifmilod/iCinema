@@ -1,0 +1,42 @@
+
+.navbar-list {
+    margin: 0px;
+}
+.navbar-list > li > a {
+    color:rgb(254, 66, 110);
+}
+.navbar-list > li > a:hover {
+    text-decoration: none;
+}
+.nav-brand {
+    letter-spacing: 3px;
+    display: inline-block;
+    font-weight: 500;
+    font-size: 25px;
+    padding: 10px;
+    color: rgb(255, 43, 91);
+}
+.nav-brand:hover{
+    text-decoration: none;
+    color: rgb(249, 43, 91);
+}
+nav{
+    background: #292a2b; 
+}
+nav > ul{
+    margin: 0px;
+}
+nav > ul > li {
+    display: inline-block;
+    list-style: none;
+    letter-spacing: 1.5px;
+}
+nav > ul > li > a {
+    padding: 20px 40px;
+    display: block;
+}
+nav > ul > li > a:hover {
+    background: #181818;
+    cursor: pointer;
+    transition: 0.2s ease-in;
+}

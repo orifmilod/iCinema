@@ -1,14 +1,15 @@
 import React from 'react'
 import StringSimilarity from 'string-similarity'; 
+import '../../css/input.css';
 
-
-export const SearchBar = ( {onSearch, name} ) => {
+export const SearchBar = ({ onSearch, name }) => {
     return (
-        <div className=" mb-4">
+        <div className="w-100 inputt">
+            <span className="fa fa-search input-icon"></span>
             <input 
-                className="form-control" 
+                className="col-12" 
                 name={name}
-                onChange={onSearch}
+                // onChange={onSearch}
                 type="text" 
                 placeholder="Search..." 
                 aria-label="Search"
@@ -18,12 +19,11 @@ export const SearchBar = ( {onSearch, name} ) => {
 }
 
 
-export function SearchItem(item, Items, filterBy)
+export function SearchItem(item, items, filterBy)
 {
-    const filter = Items.filter(element => 
+    const filter = items.filter(element => 
         element[filterBy].toString().toLowerCase().startsWith(item.toString().toLowerCase())
     )
-
     return filter;
 }
 
@@ -40,21 +40,14 @@ export function SearchItems (item, Items, filterBy, similarityPercent = 0.1)
 
     /* Arranging filtered items by best rating */
     filteredItems = filteredItems.ratings.sort((a, b) => {
-        if(a.rating > b.rating) 
-            return -1
-        else 
-            return 1
-        }
-    )
+        if(a.rating > b.rating)  return -1
+        else return 1
+    })
 
     /* Removing low ratings from the list */
     let closestMatchest = [];
-    filteredItems.forEach(element =>
-    {
-        if(element.rating >= similarityPercent)
-        {   
-            closestMatchest.push(element);
-        }
+    filteredItems.forEach(element => {
+        if(element.rating >= similarityPercent) closestMatchest.push(element);
     })
 
     /*Matched items from the list*/

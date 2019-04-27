@@ -1,17 +1,15 @@
 import React, { Component } from "react";
 import _ from 'lodash';
-import { getMovies } from "../services/fakeMovieService";
 import Pagination from './common/Pagination.jsx';
 import paginate from '../Utils/paginate';
 import MoviesTable from './moviesTable.jsx';
 
 import Categories from "./categories.jsx";
 import categorize from '../Utils/categorize';
-import getGenres from "../services/fakeGenreService";
 import { Link } from 'react-router-dom';
 import { SearchBar, SearchItem} from './common/search';
 import axios from 'axios';
-import { error } from "util";
+import Input from './common/input';
 
 class Movies extends Component {
 
@@ -65,11 +63,6 @@ class Movies extends Component {
   handleSearch = (e) => {
     this.setState({ [e.target.name] : e.target.value, currentPage:1 })
   }
-  clicy = () => {
-    axios.get('/api/genres')
-    .then(doc => console.log(doc))
-    .catch(err => console.log(err))
-  }
   render() {
 
     const {
@@ -96,46 +89,47 @@ class Movies extends Component {
     if (count === 0) return <p>There are no movies in the database.</p>;
 
     return (
-    
-      // <div className="background">
-      <div className="container py-5">
-        <h1 className="main-header">Welcome to iCinema</h1>
-        <div className="row">
-          <div className='col-2'>
-            <h4 className="text-muted text-left p-1">Filters</h4>
-            <Categories
-              currentGenre = {currentGenre}
-              onGenreChange = {this.handleGenreChange}
-              allGenres={genres}
-            />
-            <Link to="/movies/new" className="btn btn-success btn-block my-2"> Add Movie </Link>
-          </div>
-          {/* <div id="split-line"/> */}
-          <div className="col-10">
-            <SearchBar 
-              name="search"
-              onSearch={this.handleSearch} 
-            />
-            
-            <p>You have {count} movies available.</p>
-            
-            <MoviesTable
-              onDelete={this.handleDelete} 
-              onLike={this.handleLike}
-              movies={movies}
-              sortColumn={sortColumn}
-              onSort={this.handleSort}
-            />
-            <Pagination
-              itemsCount={categorizedMovie.length}
-              pageSize={this.state.pageSize}
-              onPageChange={this.handlePageChange}
-              currentPage={this.state.currentPage}
-            />
+     <div className="bg-dark">
+        <div className="container py-5">
+          <h1 className="main-header">Welcome to iCinema</h1>
+          <div className="row">
+            <div className='col-2'>
+              <h4 className="text-muted text-left p-1">Filters</h4>
+              <Categories
+                currentGenre={currentGenre}
+                onGenreChange={this.handleGenreChange}
+                allGenres={genres}
+              />
+              <Link to="/movies/new" className="btn btn-success btn-block my-2"> Add Movie </Link>
+            </div>
+            {/* <div id="split-line"/> */}
+            <div className="col-10">
+              <Input 
+                name="search" 
+                onChange={this.handleSearch} 
+                iconClass="fas fa-search"
+                placeholder="Search..."
+              />
+              
+              <p>You have {count} movies available.</p>
+              
+              <MoviesTable
+                onDelete={this.handleDelete} 
+                onLike={this.handleLike}
+                movies={movies}
+                sortColumn={sortColumn}
+                onSort={this.handleSort}
+              />
+              <Pagination
+                itemsCount={categorizedMovie.length}
+                pageSize={this.state.pageSize}
+                onPageChange={this.handlePageChange}
+                currentPage={this.state.currentPage}
+              />
+            </div>
           </div>
         </div>
       </div>
-      // </div>
     );
   }
 }
