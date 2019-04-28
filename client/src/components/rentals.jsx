@@ -1,9 +1,12 @@
-import React, { Component } from 'react';
-
+import React from 'react';
 const Rentals = () => {
     return (  
-        <h1>Rentals</h1>
+        <div className="background-container">
+            <div className="container">
+                <h1 className="main-header">Rentals</h1>
+            </div>
+        </div>
     );
 }
- 
-export default Rentals;
+
+export default (Rentals);

@@ -3,6 +3,8 @@ import Joi from '@hapi/joi';
 import Form from './common/form';
 import Axios from 'axios';
 import _ from 'lodash';
+// import { connect } from 'react-redux';
+// import { SignIn } from '../actions/authAction';
 
 class LoginForm extends Form {
     constructor() {
@@ -18,8 +20,8 @@ class LoginForm extends Form {
     }
 
     schema = {
-        email: Joi.string().email().required().label("Email"),    // .label() is for what to show to the user, instead of "username", it will show "Username"
-        password: Joi.string().required().label("Password"),    // Just a markup
+        email: Joi.string().email().required().label("Email"),    
+        password: Joi.string().required().label("Password"), 
     }
 
     handleSubmit = (e) => {
@@ -29,7 +31,7 @@ class LoginForm extends Form {
             console.log("requesting")
             Axios
             .post('/api/users/login', this.state.data)
-            .then(() => this.setState({ authError: "" }))
+            .then(result => { this.setState({ authError: "" }); console.log(result)})
             .catch(error => this.setState({ authError: error.response.data.error }))
         }
     }
@@ -38,12 +40,11 @@ class LoginForm extends Form {
         const { authError } = this.state;
         return ( 
             <div className="background-container">
-                <div className="container py-5">
-                <h1>Login</h1>
+                <div className="container">
+                <h1 className="main-header">Login</h1>
                     <form onSubmit={this.handleSubmit}>
-                        {this.renderInput("email", "Email", "email", "Please enter your email...", "fas fa-envelope", true)}
-
-                        {this.renderInput("password", "Password", "password", "Please enter your password...", "fas fa-key")}
+                        {this.renderInput("email", "Email", "Please enter your email...", "fas fa-envelope", "email", true)}
+                        {this.renderInput("password", "Password","Please enter your password...", "fas fa-key", "password" )}
                         {authError && <p className="bg-danger text-white ">{authError}</p>}
                         {this.renderSubmitButton("Login")}
                     </form>
@@ -52,5 +53,17 @@ class LoginForm extends Form {
         );
     }
 }
- 
-export default LoginForm; 
+// const mapStateToProps = state => {
+//     return { 
+//         authErrorr: state.auth.authError
+//     }
+// }
+// const mapDispatchToProps = dispatch => {
+//     console.log(dispatch);
+//     return {
+//         SignIn: (creds) => dispatch(SignIn(creds))  
+//     }
+// }
+
+  
+export default (LoginForm); 

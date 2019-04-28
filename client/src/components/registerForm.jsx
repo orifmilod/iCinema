@@ -42,12 +42,12 @@ class RegisterForm extends Form {
         const { authError } = this.state;
         return ( 
             <div className="background-container">
-                <div className="container py-5">
-                    <h1>Register Form</h1>
+                <div className="container">
+                    <h1 className="main-header">Register Form</h1>
                     <form onSubmit={this.handleSubmit}>
-                        {this.renderInput("email", "Email", "email", "Please enter your email...", "fas fa-envelope",true)}
-                        {this.renderInput("password","Passowrd", "password", "Enter a new password...", "fas fa-key")}
-                        {this.renderInput("passwordRepeat","Repeat Password","password", "Repeat your password...", "fas fa-key")}
+                        {this.renderInput("email", "Email", "Please enter your email...", "fas fa-envelope", "email", true)}
+                        {this.renderInput("password", "Password", "Enter a new password...", "fas fa-key", "password")}
+                        {this.renderInput("passwordRepeat","Repeat Password", "Repeat your password...","fas fa-key", "password")}
                         {authError && <p className="bg-danger text-white">{authError}</p>}
                         {this.renderSubmitButton("Sign Up")}
                     </form>

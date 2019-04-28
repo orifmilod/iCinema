@@ -22,7 +22,7 @@ exports.SIGN_UP = (req, res, next) => {
 
                     newUser
                     .save()
-                    .then((result) => res.status(201).json({ message: "The user has been signed up successfully!" }))
+                    .then(() => res.status(201).json({ message: "The user has been signed up successfully!" }))
                     .catch((err) => res.status(500).json({ error: err }));
                 }
             });
@@ -40,14 +40,9 @@ exports.SIGN_IN = (req, res, next) => {
                 if(_err) res.status(401).json({ error: "Authentication has failed!" });
                 else if (result)
                 {
-                    // const token = jwt.sign({
-                    //     email: user[0].email,
-                    //     userID: user[0]._id
-                    // }, 
-                    // process.env.JWT_KEY,
-                    // { expiresIn: '1h' }
-                    // );
-                    res.status(200).json({ message: "Authentication has been successful"})//, token: token 
+                    const userData = { email: user[0].email, ID: user[0]._id }
+                    const token = jwt.sign(userData, "MONGO_SECRET",{ expiresIn: '1h' } );
+                    res.status(200).json({ message: "Authentication has been successful", token: token, userData })
                 }
                 else res.status(401).json({ error: "The password entered is incorrect!" });
             });

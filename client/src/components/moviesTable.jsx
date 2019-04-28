@@ -1,7 +1,5 @@
 import React, {Component} from 'react';
 import Like from "./common/like.jsx";
-import TableMaker from '../components/common/TableMaker.jsx';
-import TableBody from '../components/common/tableBody.jsx';
 import { Link } from 'react-router-dom';
 import MovieCard from './common/movieCard';
 
@@ -30,18 +28,8 @@ class MoviesTable extends Component {
     render() { 
         const { movies, onSort, sortColumn } = this.props;
         return ( 
-                <div className="row">
+            <div className="row">
                 {movies.map(movie => <MovieCard movie={movie}/>)}
-                {movies.map(movie => <MovieCard movie={movie}/>)}
-                {/* <TableMaker
-                    sortColumn={sortColumn}
-                    columns={this.columns}
-                    onSort={onSort}
-                />
-                <TableBody
-                    data={movies}
-                    columns={this.columns}
-                /> */}
             </div>
         );
     }

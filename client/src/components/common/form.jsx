@@ -37,7 +37,7 @@ class Form extends Component {
 
 
 
-    renderInput(name, label, type='text', placeholder, iconClass ,autoFocus=false)
+    renderInput(name, label, placeholder, iconClass, type='text', autoFocus=false)
     {
         const { data, errors } = this.state;
         return(
@@ -60,7 +60,7 @@ class Form extends Component {
         return(        
             <button 
                 type="submit"
-                className="btn btn-primary special-btn "
+                className="btn special-btn"
                 disabled={this.validate()}
             >
                 {label}

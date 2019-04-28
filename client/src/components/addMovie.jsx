@@ -2,7 +2,8 @@ import React from 'react';
 import Form from './common/form';
 import Joi from '@hapi/joi';
 import Axios from 'axios';
-
+import Input from './common/input';
+import Select from './common/select';
 class AddMovieForm extends Form {
     constructor() {
         super();
@@ -13,6 +14,7 @@ class AddMovieForm extends Form {
             genre:"",
             numberInStock:"",
             dailyRentalRate:"",
+            coverImage: null
         },
         genres:[],
         errors:{}
@@ -23,7 +25,8 @@ class AddMovieForm extends Form {
         title: Joi.string().required().label("Title"),
         genre: Joi.string().required().label("Genre"),
         numberInStock: Joi.number().min(0).required().label("Number In Stocks"),
-        dailyRentalRate: Joi.number().min(0).max(10).required().label("Rate")
+        dailyRentalRate: Joi.number().min(0).max(10).required().label("Rate"),
+        coverImage: Joi.required().label("Cover Image")
     }
 
     //Overriding handleSubmit method
@@ -37,8 +40,6 @@ class AddMovieForm extends Form {
             this.props.history.push("/movies"); 
         })
         .catch(error => console.error(error))
-        // saveMovie(this.state.data);
-       
     }
 
     async componentDidMount()
@@ -46,43 +47,63 @@ class AddMovieForm extends Form {
         Axios.get('/api/genres')
         .then(docs => this.setState({ genres: docs.data }))
         .catch(err => console.error(err));
-
-        // this.setState({ genres });
-
-        // const movieID = this.props.match.params.id;
-
-        // if(movieID === "new") return;
-
-        // const movie = getMovies(movieID);
-        // if(!movie) return this.props.history.replace("not-replace");
-    }
-
-    mapToViewModel(movie) {
-        return {
-            _id: movie._id,
-            genre: movie.genre._id,
-            title: movie.title,
-            numberInStock: movie.numberInStock,
-            dailyRentalRate: movie.dailyRentalRate
-        }
     }
 
     render() {
+        const { errors } = this.state;
+        const { title, genre, numberInStock, coverImage } = this.state.data;
         //Restructuring genres object
         const _genres = [];
         this.state.genres.forEach((element) => _genres.push({ _id: element._id, value: element.genre }));
         
         return ( 
-            <div className="container">
-                <h1>Add a new movie</h1>
-                <form onSubmit={this.handleSubmit}>
-                   {this.renderInput("title", "Title")}
-                   {this.renderSelect("genre", "Genre", _genres)}
-                   {this.renderInput("numberInStock", "Number In Stock", "number")}
-                   {this.renderInput("dailyRentalRate", "Rate", "number")}
-
-                   {this.renderSubmitButton("Add Movie")}
-               </form>
+            <div className="background-container">
+                <div className="container">
+                    <h1 className="main-header">Add a new movie</h1>
+                    <form onSubmit={this.handleSubmit}>
+                    <Input 
+                        name="title"
+                        value={title}
+                        label="Title"
+                        onChange={this.handleChange}
+                        placeholder="Enter the title..."
+                        error={errors["title"]}
+                        iconClass="fas fa-film"
+                        autoFocus
+                    />
+                    <Select
+                        name="genre"
+                        label="Genre"
+                        onChange={this.handleChange}
+                        value={genre}
+                        error={errors["genre"]}
+                        options={_genres}
+                    />
+                    <Input 
+                        name="numberInStock"
+                        label="Number In Stock"
+                        onChange={this.handleChange}
+                        placeholder="Enter the stock..."
+                        error={errors["numberInStock"]}
+                        iconClass="fas fa-hashtag"
+                        value={numberInStock}
+                        type="number"
+                    />
+                    <Input 
+                        name="coverImage"
+                        label="Cover Image"
+                        onChange={this.handleChange}
+                        error={errors["coverImage"]}
+                        iconClass="fas fa-file-image"
+                        accept="image/*"
+                        value={coverImage}
+                        type="file"
+                    />
+                    <button type="submit" className="btn special-btn" disabled={this.validate()}>
+                        Add movie
+                    </button>
+                </form>
+                </div>
             </div>
         );
     }

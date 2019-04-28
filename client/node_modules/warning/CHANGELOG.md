@@ -1,3 +1,13 @@
+<a name="4.0.3"></a>
+## [4.0.3](https://github.com/BerkeleyTrue/warning/compare/v4.0.2...v4.0.3) (2019-02-09)
+
+
+### Bug Fixes
+
+* incorrect formatting of message with arguments ([b188176](https://github.com/BerkeleyTrue/warning/commit/b188176))
+
+
+
 <a name="4.0.2"></a>
 ## [4.0.2](https://github.com/BerkeleyTrue/warning/compare/v4.0.1...v4.0.2) (2018-08-17)
 

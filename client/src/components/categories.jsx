@@ -1,5 +1,5 @@
 import React from 'react';
-
+import '../css/listGroup.css';
 const Categories = props =>
 {
     const {
@@ -33,8 +33,8 @@ const Categories = props =>
 }
 
 function CheckClass(genre, currentGenre) {
-    const classButtons = "list-group-item";
-    return genre === currentGenre ? classButtons + ' pink text-white' :  classButtons;
+    const classButtons = "list-group-item list-item";
+    return genre === currentGenre ? classButtons + ' list-item-active' :  classButtons;
 }
  
 export default Categories;

@@ -7,34 +7,36 @@
 }
 
 .special-btn {
+  color: white;
   padding: 15px 50px;
   border: 0px;
   border-radius: 50px;
   background: #FF416C;  /* fallback for old browsers */
   background: -webkit-linear-gradient(to top, #FF4B2B, #FF416C);  /* Chrome 10-25, Safari 5.1-6 */
   background: linear-gradient(to top, #FF4B2B, #FF416C); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
-
 }
 .pink {
   background: rgb(252, 66, 113);
+}
+.blue {
+  background: #22A7F0;  
 }
 
 .clickable {
   cursor: pointer;
 }
 .background-container {
+  padding-top: 40px;
   background: #343a40;
   min-height: 100vh;
   height: fit-content;
 }
 
-.main-header{
+.main-header {
   color: #ccc;
-  font: 50px italic;
-  margin-bottom: 20px;
-
-  animation-name: drop-top;
-  animation-duration: 1s;
+  font: 45px italic;
+  padding-bottom: 20px;
+  /* animation: drop-top 1s normal forwards; */
 }
 
 @keyframes drop-top {
@@ -52,7 +54,7 @@
   }
 }
 #split-line {
-  width:1px;
+  width: 1px;
   background-color:rgb(23, 23, 23);
   position: absolute;
   height: 100%;

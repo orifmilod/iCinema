@@ -54,5 +54,6 @@ app.use((error, req, res, next) => {
 });
 
 const port = 5000;
+console.log(process.env.JWT_KEY);
 app.listen(port, () => console.log(`Server running on port ${port}`));
 module.exports = app; 

@@ -7,7 +7,7 @@ import MoviesTable from './moviesTable.jsx';
 import Categories from "./categories.jsx";
 import categorize from '../Utils/categorize';
 import { Link } from 'react-router-dom';
-import { SearchBar, SearchItem} from './common/search';
+import { SearchItem } from './common/search';
 import axios from 'axios';
 import Input from './common/input';
 
@@ -16,7 +16,7 @@ class Movies extends Component {
   state = {
     allMovies:[],
     genres:[],
-    pageSize: 4,
+    pageSize: 12,
     currentPage: 1,
     currentGenre: "All",
     sortColumn: { path: '', order: ''},
@@ -86,12 +86,11 @@ class Movies extends Component {
     const movies = paginate(sortedMovies, currentPage, pageSize);
 
     const { length: count } = searchedMovies;
-    if (count === 0) return <p>There are no movies in the database.</p>;
+  
 
     return (
-     <div className="bg-dark">
-        <div className="container py-5">
-          <h1 className="main-header">Welcome to iCinema</h1>
+     <div className="background-container">
+        <div className="container">
           <div className="row">
             <div className='col-2'>
               <h4 className="text-muted text-left p-1">Filters</h4>
@@ -100,7 +99,7 @@ class Movies extends Component {
                 onGenreChange={this.handleGenreChange}
                 allGenres={genres}
               />
-              <Link to="/movies/new" className="btn btn-success btn-block my-2"> Add Movie </Link>
+              <Link to="/movies/new" className="btn blue btn-block my-2 text-white"> Add Movie </Link>
             </div>
             {/* <div id="split-line"/> */}
             <div className="col-10">
@@ -111,7 +110,7 @@ class Movies extends Component {
                 placeholder="Search..."
               />
               
-              <p>You have {count} movies available.</p>
+              <p className="text-left text-muted">{count} items available.</p>
               
               <MoviesTable
                 onDelete={this.handleDelete} 

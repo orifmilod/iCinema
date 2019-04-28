@@ -1,0 +1,10 @@
+.list-item {
+    text-align: left;
+    background: #42474b !important;
+    color: white;
+}
+.list-item-active {
+    border-left-color:rgb(240, 98, 73);
+    border-left-width: 2px;
+    transition: 0.3s ease-in;
+}
