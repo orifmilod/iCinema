@@ -2,7 +2,7 @@
 
 const
     CoaParam = require('./coaparam'),
-    Color = require('./color');
+    chalk = require('chalk');
 
 /**
  * Argument
@@ -45,9 +45,9 @@ module.exports = class Arg extends CoaParam {
     _usage() {
         const res = [];
 
-        res.push(Color('lpurple', this._name.toUpperCase()), ' : ', this._title);
+        res.push(chalk.magentaBright(this._name.toUpperCase()), ' : ', this._title);
 
-        this._req && res.push(' ', Color('lred', '(required)'));
+        this._req && res.push(' ', chalk.redBright('(required)'));
 
         return res.join('');
     }

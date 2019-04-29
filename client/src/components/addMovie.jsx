@@ -52,6 +52,7 @@ class AddMovieForm extends Form {
     render() {
         const { errors } = this.state;
         const { title, genre, numberInStock, coverImage } = this.state.data;
+        
         //Restructuring genres object
         const _genres = [];
         this.state.genres.forEach((element) => _genres.push({ _id: element._id, value: element.genre }));

@@ -17,8 +17,11 @@ Creates a new `processor` instance
 
 ```js
 const processor = parser();
+```
 
-// or, with optional transform function
+Or, with optional transform function
+
+```js
 const transform = selectors => {
     selectors.walkUniversals(selector => {
         selector.remove();

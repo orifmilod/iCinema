@@ -1,15 +1,15 @@
 "use strict";
 const {
-  removeLeadingAndTrailingASCIIWhitespace,
-  removeTrailingASCIIWhitespace,
-  isASCIIWhitespaceChar,
+  removeLeadingAndTrailingHTTPWhitespace,
+  removeTrailingHTTPWhitespace,
+  isHTTPWhitespaceChar,
   solelyContainsHTTPTokenCodePoints,
   soleyContainsHTTPQuotedStringTokenCodePoints,
   asciiLowercase
 } = require("./utils.js");
 
 module.exports = input => {
-  input = removeLeadingAndTrailingASCIIWhitespace(input);
+  input = removeLeadingAndTrailingHTTPWhitespace(input);
 
   let position = 0;
   let type = "";
@@ -35,7 +35,7 @@ module.exports = input => {
     ++position;
   }
 
-  subtype = removeTrailingASCIIWhitespace(subtype);
+  subtype = removeTrailingHTTPWhitespace(subtype);
 
   if (subtype.length === 0 || !solelyContainsHTTPTokenCodePoints(subtype)) {
     return null;
@@ -51,7 +51,7 @@ module.exports = input => {
     // Skip past ";"
     ++position;
 
-    while (isASCIIWhitespaceChar(input[position])) {
+    while (isHTTPWhitespaceChar(input[position])) {
       ++position;
     }
 
@@ -105,7 +105,7 @@ module.exports = input => {
         ++position;
       }
 
-      parameterValue = removeTrailingASCIIWhitespace(parameterValue);
+      parameterValue = removeTrailingHTTPWhitespace(parameterValue);
 
       if (parameterValue === "") {
         continue;

@@ -2,10 +2,10 @@
 
 module.exports = parse;
 
-var re_name = /^(?:\\.|[\w\-\u00c0-\uFFFF])+/,
+var re_name = /^(?:\\.|[\w\-\u00b0-\uFFFF])+/,
     re_escape = /\\([\da-f]{1,6}\s?|(\s)|.)/ig,
     //modified version of https://github.com/jquery/sizzle/blob/master/src/sizzle.js#L87
-    re_attr = /^\s*((?:\\.|[\w\u00c0-\uFFFF\-])+)\s*(?:(\S?)=\s*(?:(['"])([^]*?)\3|(#?(?:\\.|[\w\u00c0-\uFFFF\-])*)|)|)\s*(i)?\]/;
+    re_attr = /^\s*((?:\\.|[\w\u00b0-\uFFFF\-])+)\s*(?:(\S?)=\s*(?:(['"])([^]*?)\3|(#?(?:\\.|[\w\u00b0-\uFFFF\-])*)|)|)\s*(i)?\]/;
 
 var actionTypes = {
 	__proto__: null,

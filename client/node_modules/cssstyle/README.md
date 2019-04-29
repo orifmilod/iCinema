@@ -1,6 +1,6 @@
 # CSSStyleDeclaration
 
-[![NpmVersion](https://img.shields.io/npm/v/cssstyle.svg)](https://www.npmjs.com/package/cssstyle)
+[![NpmVersion](https://img.shields.io/npm/v/cssstyle.svg)](https://www.npmjs.com/package/cssstyle) [![Build Status](https://travis-ci.org/jsakas/CSSStyleDeclaration.svg?branch=master)](https://travis-ci.org/jsakas/CSSStyleDeclaration)
 
 CSSStyleDeclaration is a work-a-like to the CSSStyleDeclaration class in Nikita Vasilyev's [CSSOM](https://github.com/NV/CSSOM). I made it so that when using [jQuery in node](https://github.com/tmtk75/node-jquery) setting css attributes via $.fn.css() would work. node-jquery uses [jsdom](https://github.com/tmpvar/jsdom) to create a DOM to use in node. jsdom uses CSSOM for styling, and CSSOM's implementation of the [CSSStyleDeclaration](http://www.w3.org/TR/DOM-Level-2-Style/css.html#CSS-CSSStyleDeclaration) doesn't support [CSS2Properties](http://www.w3.org/TR/DOM-Level-2-Style/css.html#CSS-CSS2Properties), which is how jQuery's [$.fn.css()](http://api.jquery.com/css/) operates.
 

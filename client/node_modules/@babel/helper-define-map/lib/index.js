@@ -113,7 +113,7 @@ function push(mutatorMap, node, kind, file, scope) {
 }
 
 function hasComputed(mutatorMap) {
-  for (const key in mutatorMap) {
+  for (const key of Object.keys(mutatorMap)) {
     if (mutatorMap[key]._computed) {
       return true;
     }

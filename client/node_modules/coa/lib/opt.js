@@ -4,7 +4,7 @@ const
     Q = require('q'),
 
     CoaParam = require('./coaparam'),
-    Color = require('./color');
+    chalk = require('chalk');
 
 /**
  * Option
@@ -132,19 +132,19 @@ module.exports = class Opt extends CoaParam {
             nameStr = this._name.toUpperCase();
 
         if(this._short) {
-            res.push('-', Color('lgreen', this._short));
+            res.push('-', chalk.greenBright(this._short));
             this._flag || res.push(' ' + nameStr);
             res.push(', ');
         }
 
         if(this._long) {
-            res.push('--', Color('green', this._long));
+            res.push('--', chalk.green(this._long));
             this._flag || res.push('=' + nameStr);
         }
 
         res.push(' : ', this._title);
 
-        this._req && res.push(' ', Color('lred', '(required)'));
+        this._req && res.push(' ', chalk.redBright('(required)'));
 
         return res.join('');
     }

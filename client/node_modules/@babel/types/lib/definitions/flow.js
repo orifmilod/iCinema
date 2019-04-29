@@ -51,7 +51,7 @@ const defineInterfaceishType = (name, typeParameterType = "TypeParameterDeclarat
     typeParameters: (0, _utils.validateOptionalType)("TypeParameterInstantiation")
   }
 });
-defineInterfaceishType("DeclareClass", "TypeParameterInstantiation");
+defineInterfaceishType("DeclareClass");
 (0, _utils.default)("DeclareFunction", {
   visitor: ["id"],
   aliases: ["Flow", "FlowDeclaration", "Statement", "Declaration"],
@@ -154,7 +154,7 @@ defineInterfaceishType("DeclareInterface");
   visitor: ["id", "typeParameters"],
   aliases: ["Flow", "FlowType"],
   fields: {
-    id: (0, _utils.validateType)("Identifier"),
+    id: (0, _utils.validateType)(["Identifier", "QualifiedTypeIdentifier"]),
     typeParameters: (0, _utils.validateOptionalType)("TypeParameterInstantiation")
   }
 });
@@ -165,7 +165,7 @@ defineInterfaceishType("DeclareInterface");
   visitor: ["id", "typeParameters"],
   aliases: ["Flow"],
   fields: {
-    id: (0, _utils.validateType)("Identifier"),
+    id: (0, _utils.validateType)(["Identifier", "QualifiedTypeIdentifier"]),
     typeParameters: (0, _utils.validateOptionalType)("TypeParameterInstantiation")
   }
 });

@@ -152,7 +152,7 @@ module.exports = function tokenize (input, options) {
 
       case closeParen:
         parentCount--;
-        isURLArg = !isURLArg && parentCount === 1;
+        isURLArg = isURLArg && parentCount > 0;
         tokens.push([')', ')',
           line, pos  - offset,
           line, next - offset,

@@ -1,5 +1,3 @@
-import getValue from './index';
-
 /**
  * Extractor function for a BindExpression type value node.
  * A bind expression looks like `::this.foo`
@@ -10,7 +8,8 @@ import getValue from './index';
  * @returns - The extracted value converted to correct type.
  */
 export default function extractValueFromBindExpression(value) {
-  // console.log(value);
+  // eslint-disable-next-line global-require
+  const getValue = require('./index.js').default;
   const callee = getValue(value.callee);
 
   // If value.object === null, the callee must be a MemberExpression.

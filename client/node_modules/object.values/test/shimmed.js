@@ -25,8 +25,8 @@ test('shimmed', function (t) {
 	var supportsStrictMode = (function () { return typeof this === 'undefined'; }());
 
 	t.test('bad object value', { skip: !supportsStrictMode }, function (st) {
-		st.throws(function () { return Object.values(undefined); }, TypeError, 'undefined is not an object');
-		st.throws(function () { return Object.values(null); }, TypeError, 'null is not an object');
+		st['throws'](function () { return Object.values(undefined); }, TypeError, 'undefined is not an object');
+		st['throws'](function () { return Object.values(null); }, TypeError, 'null is not an object');
 		st.end();
 	});
 

@@ -8,8 +8,10 @@ import Categories from "./categories.jsx";
 import categorize from '../Utils/categorize';
 import { Link } from 'react-router-dom';
 import { SearchItem } from './common/search';
-import axios from 'axios';
 import Input from './common/input';
+
+import { connect } from "react-redux";
+import { GetMovies } from '../actions/moviesAction';
 
 class Movies extends Component {
 
@@ -24,15 +26,9 @@ class Movies extends Component {
     searchFilter:"title"
   };
 
-  async componentDidMount()
-  {
-    await axios.get('/api/genres')
-    .then(docs => this.setState({ genres: docs.data }))
-    .catch(err => console.error(err))
-    
-    await axios.get('/api/movies')
-    .then(docs => this.setState({ allMovies: docs.data.movies }))
-    .catch(err => console.error(err))    
+  async componentDidMount() {
+    //Get movies form MongoDB
+    GetMovies();
   }
 
   handleDelete = movie => {
@@ -64,9 +60,7 @@ class Movies extends Component {
     this.setState({ [e.target.name] : e.target.value, currentPage:1 })
   }
   render() {
-
-    const {
-      allMovies, 
+    const { 
       currentGenre, 
       currentPage, 
       pageSize, 
@@ -76,15 +70,18 @@ class Movies extends Component {
       searchFilter
     } = this.state;
 
+    const { allMovies } = this.props;
+
     let searchedMovies;
-
-    /* Checking for searched item if nothing searched it will just set it to allMovies*/
-    search ? searchedMovies = SearchItem(search, allMovies, searchFilter) : searchedMovies = allMovies
-    
-    const categorizedMovie = categorize(searchedMovies, currentGenre) 
-    const sortedMovies = _.orderBy(categorizedMovie, [sortColumn.path], [sortColumn.order])
-    const movies = paginate(sortedMovies, currentPage, pageSize);
-
+    if(!_.isEmpty(allMovies)) {
+      /* Checking for searched item if nothing searched it will just set it to allMovies*/
+      searchedMovies = _.isEmpty(search) ? allMovies : SearchItem(search, allMovies, searchFilter)
+      // search ? searchedMovies = SearchItem(search, allMovies, searchFilter) : searchedMovies = allMovies
+      
+      const categorizedMovie = categorize(searchedMovies, currentGenre) 
+      const sortedMovies = _.orderBy(categorizedMovie, [sortColumn.path], [sortColumn.order])
+      const movies = paginate(sortedMovies, currentPage, pageSize);
+    }
     const { length: count } = searchedMovies;
   
 
@@ -120,7 +117,7 @@ class Movies extends Component {
                 onSort={this.handleSort}
               />
               <Pagination
-                itemsCount={categorizedMovie.length}
+                itemsCount={categorizedMovie.count}
                 pageSize={this.state.pageSize}
                 onPageChange={this.handlePageChange}
                 currentPage={this.state.currentPage}
@@ -133,4 +130,15 @@ class Movies extends Component {
   }
 }
 
-export default Movies;
+const mapStateToProps = state => {
+  return { 
+      allMovies: state.movie.movies
+  }
+}
+const mapDispatchToProps = dispatch => {
+  return { 
+      GetMovies: () => dispatch(GetMovies()) 
+  }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps) (Movies);

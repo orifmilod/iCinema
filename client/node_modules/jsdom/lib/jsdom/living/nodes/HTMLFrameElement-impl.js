@@ -1,4 +1,6 @@
 "use strict";
+
+const DOMException = require("domexception");
 const MIMEType = require("whatwg-mimetype");
 const whatwgEncoding = require("whatwg-encoding");
 const { parseURL, serializeURL } = require("whatwg-url");
@@ -7,16 +9,15 @@ const sniffHTMLEncoding = require("html-encoding-sniffer");
 const { evaluateJavaScriptURL } = require("../window/navigation");
 const HTMLElementImpl = require("./HTMLElement-impl").implementation;
 const { reflectURLAttribute } = require("../../utils");
+const { parseIntoDocument } = require("../../browser/parser");
 const { documentBaseURL } = require("../helpers/document-base-url");
+const { fireAnEvent } = require("../helpers/events");
 const { getAttributeValue } = require("../attributes");
 const idlUtils = require("../generated/utils");
 
 function fireLoadEvent(document, frame, attaching) {
   if (attaching) {
-    const ev = document.createEvent("HTMLEvents");
-
-    ev.initEvent("load", false, false);
-    frame.dispatchEvent(ev);
+    fireAnEvent("load", frame);
 
     return;
   }
@@ -24,10 +25,7 @@ function fireLoadEvent(document, frame, attaching) {
   const dummyPromise = Promise.resolve();
 
   function onLoad() {
-    const ev = document.createEvent("HTMLEvents");
-
-    ev.initEvent("load", false, false);
-    frame.dispatchEvent(ev);
+    fireAnEvent("load", frame);
   }
 
   document._queue.push(dummyPromise, onLoad);
@@ -59,7 +57,29 @@ function fetchFrame(serializedURL, frame, document, contentDoc) {
     contentDoc._encoding = encoding;
 
     const html = whatwgEncoding.decode(data, contentDoc._encoding);
-    contentDoc.write(html);
+
+    try {
+      parseIntoDocument(html, contentDoc);
+    } catch (error) {
+      if (
+        error instanceof DOMException &&
+        error.code === DOMException.SYNTAX_ERR &&
+        contentDoc._parsingMode === "xml"
+      ) {
+        // As defined (https://html.spec.whatwg.org/#read-xml) parsing error in XML document may be reported inline by
+        // mutating the document.
+        const element = contentDoc.createElementNS("http://www.mozilla.org/newlayout/xml/parsererror.xml", "parsererror");
+        element.textContent = error.message;
+
+        while (contentDoc.childNodes.length > 0) {
+          contentDoc.removeChild(contentDoc.lastChild);
+        }
+        contentDoc.appendChild(element);
+      } else {
+        throw error;
+      }
+    }
+
     contentDoc.close();
 
     return new Promise((resolve, reject) => {
@@ -114,7 +134,8 @@ function loadFrame(frame, attaching) {
     pool: parentDoc._pool,
     encoding: parentDoc._encoding,
     runScripts: parentDoc._defaultView._runScripts,
-    commonForOrigin: parentDoc._defaultView._commonForOrigin
+    commonForOrigin: parentDoc._defaultView._commonForOrigin,
+    pretendToBeVisual: parentDoc._defaultView._pretendToBeVisual
   });
 
   const contentDoc = frame._contentDocument = idlUtils.implForWrapper(wnd._document);
@@ -134,7 +155,7 @@ function loadFrame(frame, attaching) {
   // Handle about:blank with a simulated load of an empty document.
   if (serializedURL === "about:blank") {
     // Cannot be done inside the enqueued callback; the documentElement etc. need to be immediately available.
-    contentDoc.write("<html><head></head><body></body></html>");
+    parseIntoDocument("<html><head></head><body></body></html>", contentDoc);
     contentDoc.close(noQueue);
 
     if (noQueue) {
@@ -146,7 +167,7 @@ function loadFrame(frame, attaching) {
     }
   } else if (url.scheme === "javascript") {
     // Cannot be done inside the enqueued callback; the documentElement etc. need to be immediately available.
-    contentDoc.write("<html><head></head><body></body></html>");
+    parseIntoDocument("<html><head></head><body></body></html>", contentDoc);
     contentDoc.close(noQueue);
     const result = evaluateJavaScriptURL(contentWindow, url);
     if (typeof result === "string") {
@@ -238,7 +259,7 @@ class HTMLFrameElementImpl extends HTMLElementImpl {
   }
 
   set src(value) {
-    this.setAttribute("src", value);
+    this.setAttributeNS(null, "src", value);
   }
 
   get longDesc() {
@@ -246,7 +267,7 @@ class HTMLFrameElementImpl extends HTMLElementImpl {
   }
 
   set longDesc(value) {
-    this.setAttribute("longdesc", value);
+    this.setAttributeNS(null, "longdesc", value);
   }
 }
 

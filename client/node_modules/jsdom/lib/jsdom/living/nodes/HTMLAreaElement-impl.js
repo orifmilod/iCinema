@@ -9,6 +9,12 @@ class HTMLAreaElementImpl extends HTMLElementImpl {
     super(args, privateData);
 
     this._htmlHyperlinkElementUtilsSetup();
+
+    this._hasActivationBehavior = true;
+  }
+
+  _activationBehavior() {
+    this._followAHyperlink();
   }
 
   get relList() {
@@ -21,7 +27,9 @@ class HTMLAreaElementImpl extends HTMLElementImpl {
     return this._relList;
   }
 
-  _attrModified(name) {
+  _attrModified(name, value, oldValue) {
+    super._attrModified(name, value, oldValue);
+
     if (name === "rel" && this._relList !== undefined) {
       this._relList.attrModified();
     }

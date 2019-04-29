@@ -64,7 +64,7 @@ function _default(path, scope = path.scope) {
   };
   path.traverse(visitor, state);
 
-  if (state.foundArguments) {
+  if (state.foundArguments || state.foundThis) {
     callee = t().memberExpression(container, t().identifier("apply"));
     args = [];
 

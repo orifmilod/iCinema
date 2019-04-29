@@ -1,6 +1,3 @@
-import getValue from './index';
-
-
 /**
  * Extractor function for a BinaryExpression type value node.
  * A binary expression has a left and right side separated by an operator
@@ -10,6 +7,8 @@ import getValue from './index';
  * @returns - The extracted value converted to correct type.
  */
 export default function extractValueFromBinaryExpression(value) {
+  // eslint-disable-next-line global-require
+  const getValue = require('./index.js').default;
   const { operator, left, right } = value;
   const leftVal = getValue(left);
   const rightVal = getValue(right);

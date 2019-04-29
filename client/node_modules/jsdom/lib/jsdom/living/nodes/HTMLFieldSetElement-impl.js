@@ -5,15 +5,21 @@ const DefaultConstraintValidationImpl =
   require("../constraint-validation/DefaultConstraintValidation-impl").implementation;
 const { formOwner } = require("../helpers/form-controls");
 const { mixin } = require("../../utils");
-const { descendantsByHTMLLocalNames } = require("../helpers/traversal");
+const { descendantsByLocalNames } = require("../helpers/traversal");
 
 const listedElements = new Set(["button", "fieldset", "input", "object", "output", "select", "textarea"]);
 
 class HTMLFieldSetElementImpl extends HTMLElementImpl {
+  constructor(args, privateData) {
+    super(args, privateData);
+
+    this._customValidityErrorMessage = "";
+  }
+
   get elements() {
     return HTMLCollection.createImpl([], {
       element: this,
-      query: () => descendantsByHTMLLocalNames(this, listedElements)
+      query: () => descendantsByLocalNames(this, listedElements)
     });
   }
 

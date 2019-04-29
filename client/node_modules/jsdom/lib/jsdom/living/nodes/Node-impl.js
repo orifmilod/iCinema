@@ -1,18 +1,21 @@
 "use strict";
 
-const EventTargetImpl = require("../events/EventTarget-impl").implementation;
-const { domSymbolTree } = require("../helpers/internal-constants");
-const { simultaneousIterators } = require("../../utils");
 const DOMException = require("domexception");
+
+const EventTargetImpl = require("../events/EventTarget-impl").implementation;
+const { simultaneousIterators } = require("../../utils");
 const NODE_TYPE = require("../node-type");
 const NODE_DOCUMENT_POSITION = require("../node-document-position");
 const NodeList = require("../generated/NodeList");
-const { documentBaseURLSerialized } = require("../helpers/document-base-url");
 const { clone, locateNamespacePrefix, locateNamespace } = require("../node");
 const attributes = require("../attributes");
+
+const { domSymbolTree } = require("../helpers/internal-constants");
+const { documentBaseURLSerialized } = require("../helpers/document-base-url");
+const { queueTreeMutationRecord } = require("../helpers/mutation-observers");
 const {
-  isShadowRoot, getRoot, shadowIncludingRoot,
-  assignSlot, assignSlotableForTree, assignSlotable
+  isShadowRoot, getRoot, shadowIncludingRoot, assignSlot, assignSlotableForTree, assignSlotable,
+  signalSlotChange, isSlot
 } = require("../helpers/shadow-dom");
 
 function isObsoleteNodeType(node) {
@@ -100,6 +103,7 @@ class NodeImpl extends EventTargetImpl {
     this._childrenList = null;
     this._version = 0;
     this._memoizedQueries = {};
+    this._registeredObserverList = [];
   }
 
   _getTheParent() {
@@ -146,13 +150,11 @@ class NodeImpl extends EventTargetImpl {
     return domSymbolTree.firstChild(this);
   }
 
+  // https://dom.spec.whatwg.org/#connected
+  // https://dom.spec.whatwg.org/#dom-node-isconnected
   get isConnected() {
-    for (const ancestor of domSymbolTree.ancestorsIterator(this)) {
-      if (ancestor.nodeType === NODE_TYPE.DOCUMENT_NODE) {
-        return true;
-      }
-    }
-    return false;
+    const root = shadowIncludingRoot(this);
+    return root && root.nodeType === NODE_TYPE.DOCUMENT_NODE;
   }
 
   get ownerDocument() {
@@ -637,7 +639,7 @@ class NodeImpl extends EventTargetImpl {
       referenceChildImpl = domSymbolTree.nextSibling(nodeImpl);
     }
 
-    this._ownerDocument.adoptNode(nodeImpl);
+    this._ownerDocument._adoptNode(nodeImpl);
 
     this._insert(nodeImpl, referenceChildImpl);
 
@@ -645,7 +647,7 @@ class NodeImpl extends EventTargetImpl {
   }
 
   // https://dom.spec.whatwg.org/#concept-node-insert
-  _insert(nodeImpl, childImpl) {
+  _insert(nodeImpl, childImpl, suppressObservers) {
     const nodesImpl = nodeImpl.nodeType === NODE_TYPE.DOCUMENT_FRAGMENT_NODE ?
       domSymbolTree.childrenToArray(nodeImpl) :
       [nodeImpl];
@@ -653,9 +655,17 @@ class NodeImpl extends EventTargetImpl {
     if (nodeImpl.nodeType === NODE_TYPE.DOCUMENT_FRAGMENT_NODE) {
       let grandChildImpl;
       while ((grandChildImpl = domSymbolTree.firstChild(nodeImpl))) {
-        nodeImpl._remove(grandChildImpl);
+        nodeImpl._remove(grandChildImpl, true);
       }
     }
+
+    if (nodeImpl.nodeType === NODE_TYPE.DOCUMENT_FRAGMENT_NODE) {
+      queueTreeMutationRecord(nodeImpl, [], nodesImpl, null, null);
+    }
+
+    const previousChildImpl = childImpl ?
+      domSymbolTree.previousSibling(childImpl) :
+      domSymbolTree.lastChild(this);
 
     for (const node of nodesImpl) {
       if (!childImpl) {
@@ -673,8 +683,13 @@ class NodeImpl extends EventTargetImpl {
 
       this._modified();
 
-      if (node.nodeType === NODE_TYPE.TEXT_NODE) {
+      if (node.nodeType === NODE_TYPE.TEXT_NODE ||
+          node.nodeType === NODE_TYPE.CDATA_SECTION_NODE) {
         this._childTextContentChangeSteps();
+      }
+
+      if (isSlot(this) && this._assignedNodes.length === 0 && isShadowRoot(getRoot(this))) {
+        signalSlotChange(this);
       }
 
       const root = getRoot(node);
@@ -687,6 +702,10 @@ class NodeImpl extends EventTargetImpl {
       }
 
       this._descendantAdded(this, node);
+    }
+
+    if (!suppressObservers) {
+      queueTreeMutationRecord(this, nodesImpl, [], previousChildImpl, childImpl);
     }
   }
 
@@ -818,28 +837,54 @@ class NodeImpl extends EventTargetImpl {
       referenceChildImpl = domSymbolTree.nextSibling(nodeImpl);
     }
 
-    this._ownerDocument.adoptNode(nodeImpl);
+    const previousSiblingImpl = domSymbolTree.previousSibling(childImpl);
 
-    this._remove(childImpl);
-    this._insert(nodeImpl, referenceChildImpl);
+    this._ownerDocument._adoptNode(nodeImpl);
+
+    let removedNodesImpl = [];
+
+    if (domSymbolTree.parent(childImpl)) {
+      removedNodesImpl = [childImpl];
+      this._remove(childImpl, true);
+    }
+
+    const nodesImpl = nodeImpl.nodeType === NODE_TYPE.DOCUMENT_FRAGMENT_NODE ?
+      domSymbolTree.childrenToArray(nodeImpl) :
+      [nodeImpl];
+
+    this._insert(nodeImpl, referenceChildImpl, true);
+
+    queueTreeMutationRecord(this, nodesImpl, removedNodesImpl, previousSiblingImpl, referenceChildImpl);
 
     return childImpl;
   }
 
   // https://dom.spec.whatwg.org/#concept-node-replace-all
   _replaceAll(nodeImpl) {
-    if (nodeImpl) {
-      this._ownerDocument.adoptNode(nodeImpl);
+    if (nodeImpl !== null) {
+      this._ownerDocument._adoptNode(nodeImpl);
     }
 
-    let parentChild;
-    while ((parentChild = domSymbolTree.firstChild(this))) {
-      this._remove(parentChild);
+    const removedNodesImpl = domSymbolTree.childrenToArray(this);
+
+    let addedNodesImpl;
+    if (nodeImpl === null) {
+      addedNodesImpl = [];
+    } else if (nodeImpl.nodeType === NODE_TYPE.DOCUMENT_FRAGMENT_NODE) {
+      addedNodesImpl = domSymbolTree.childrenToArray(nodeImpl);
+    } else {
+      addedNodesImpl = [nodeImpl];
+    }
+
+    for (const childImpl of domSymbolTree.childrenIterator(this)) {
+      this._remove(childImpl, true);
     }
 
     if (nodeImpl) {
-      this._insert(nodeImpl, null);
+      this._insert(nodeImpl, null, true);
     }
+
+    queueTreeMutationRecord(this, addedNodesImpl, removedNodesImpl, null, null);
   }
 
   // https://dom.spec.whatwg.org/#concept-node-pre-remove
@@ -854,10 +899,13 @@ class NodeImpl extends EventTargetImpl {
   }
 
   // https://dom.spec.whatwg.org/#concept-node-remove
-  _remove(nodeImpl) {
+  _remove(nodeImpl, suppressObservers) {
     if (this._ownerDocument) {
       this._ownerDocument._runPreRemovingSteps(nodeImpl);
     }
+
+    const oldPreviousSiblingImpl = domSymbolTree.previousSibling(nodeImpl);
+    const oldNextSiblingImpl = domSymbolTree.nextSibling(nodeImpl);
 
     domSymbolTree.remove(nodeImpl);
 
@@ -865,10 +913,14 @@ class NodeImpl extends EventTargetImpl {
       assignSlotable(nodeImpl._assignedSlot);
     }
 
-    let hasSlotDescendant = nodeImpl._localName === "slot";
+    if (isSlot(this) && this._assignedNodes.length === 0 && isShadowRoot(getRoot(this))) {
+      signalSlotChange(this);
+    }
+
+    let hasSlotDescendant = isSlot(nodeImpl);
     if (!hasSlotDescendant) {
       for (const child of domSymbolTree.treeIterator(nodeImpl)) {
-        if (child._localName === "slot") {
+        if (isSlot(child)) {
           hasSlotDescendant = true;
           break;
         }
@@ -883,6 +935,10 @@ class NodeImpl extends EventTargetImpl {
     this._modified();
     nodeImpl._detach();
     this._descendantRemoved(this, nodeImpl);
+
+    if (!suppressObservers) {
+      queueTreeMutationRecord(this, [], [nodeImpl], oldPreviousSiblingImpl, oldNextSiblingImpl);
+    }
 
     if (nodeImpl.nodeType === NODE_TYPE.TEXT_NODE) {
       this._childTextContentChangeSteps();

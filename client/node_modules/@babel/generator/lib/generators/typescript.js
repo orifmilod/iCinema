@@ -61,6 +61,7 @@ exports.TSEnumDeclaration = TSEnumDeclaration;
 exports.TSEnumMember = TSEnumMember;
 exports.TSModuleDeclaration = TSModuleDeclaration;
 exports.TSModuleBlock = TSModuleBlock;
+exports.TSImportType = TSImportType;
 exports.TSImportEqualsDeclaration = TSImportEqualsDeclaration;
 exports.TSExternalModuleReference = TSExternalModuleReference;
 exports.TSNonNullExpression = TSNonNullExpression;
@@ -333,7 +334,7 @@ function tsPrintBraced(members, node) {
 }
 
 function TSArrayType(node) {
-  this.print(node.elementType);
+  this.print(node.elementType, node);
   this.token("[]");
 }
 
@@ -624,6 +625,27 @@ function TSModuleDeclaration(node) {
 
 function TSModuleBlock(node) {
   this.tsPrintBraced(node.body, node);
+}
+
+function TSImportType(node) {
+  const {
+    argument,
+    qualifier,
+    typeParameters
+  } = node;
+  this.word("import");
+  this.token("(");
+  this.print(argument, node);
+  this.token(")");
+
+  if (qualifier) {
+    this.token(".");
+    this.print(qualifier, node);
+  }
+
+  if (typeParameters) {
+    this.print(typeParameters, node);
+  }
 }
 
 function TSImportEqualsDeclaration(node) {

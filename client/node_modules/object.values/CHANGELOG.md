@@ -1,3 +1,12 @@
+1.1.0 / 2019-01-01
+=================
+  * [New] add `auto` entry point`
+  * [Deps] update `define-properties`, `es-abstract`, `function-bind`, `has`
+  * [Dev Deps] update `eslint`, `@ljharb/eslint-config`, `covert`, `tape`
+  * [Tests] up to `node` `v11.6`, `v10.15`, `v9.11`, `v8.15`, `v7.10`, `v6.16`, `v4.9`; use `nvm install-latest-npm`
+  * [Tests] use `npm audit` instead of `nsp`
+  * [Tests] remove `jscs`
+
 1.0.4 / 2016-12-04
 =================
   * [Docs] update to reflect ES2017 inclusion

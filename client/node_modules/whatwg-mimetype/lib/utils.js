@@ -1,15 +1,15 @@
 "use strict";
 
-exports.removeLeadingAndTrailingASCIIWhitespace = string => {
-  return string.replace(/^[ \t\n\f\r]+/, "").replace(/[ \t\n\f\r]+$/, "");
+exports.removeLeadingAndTrailingHTTPWhitespace = string => {
+  return string.replace(/^[ \t\n\r]+/, "").replace(/[ \t\n\r]+$/, "");
 };
 
-exports.removeTrailingASCIIWhitespace = string => {
-  return string.replace(/[ \t\n\f\r]+$/, "");
+exports.removeTrailingHTTPWhitespace = string => {
+  return string.replace(/[ \t\n\r]+$/, "");
 };
 
-exports.isASCIIWhitespaceChar = char => {
-  return char === " " || char === "\t" || char === "\n" || char === "\f" || char === "\r";
+exports.isHTTPWhitespaceChar = char => {
+  return char === " " || char === "\t" || char === "\n" || char === "\r";
 };
 
 exports.solelyContainsHTTPTokenCodePoints = string => {

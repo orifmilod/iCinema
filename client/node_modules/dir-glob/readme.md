@@ -20,6 +20,13 @@ dirGlob(['index.js', 'test.js', 'fixtures']).then(files => {
 	//=> ['index.js', 'test.js', 'fixtures/**']
 });
 
+dirGlob(['index.js', 'inner_folder'], {
+	cwd: 'fixtures'
+}).then(files => {
+	console.log(files);
+	//=> ['index.js', 'inner_folder/**']
+});
+
 dirGlob(['lib/**', 'fixtures'], {
 	files: ['test', 'unicorn']
 	extensions: ['js']
@@ -67,6 +74,12 @@ Append extensions to the end of your globs.
 Type: `Array`
 
 Only glob for certain files.
+
+##### cwd
+
+Type: `string`
+
+Test in specific directory.
 
 
 ## License

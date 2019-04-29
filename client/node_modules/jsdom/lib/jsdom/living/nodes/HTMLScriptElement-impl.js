@@ -9,6 +9,7 @@ const reportException = require("../helpers/runtime-script-errors");
 const { domSymbolTree, cloningSteps } = require("../helpers/internal-constants");
 const { asciiLowercase } = require("../helpers/strings");
 const { childTextContent } = require("../helpers/text");
+const { fireAnEvent } = require("../helpers/events");
 const nodeTypes = require("../node-type");
 
 const jsMIMETypes = new Set([
@@ -62,7 +63,7 @@ class HTMLScriptElementImpl extends HTMLElementImpl {
   _fetchExternalScript(src) {
     const document = this._ownerDocument;
     const resourceLoader = document._resourceLoader;
-    const defaultEncoding = whatwgEncoding.labelToName(this.getAttribute("charset")) || document._encoding;
+    const defaultEncoding = whatwgEncoding.labelToName(this.getAttributeNS(null, "charset")) || document._encoding;
     let request;
 
     if (!this._canRunScript()) {
@@ -97,7 +98,6 @@ class HTMLScriptElementImpl extends HTMLElementImpl {
 
   _fetchInternalScript() {
     const document = this._ownerDocument;
-    const ev = document.createEvent("HTMLEvents");
 
     if (!this._canRunScript()) {
       return;
@@ -106,8 +106,7 @@ class HTMLScriptElementImpl extends HTMLElementImpl {
     document._queue.push(null, () => {
       this._innerEval(this.text, document.URL);
 
-      ev.initEvent("load", false, false);
-      this.dispatchEvent(ev);
+      fireAnEvent("load", this);
     }, null, false, this);
   }
 
@@ -135,7 +134,7 @@ class HTMLScriptElementImpl extends HTMLElementImpl {
 
     // TODO: this text check doesn't seem completely the same as the spec, which e.g. will try to execute scripts with
     // child element nodes. Spec bug? https://github.com/whatwg/html/issues/3419
-    if (!this.hasAttribute("src") && this.text.length === 0) {
+    if (!this.hasAttributeNS(null, "src") && this.text.length === 0) {
       return;
     }
 
@@ -157,7 +156,7 @@ class HTMLScriptElementImpl extends HTMLElementImpl {
 
     // At this point we completely depart from the spec.
 
-    if (this.hasAttribute("src")) {
+    if (this.hasAttributeNS(null, "src")) {
       this._fetchExternalScript(this.src);
     } else {
       this._fetchInternalScript();
@@ -171,8 +170,8 @@ class HTMLScriptElementImpl extends HTMLElementImpl {
   }
 
   _getTypeString() {
-    const typeAttr = this.getAttribute("type");
-    const langAttr = this.getAttribute("language");
+    const typeAttr = this.getAttributeNS(null, "type");
+    const langAttr = this.getAttributeNS(null, "language");
 
     if (typeAttr === "") {
       return "text/javascript";
@@ -210,7 +209,7 @@ class HTMLScriptElementImpl extends HTMLElementImpl {
   }
 
   set src(V) {
-    this.setAttribute("src", V);
+    this.setAttributeNS(null, "src", V);
   }
 
   // https://html.spec.whatwg.org/multipage/scripting.html#script-processing-model

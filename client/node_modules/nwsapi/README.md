@@ -2,6 +2,8 @@
 
 Fast CSS Selectors API Engine
 
+![](https://img.shields.io/npm/v/nwsapi.svg?colorB=orange&style=flat) ![](https://img.shields.io/github/tag/dperini/nwsapi.svg?style=flat) ![](https://img.shields.io/npm/dw/nwsapi.svg?style=flat) ![](https://img.shields.io/github/issues/dperini/nwsapi.svg?style=flat)
+
 NWSAPI is the development progress of [NWMATCHER](https://github.com/dperini/nwmatcher) aiming at [Selectors Level 4](https://www.w3.org/TR/selectors-4/) conformance. It has been completely reworked to be easily extended and maintained. It is a right-to-left selector parser and compiler written in pure Javascript with no external dependencies. It was initially thought as a cross browser library to improve event delegation and web page scraping in various frameworks but it has become a popular replacement of the native CSS selection and matching functionality in newer browsers and headless environments.
 
 It uses [regular expressions](https://en.wikipedia.org/wiki/Regular_expression) to parse CSS selector strings and [metaprogramming](https://en.wikipedia.org/wiki/Metaprogramming) to transforms these selector strings into Javascript function resolvers. This process is executed only once for each selector string allowing memoization of the function resolvers and achieving unmatched performances.
@@ -20,7 +22,7 @@ To include NWSAPI in a standard web page and automatically replace the native QS
 <script type="text/javascript" src="nwsapi.js" onload="NW.Dom.install()"></script>
 ```
 
-To use it with Node.js:
+To use NWSAPI with Node.js:
 
 ```
 $ npm install nwsapi
@@ -81,21 +83,30 @@ Returns an array of elements having the specified class name `class`, optionally
 
 The following is the list of currently available configuration options, their default values and descriptions, they are boolean flags that can be set to `true` or `false`:
 
-* `BUGFIX_ID`: true  - true to bugfix forms when using reserved words for controls
-* `SIMPLENOT`: true  - true to disallow complex selectors nested in ':not()' classes
-* `USE_HTML5`: true  - true to use HTML5 specs for ":checked" and similar UI states
-* `VERBOSITY`: true  - true to throw exceptions, false to skip throwing exceptions
-* `LOGERRORS`: true  - true to print console errors or warnings, false to mute them
+* `IDS_DUPES`: true  - true to allow using multiple elements having the same id, false to disallow
+* `LIVECACHE`: true  - true for caching both results and resolvers, false for caching only resolvers
+* `MIXEDCASE`: true  - true to match tag names case insensitive, false to match using case sensitive
+* `LOGERRORS`: true  - true to print errors and warnings to the console, false to mute both of them
 
-Example:
+
+### Examples on extending the basic functionalities
+
+#### `configure( { <configuration-flag>: [ true | false ] } )`
+
+Disable logging errors/warnings to console, disallow duplicate ids. Example:
 
 ```js
-NW.Dom.configure( { LOGERRORS: false, VERBOSITY: false } );
+NW.Dom.configure( { LOGERRORS: false, IDS_DUPES: false } );
 ```
+NOTE: NW.Dom.configure() without parameters return the current configuration.
 
 #### `registerCombinator( symbol, resolver )`
 
-Registers a new symbol and its matching resolver in the combinators table.
+Registers a new symbol and its matching resolver in the combinators table. Example:
+
+```js
+NW.Dom.registerCombinator( '^', 'e.parentElement' );
+```
 
 #### `registerOperator( symbol, resolver )`
 
@@ -107,4 +118,15 @@ NW.Dom.registerOperator( '!=', { p1: '^', p2: '$', p3: 'false' } );
 
 #### `registerSelector( name, rexp, func )`
 
-Registers a new selector, with the matching regular expression and the appropriate resolver function, in the selectors table.
+Registers a new selector, the matching RE and the resolver function, in the selectors table. Example:
+
+```js
+NW.Dom.registerSelector('Controls', /^\:(control)(.*)/i,
+  (function(global) {
+    return function(match, source, mode, callback) {
+      var status = true;
+      source = 'if(/^(button|input|select|textarea)/i.test(e.nodeName)){' + source + '}';
+      return { 'source': source, 'status': status };
+    };
+  })(this));
+```

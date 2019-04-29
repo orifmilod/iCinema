@@ -1,3 +1,8 @@
+# 5.0.0
+
+- Allow escaped dot within class name.
+- Update PostCSS to 7.0.7 (patch)
+
 # 5.0.0-rc.4
 
 - Fixed and issue where comments immediately after an insensitive

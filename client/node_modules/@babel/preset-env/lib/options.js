@@ -6,6 +6,7 @@ Object.defineProperty(exports, "__esModule", {
 exports.TargetNames = exports.UseBuiltInsOption = exports.ModulesOption = exports.TopLevelOptions = void 0;
 const TopLevelOptions = {
   configPath: "configPath",
+  corejs: "corejs",
   debug: "debug",
   exclude: "exclude",
   forceAllTransforms: "forceAllTransforms",
@@ -47,6 +48,8 @@ const TargetNames = {
   ie: "ie",
   ios: "ios",
   android: "android",
-  electron: "electron"
+  electron: "electron",
+  samsung: "samsung",
+  uglify: "uglify"
 };
 exports.TargetNames = TargetNames;

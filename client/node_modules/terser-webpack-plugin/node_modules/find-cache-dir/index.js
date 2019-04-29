@@ -6,27 +6,27 @@ const makeDir = require('make-dir');
 
 module.exports = (options = {}) => {
 	const {name} = options;
-	let dir = options.cwd;
+	let directory = options.cwd;
 
 	if (options.files) {
-		dir = commonDir(dir, options.files);
+		directory = commonDir(directory, options.files);
 	} else {
-		dir = dir || process.cwd();
+		directory = directory || process.cwd();
 	}
 
-	dir = pkgDir.sync(dir);
+	directory = pkgDir.sync(directory);
 
-	if (dir) {
-		dir = path.join(dir, 'node_modules', '.cache', name);
+	if (directory) {
+		directory = path.join(directory, 'node_modules', '.cache', name);
 
-		if (dir && options.create) {
-			makeDir.sync(dir);
+		if (directory && options.create) {
+			makeDir.sync(directory);
 		}
 
 		if (options.thunk) {
-			return (...args) => path.join(dir, ...args);
+			return (...arguments_) => path.join(directory, ...arguments_);
 		}
 	}
 
-	return dir;
+	return directory;
 };

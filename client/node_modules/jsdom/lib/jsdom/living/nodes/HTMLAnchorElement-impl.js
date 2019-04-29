@@ -9,6 +9,12 @@ class HTMLAnchorElementImpl extends HTMLElementImpl {
     super(args, privateData);
 
     this._htmlHyperlinkElementUtilsSetup();
+
+    this._hasActivationBehavior = true;
+  }
+
+  _activationBehavior() {
+    this._followAHyperlink();
   }
 
   get relList() {
@@ -28,7 +34,9 @@ class HTMLAnchorElementImpl extends HTMLElementImpl {
     this.textContent = v;
   }
 
-  _attrModified(name) {
+  _attrModified(name, value, oldValue) {
+    super._attrModified(name, value, oldValue);
+
     if (name === "rel" && this._relList !== undefined) {
       this._relList.attrModified();
     }

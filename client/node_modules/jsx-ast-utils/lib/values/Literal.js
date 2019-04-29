@@ -17,7 +17,9 @@ function extractValueFromLiteral(value) {
   var normalizedStringValue = typeof extractedValue === 'string' && extractedValue.toLowerCase();
   if (normalizedStringValue === 'true') {
     return true;
-  } else if (normalizedStringValue === 'false') {
+  }
+
+  if (normalizedStringValue === 'false') {
     return false;
   }
 

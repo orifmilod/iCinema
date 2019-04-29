@@ -1,4 +1,7 @@
 "use strict";
+
+const { parseIntoDocument } = require("../../browser/parser");
+
 const Document = require("../generated/Document");
 
 exports.implementation = class DOMParserImpl {
@@ -12,7 +15,6 @@ exports.implementation = class DOMParserImpl {
       case "application/xml":
       case "application/xhtml+xml":
       case "image/svg+xml": {
-        // TODO: use a strict XML parser (sax's strict mode might work?) and create parsererror elements
         try {
           return createScriptingDisabledDocument("xml", contentType, string);
         } catch (error) {
@@ -38,14 +40,15 @@ function createScriptingDisabledDocument(parsingMode, contentType, string) {
       parsingMode,
       encoding: "UTF-8",
       contentType,
+      readyState: "complete",
       scriptingDisabled: true
       // TODO: somehow set URL to active document's URL
     }
   });
 
   if (string !== undefined) {
-    document._htmlToDom.appendToDocument(string, document);
+    parseIntoDocument(string, document);
   }
-  document.close();
+
   return document;
 }

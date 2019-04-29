@@ -5,7 +5,9 @@ const { CSSStyleDeclaration } = require("cssstyle");
 const { Performance: RawPerformance } = require("w3c-hr-time");
 const notImplemented = require("./not-implemented");
 const { define, mixin } = require("../utils");
+const Element = require("../living/generated/Element");
 const EventTarget = require("../living/generated/EventTarget");
+const PageTransitionEvent = require("../living/generated/PageTransitionEvent");
 const namedPropertiesWindow = require("../living/named-properties-window");
 const cssom = require("cssom");
 const postMessage = require("../living/post-message");
@@ -27,19 +29,19 @@ const createAbortController = require("../living/generated/AbortController").cre
 const createAbortSignal = require("../living/generated/AbortSignal").createInterface;
 const reportException = require("../living/helpers/runtime-script-errors");
 const { matchesDontThrow } = require("../living/helpers/selectors");
+const { fireAnEvent } = require("../living/helpers/events");
 const SessionHistory = require("../living/window/SessionHistory");
 
 const GlobalEventHandlersImpl = require("../living/nodes/GlobalEventHandlers-impl").implementation;
 const WindowEventHandlersImpl = require("../living/nodes/WindowEventHandlers-impl").implementation;
 
+const defaultStyleSheet = require("./default-stylesheet");
+let parsedDefaultStyleSheet;
+
 // NB: the require() must be after assigning `module.exports` because this require() is circular
 // TODO: this above note might not even be true anymore... figure out the cycle and document it, or clean up.
 module.exports = Window;
 const dom = require("../living");
-
-const cssSelectorSplitRE = /((?:[^,"']|"[^"]*"|'[^']*')+)/;
-
-const defaultStyleSheet = cssom.parse(require("./default-stylesheet"));
 
 dom.Window = Window;
 
@@ -330,10 +332,10 @@ function Window(options) {
       impl.text = text;
     }
     if (value !== undefined) {
-      impl.setAttribute("value", value);
+      impl.setAttributeNS(null, "value", value);
     }
     if (defaultSelected) {
-      impl.setAttribute("selected", "");
+      impl.setAttributeNS(null, "selected", "");
     }
     impl._selectedness = selected;
 
@@ -357,10 +359,10 @@ function Window(options) {
     const impl = idlUtils.implForWrapper(img);
 
     if (arguments.length > 0) {
-      impl.setAttribute("width", String(arguments[0]));
+      impl.setAttributeNS(null, "width", String(arguments[0]));
     }
     if (arguments.length > 1) {
-      impl.setAttribute("height", String(arguments[1]));
+      impl.setAttributeNS(null, "height", String(arguments[1]));
     }
 
     return img;
@@ -381,10 +383,10 @@ function Window(options) {
   function Audio(src) {
     const audio = window._document.createElement("audio");
     const impl = idlUtils.implForWrapper(audio);
-    impl.setAttribute("preload", "auto");
+    impl.setAttributeNS(null, "preload", "auto");
 
     if (src !== undefined) {
-      impl.setAttribute("src", String(src));
+      impl.setAttributeNS(null, "src", String(src));
     }
 
     return audio;
@@ -495,24 +497,31 @@ function Window(options) {
     WebSocketImpl.cleanUpWindow(this);
   };
 
-  this.getComputedStyle = function (node) {
-    const nodeImpl = idlUtils.implForWrapper(node);
-    const s = node.style;
-    const cs = new CSSStyleDeclaration();
-    const { forEach } = Array.prototype;
+  this.getComputedStyle = function (elt) {
+    elt = Element.convert(elt);
+
+    const declaration = new CSSStyleDeclaration();
+    const { forEach, indexOf } = Array.prototype;
+    const { style } = elt;
 
     function setPropertiesFromRule(rule) {
       if (!rule.selectorText) {
         return;
       }
 
-      const selectors = rule.selectorText.split(cssSelectorSplitRE);
+      const cssSelectorSplitRe = /((?:[^,"']|"[^"]*"|'[^']*')+)/;
+      const selectors = rule.selectorText.split(cssSelectorSplitRe);
       let matched = false;
+
       for (const selectorText of selectors) {
-        if (selectorText !== "" && selectorText !== "," && !matched && matchesDontThrow(nodeImpl, selectorText)) {
+        if (selectorText !== "" && selectorText !== "," && !matched && matchesDontThrow(elt, selectorText)) {
           matched = true;
           forEach.call(rule.style, property => {
-            cs.setProperty(property, rule.style.getPropertyValue(property), rule.style.getPropertyPriority(property));
+            declaration.setProperty(
+              property,
+              rule.style.getPropertyValue(property),
+              rule.style.getPropertyPriority(property)
+            );
           });
         }
       }
@@ -521,7 +530,7 @@ function Window(options) {
     function readStylesFromStyleSheet(sheet) {
       forEach.call(sheet.cssRules, rule => {
         if (rule.media) {
-          if (Array.prototype.indexOf.call(rule.media, "screen") !== -1) {
+          if (indexOf.call(rule.media, "screen") !== -1) {
             forEach.call(rule.cssRules, setPropertiesFromRule);
           }
         } else {
@@ -530,14 +539,17 @@ function Window(options) {
       });
     }
 
-    readStylesFromStyleSheet(defaultStyleSheet);
-    forEach.call(node.ownerDocument.styleSheets, readStylesFromStyleSheet);
+    if (!parsedDefaultStyleSheet) {
+      parsedDefaultStyleSheet = cssom.parse(defaultStyleSheet);
+    }
+    readStylesFromStyleSheet(parsedDefaultStyleSheet);
+    forEach.call(elt.ownerDocument.styleSheets, readStylesFromStyleSheet);
 
-    forEach.call(s, property => {
-      cs.setProperty(property, s.getPropertyValue(property), s.getPropertyPriority(property));
+    forEach.call(style, property => {
+      declaration.setProperty(property, style.getPropertyValue(property), style.getPropertyPriority(property));
     });
 
-    return cs;
+    return declaration;
   };
 
   // The captureEvents() and releaseEvents() methods must do nothing
@@ -591,14 +603,11 @@ function Window(options) {
     pageXOffset: 0,
     pageYOffset: 0,
     screenX: 0,
+    screenLeft: 0,
     screenY: 0,
+    screenTop: 0,
     scrollX: 0,
     scrollY: 0,
-
-    // Not in spec, but likely to be added eventually:
-    // https://github.com/w3c/csswg-drafts/issues/1091
-    screenLeft: 0,
-    screenTop: 0,
 
     alert: notImplementedMethod("window.alert"),
     blur: notImplementedMethod("window.blur"),
@@ -624,14 +633,15 @@ function Window(options) {
     }
 
     if (window.document.readyState === "complete") {
-      const ev = window.document.createEvent("HTMLEvents");
-      ev.initEvent("load", false, false);
-      window.dispatchEvent(ev);
+      fireAnEvent("load", window, undefined, {}, window.document);
     } else {
       window.document.addEventListener("load", () => {
-        const ev = window.document.createEvent("HTMLEvents");
-        ev.initEvent("load", false, false);
-        window.dispatchEvent(ev);
+        fireAnEvent("load", window, undefined, {}, window.document);
+
+        if (!idlUtils.implForWrapper(window._document)._pageShowingFlag) {
+          idlUtils.implForWrapper(window._document)._pageShowingFlag = true;
+          fireAnEvent("pageshow", window, PageTransitionEvent, { persisted: false }, window.document);
+        }
       });
     }
   });

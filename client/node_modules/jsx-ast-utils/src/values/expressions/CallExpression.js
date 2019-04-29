@@ -1,5 +1,3 @@
-import getValue from './index';
-
 /**
  * Extractor function for a CallExpression type value node.
  * A call expression looks like `bar()`
@@ -10,5 +8,7 @@ import getValue from './index';
  * @returns - The extracted value converted to correct type.
  */
 export default function extractValueFromCallExpression(value) {
+  // eslint-disable-next-line global-require
+  const getValue = require('./index.js').default;
   return getValue(value.callee);
 }

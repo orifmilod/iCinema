@@ -18,9 +18,9 @@ export default function hasProp(props = [], prop = '', options = DEFAULT_OPTIONS
       return !options.spreadStrict;
     }
 
-    const currentProp = options.ignoreCase ?
-      propName(attribute).toUpperCase() :
-      propName(attribute);
+    const currentProp = options.ignoreCase
+      ? propName(attribute).toUpperCase()
+      : propName(attribute);
 
     return propToCheck === currentProp;
   });

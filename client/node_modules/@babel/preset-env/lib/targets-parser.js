@@ -37,8 +37,6 @@ function _semver() {
 
 var _utils = require("./utils");
 
-var _normalizeOptions = require("./normalize-options");
-
 var _builtInModules = _interopRequireDefault(require("../data/built-in-modules.json"));
 
 var _options = require("./options");
@@ -47,12 +45,26 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 const browserslistDefaults = _browserslist().default.defaults;
 
-const validateTargetNames = (validTargets, targets) => {
+const validBrowserslistTargets = [...Object.keys(_browserslist().default.data), ...Object.keys(_browserslist().default.aliases)];
+
+const objectToBrowserslist = object => {
+  return Object.keys(object).reduce((list, targetName) => {
+    if (validBrowserslistTargets.indexOf(targetName) >= 0) {
+      const targetVersion = object[targetName];
+      return list.concat(`${targetName} ${targetVersion}`);
+    }
+
+    return list;
+  }, []);
+};
+
+const validateTargetNames = targets => {
+  const validTargets = Object.keys(_options.TargetNames);
+
   for (const target in targets) {
     if (!_options.TargetNames[target]) {
-      const validOptions = (0, _utils.getValues)(_options.TargetNames);
       throw new Error(`Invalid Option: '${target}' is not a valid target
-        Maybe you meant to use '${(0, _utils.findSuggestion)(validOptions, target)}'?`);
+        Maybe you meant to use '${(0, _utils.findSuggestion)(validTargets, target)}'?`);
     }
   }
 };
@@ -67,7 +79,8 @@ const browserNameMap = {
   ios_saf: "ios",
   node: "node",
   opera: "opera",
-  safari: "safari"
+  safari: "safari",
+  samsung: "samsung"
 };
 
 const isBrowsersQueryValid = browsers => typeof browsers === "string" || Array.isArray(browsers);
@@ -180,7 +193,7 @@ const getTargets = (targets = {}, options = {}) => {
   const shouldSearchForConfig = !options.ignoreBrowserslistConfig && !Object.keys(targets).length;
 
   if (shouldParseBrowsers || shouldSearchForConfig) {
-    _browserslist().default.defaults = (0, _normalizeOptions.objectToBrowserslist)(targets);
+    _browserslist().default.defaults = objectToBrowserslist(targets);
     const browsers = (0, _browserslist().default)(browsersquery, {
       path: options.configPath
     });

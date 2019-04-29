@@ -1,5 +1,3 @@
-import getValue from './index';
-
 /**
  * Extractor function for a ConditionalExpression type value node.
  *
@@ -7,6 +5,8 @@ import getValue from './index';
  * @returns - The extracted value converted to correct type.
  */
 export default function extractValueFromConditionalExpression(value) {
+  // eslint-disable-next-line global-require
+  const getValue = require('./index.js').default;
   const {
     test,
     alternate,

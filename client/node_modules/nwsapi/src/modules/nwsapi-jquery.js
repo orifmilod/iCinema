@@ -102,11 +102,13 @@ NW.Dom.registerSelector(
           source = 'if(/^' + match[1] + '$/i.test(e.type)){' + source + '}';
           break;
         case 'button':
+          source = 'if(/^button$/i.test(e.nodeName)){' + source + '}';
+          break;
         case 'input':
-          source = 'if(e.type||/button/i.test(e.nodeName)){' + source + '}';
+          source = 'if(/^(?:button|input|select|textarea)$/i.test(e.nodeName)){' + source + '}';
           break;
         case 'header':
-          source = 'if(/h[1-6]/i.test(e.nodeName)){' + source + '}';
+          source = 'if(/^h[1-6]$/i.test(e.nodeName)){' + source + '}';
           break;
         case 'hidden':
           source = 'if(!e.offsetWidth&&!e.offsetHeight){' + source + '}';
@@ -115,7 +117,7 @@ NW.Dom.registerSelector(
           source = 'if(e.offsetWidth||e.offsetHeight){' + source + '}';
           break;
         case 'parent':
-          source += 'if(e.firstChild){' + source + '}';
+          source = 'if(e.firstChild){' + source + '}';
           break;
         default:
           status = false;

@@ -1,5 +1,3 @@
-import getValue from './index';
-
 /**
  * Extractor function for a MemberExpression type value node.
  * A member expression is accessing a property on an object `obj.property`.
@@ -9,5 +7,7 @@ import getValue from './index';
  *  and maintaing `obj.property` convention.
  */
 export default function extractValueFromMemberExpression(value) {
+  // eslint-disable-next-line global-require
+  const getValue = require('./index.js').default;
   return `${getValue(value.object)}.${getValue(value.property)}`;
 }

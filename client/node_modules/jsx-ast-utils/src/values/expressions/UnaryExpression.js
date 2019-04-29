@@ -1,5 +1,3 @@
-import getValue from './index';
-
 /**
  * Extractor function for a UnaryExpression type value node.
  * A unary expression is an expression with a unary operator.
@@ -9,6 +7,8 @@ import getValue from './index';
  * @returns - The extracted value converted to correct type.
  */
 export default function extractValueFromUnaryExpression(value) {
+  // eslint-disable-next-line global-require
+  const getValue = require('./index.js').default;
   const { operator, argument } = value;
 
   switch (operator) {

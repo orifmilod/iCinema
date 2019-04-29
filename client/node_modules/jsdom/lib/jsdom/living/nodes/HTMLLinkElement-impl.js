@@ -30,17 +30,14 @@ class HTMLLinkElementImpl extends HTMLElementImpl {
 
   _attach() {
     super._attach();
-
-    if (isExternalResourceLink(this)) {
-      obtainTheResource(this);
-    }
+    maybeFetchAndProcess(this);
   }
 
   _attrModified(name, value, oldValue) {
     super._attrModified(name, value, oldValue);
 
-    if (name === "href" && this._attached && isExternalResourceLink(this)) {
-      obtainTheResource(this);
+    if (name === "href") { // TODO crossorigin="" or type=""
+      maybeFetchAndProcess(this);
     }
 
     if (name === "rel" && this._relList !== undefined) {
@@ -57,7 +54,7 @@ class HTMLLinkElementImpl extends HTMLElementImpl {
   }
 
   set href(value) {
-    this.setAttribute("href", value);
+    this.setAttributeNS(null, "href", value);
   }
 }
 
@@ -65,8 +62,24 @@ module.exports = {
   implementation: HTMLLinkElementImpl
 };
 
-function obtainTheResource(el) {
-  const href = el.getAttribute("href");
+// https://html.spec.whatwg.org/multipage/links.html#link-type-stylesheet
+function maybeFetchAndProcess(el) {
+  if (!isExternalResourceLink(el)) {
+    return;
+  }
+
+  // Browsing-context connected
+  if (!el.isConnected || !el._ownerDocument._defaultView) {
+    return;
+  }
+
+  fetchAndProcess(el);
+}
+
+// https://html.spec.whatwg.org/multipage/semantics.html#default-fetch-and-process-the-linked-resource
+// TODO: refactor into general link-fetching like the spec.
+function fetchAndProcess(el) {
+  const href = el.getAttributeNS(null, "href");
 
   if (href === null || href === "") {
     return;
@@ -76,6 +89,8 @@ function obtainTheResource(el) {
   if (url === null) {
     return;
   }
+
+  // TODO handle crossorigin="", nonce, integrity="", referrerpolicy=""
 
   const serialized = whatwgURL.serializeURL(url);
 

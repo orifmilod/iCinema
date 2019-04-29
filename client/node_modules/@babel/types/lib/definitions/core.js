@@ -114,7 +114,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
       validate: (0, _utils.assertNodeType)("Expression")
     },
     arguments: {
-      validate: (0, _utils.chain)((0, _utils.assertValueType)("array"), (0, _utils.assertEach)((0, _utils.assertNodeType)("Expression", "SpreadElement", "JSXNamespacedName")))
+      validate: (0, _utils.chain)((0, _utils.assertValueType)("array"), (0, _utils.assertEach)((0, _utils.assertNodeType)("Expression", "SpreadElement", "JSXNamespacedName", "ArgumentPlaceholder")))
     },
     optional: {
       validate: (0, _utils.assertOneOf)(true, false),
@@ -242,7 +242,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 });
 const functionCommon = {
   params: {
-    validate: (0, _utils.chain)((0, _utils.assertValueType)("array"), (0, _utils.assertEach)((0, _utils.assertNodeType)("LVal")))
+    validate: (0, _utils.chain)((0, _utils.assertValueType)("array"), (0, _utils.assertEach)((0, _utils.assertNodeType)("Identifier", "Pattern", "RestElement", "TSParameterProperty")))
   },
   generator: {
     default: false,
@@ -311,7 +311,7 @@ const patternLikeCommon = {
 exports.patternLikeCommon = patternLikeCommon;
 (0, _utils.default)("Identifier", {
   builder: ["name"],
-  visitor: ["typeAnnotation"],
+  visitor: ["typeAnnotation", "decorators"],
   aliases: ["Expression", "PatternLike", "LVal", "TSEntityName"],
   fields: Object.assign({}, patternLikeCommon, {
     name: {
@@ -571,6 +571,15 @@ exports.patternLikeCommon = patternLikeCommon;
     }
   },
   aliases: ["Expression"]
+});
+(0, _utils.default)("ParenthesizedExpression", {
+  visitor: ["expression"],
+  aliases: ["Expression", "ExpressionWrapper"],
+  fields: {
+    expression: {
+      validate: (0, _utils.assertNodeType)("Expression")
+    }
+  }
 });
 (0, _utils.default)("SwitchCase", {
   visitor: ["test", "consequent"],

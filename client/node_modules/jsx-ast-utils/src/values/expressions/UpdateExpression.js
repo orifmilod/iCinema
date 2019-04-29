@@ -1,5 +1,3 @@
-import getValue from './index';
-
 /**
  * Extractor function for an UpdateExpression type value node.
  * An update expression is an expression with an update operator.
@@ -9,6 +7,8 @@ import getValue from './index';
  * @returns - The extracted value converted to correct type.
  */
 export default function extractValueFromUpdateExpression(value) {
+  // eslint-disable-next-line global-require
+  const getValue = require('./index.js').default;
   const { operator, argument, prefix } = value;
 
   let val = getValue(argument);

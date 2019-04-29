@@ -6,22 +6,25 @@ const NodeImpl = require("./Node-impl").implementation;
 const idlUtils = require("../generated/utils");
 const NODE_TYPE = require("../node-type");
 const { mixin, memoizeQuery } = require("../../utils");
-const { firstChildWithHTMLLocalName, firstChildWithHTMLLocalNames, firstDescendantWithHTMLLocalName } =
+const { firstChildWithLocalName, firstChildWithLocalNames, firstDescendantWithLocalName } =
   require("../helpers/traversal");
 const whatwgURL = require("whatwg-url");
 const { StyleSheetList } = require("../../level2/style");
 const { domSymbolTree } = require("../helpers/internal-constants");
 const eventAccessors = require("../helpers/create-event-accessor");
 const { asciiLowercase, stripAndCollapseASCIIWhitespace } = require("../helpers/strings");
+const { childTextContent } = require("../helpers/text");
 const { HTML_NS, SVG_NS } = require("../helpers/namespaces");
 const DOMException = require("domexception");
-const HTMLToDOM = require("../../browser/htmltodom");
+const { parseIntoDocument } = require("../../browser/parser");
 const History = require("../generated/History");
 const Location = require("../generated/Location");
 const HTMLCollection = require("../generated/HTMLCollection");
 const NodeList = require("../generated/NodeList");
 const validateName = require("../helpers/validate-names").name;
 const { validateAndExtract } = require("../helpers/validate-names");
+const { fireAnEvent } = require("../helpers/events");
+const { shadowIncludingInclusiveDescendantsIterator } = require("../helpers/shadow-dom");
 
 const GlobalEventHandlersImpl = require("./GlobalEventHandlers-impl").implementation;
 
@@ -125,7 +128,6 @@ class DocumentImpl extends NodeImpl {
     }
 
     this._parsingMode = privateData.options.parsingMode;
-    this._htmlToDom = new HTMLToDOM(privateData.options.parsingMode);
 
     this._implementation = DOMImplementation.createImpl([], {
       ownerDocument: this
@@ -137,6 +139,7 @@ class DocumentImpl extends NodeImpl {
     this._ids = Object.create(null);
     this._attached = true;
     this._currentScript = null;
+    this._pageShowingFlag = false;
     this._cookieJar = privateData.options.cookieJar;
     this._parseOptions = privateData.options.parseOptions;
     this._scriptingDisabled = privateData.options.scriptingDisabled;
@@ -182,7 +185,7 @@ class DocumentImpl extends NodeImpl {
     this._queue = new ResourceQueue({ asyncQueue: this._asyncQueue, paused: false });
     this._deferQueue = new ResourceQueue({ paused: true });
     this._requestManager = new RequestManager();
-    this.readyState = "loading";
+    this.readyState = privateData.options.readyState || "loading";
 
     this._lastFocusedElement = null;
 
@@ -321,6 +324,8 @@ class DocumentImpl extends NodeImpl {
         this.styleSheets.splice(index, 1);
       }
     }
+
+    super._descendantRemoved.apply(this, arguments);
   }
 
   write() {
@@ -364,11 +369,11 @@ class DocumentImpl extends NodeImpl {
         node.innerHTML = text;
       } else {
         clearChildNodes(this);
-        this._htmlToDom.appendToDocument(text, this);
+        parseIntoDocument(text, this);
       }
     } else if (text) {
       clearChildNodes(this);
-      this._htmlToDom.appendToDocument(text, this);
+      parseIntoDocument(text, this);
     }
   }
 
@@ -415,7 +420,7 @@ class DocumentImpl extends NodeImpl {
       element: this,
       query: () => domSymbolTree.treeToArray(this, {
         filter: node => (node._localName === "a" || node._localName === "area") &&
-                        node.hasAttribute("href") &&
+                        node.hasAttributeNS(null, "href") &&
                         node._namespaceURI === HTML_NS
       })
     });
@@ -431,7 +436,7 @@ class DocumentImpl extends NodeImpl {
       element: this,
       query: () => domSymbolTree.treeToArray(this, {
         filter: node => node._localName === "a" &&
-                        node.hasAttribute("name") &&
+                        node.hasAttributeNS(null, "name") &&
                         node._namespaceURI === HTML_NS
       })
     });
@@ -464,13 +469,8 @@ class DocumentImpl extends NodeImpl {
     if (noQueue) {
       this.readyState = "complete";
 
-      const ev = this.createEvent("HTMLEvents");
-      const ev2 = this.createEvent("HTMLEvents");
-      ev.initEvent("DOMContentLoaded", true, false);
-      ev2.initEvent("load", false, false);
-
-      this.dispatchEvent(ev);
-      this.dispatchEvent(ev2);
+      fireAnEvent("DOMContentLoaded", this, undefined, { bubbles: true });
+      fireAnEvent("load", this);
 
       return;
     }
@@ -483,9 +483,7 @@ class DocumentImpl extends NodeImpl {
       function dispatchEvent() {
         // https://html.spec.whatwg.org/#the-end
         doc.readyState = "interactive";
-        const ev = doc.createEvent("HTMLEvents");
-        ev.initEvent("DOMContentLoaded", true, false);
-        doc.dispatchEvent(ev);
+        fireAnEvent("DOMContentLoaded", doc, undefined, { bubbles: true });
       }
 
       return new Promise(resolve => {
@@ -507,11 +505,7 @@ class DocumentImpl extends NodeImpl {
       const doc = this;
       function dispatchEvent() {
         doc.readyState = "complete";
-        const ev = doc.createEvent("HTMLEvents");
-
-        ev.initEvent("load", false, false);
-
-        doc.dispatchEvent(ev);
+        fireAnEvent("load", doc);
       }
 
       return new Promise(resolve => {
@@ -537,39 +531,65 @@ class DocumentImpl extends NodeImpl {
     return NodeList.createImpl([], {
       element: this,
       query: () => domSymbolTree.treeToArray(this, {
-        filter: node => node.getAttribute && node.getAttribute("name") === elementName
+        filter: node => node.getAttributeNS && node.getAttributeNS(null, "name") === elementName
       })
     });
   }
 
   get title() {
-    // TODO SVG
+    const { documentElement } = this;
+    let value = "";
 
-    const titleElement = firstDescendantWithHTMLLocalName(this, "title");
-    let value = titleElement !== null ? titleElement.textContent : "";
+    if (documentElement && documentElement._localName === "svg") {
+      const svgTitleElement = firstChildWithLocalName(documentElement, "title", SVG_NS);
+
+      if (svgTitleElement) {
+        value = childTextContent(svgTitleElement);
+      }
+    } else {
+      const titleElement = firstDescendantWithLocalName(this, "title");
+
+      if (titleElement) {
+        value = childTextContent(titleElement);
+      }
+    }
+
     value = stripAndCollapseASCIIWhitespace(value);
+
     return value;
   }
 
-  set title(val) {
-    // TODO SVG
-
-    const titleElement = firstDescendantWithHTMLLocalName(this, "title");
-    const headElement = this.head;
-
-    if (titleElement === null && headElement === null) {
-      return;
-    }
-
+  set title(value) {
+    const { documentElement } = this;
     let element;
-    if (titleElement !== null) {
-      element = titleElement;
-    } else {
-      element = this.createElement("title");
-      headElement._append(element);
-    }
 
-    element.textContent = val;
+    if (documentElement && documentElement._localName === "svg") {
+      element = firstChildWithLocalName(documentElement, "title", SVG_NS);
+
+      if (!element) {
+        element = this.createElementNS(SVG_NS, "title");
+
+        this._insert(element, documentElement.firstChild);
+      }
+
+      element.textContent = value;
+    } else if (documentElement && documentElement._namespaceURI === HTML_NS) {
+      const titleElement = firstDescendantWithLocalName(this, "title");
+      const headElement = this.head;
+
+      if (titleElement === null && headElement === null) {
+        return;
+      }
+
+      if (titleElement !== null) {
+        element = titleElement;
+      } else {
+        element = this.createElement("title");
+        headElement._append(element);
+      }
+
+      element.textContent = value;
+    }
   }
 
   get dir() {
@@ -582,7 +602,7 @@ class DocumentImpl extends NodeImpl {
   }
 
   get head() {
-    return this.documentElement ? firstChildWithHTMLLocalName(this.documentElement, "head") : null;
+    return this.documentElement ? firstChildWithLocalName(this.documentElement, "head") : null;
   }
 
   get body() {
@@ -592,7 +612,7 @@ class DocumentImpl extends NodeImpl {
       return null;
     }
 
-    return firstChildWithHTMLLocalNames(this.documentElement, new Set(["body", "frameset"]));
+    return firstChildWithLocalNames(this.documentElement, new Set(["body", "frameset"]));
   }
 
   set body(value) {
@@ -760,6 +780,7 @@ class DocumentImpl extends NodeImpl {
     return clone(node, this, deep);
   }
 
+  // https://dom.spec.whatwg.org/#dom-document-adoptnode
   adoptNode(node) {
     if (node.nodeType === NODE_TYPE.DOCUMENT_NODE) {
       throw new DOMException("Cannot adopt a document node", "NotSupportedError");
@@ -767,15 +788,32 @@ class DocumentImpl extends NodeImpl {
       throw new DOMException("Cannot adopt a shadow root", "HierarchyRequestError");
     }
 
-    if (node.parentNode) {
-      node.parentNode._remove(node);
-    }
-    node._ownerDocument = this;
-    for (const descendant of domSymbolTree.treeIterator(node)) {
-      descendant._ownerDocument = this;
-    }
+    this._adoptNode(node);
 
     return node;
+  }
+
+  // https://dom.spec.whatwg.org/#concept-node-adopt
+  _adoptNode(node) {
+    const newDocument = this;
+    const oldDocument = node._ownerDocument;
+
+    const parent = domSymbolTree.parent(node);
+    if (parent) {
+      parent._remove(node);
+    }
+
+    if (oldDocument !== newDocument) {
+      for (const inclusiveDescendant of shadowIncludingInclusiveDescendantsIterator(node)) {
+        inclusiveDescendant._ownerDocument = newDocument;
+      }
+
+      for (const inclusiveDescendant of shadowIncludingInclusiveDescendantsIterator(node)) {
+        if (inclusiveDescendant._adoptingSteps) {
+          inclusiveDescendant._adoptingSteps(oldDocument);
+        }
+      }
+    }
   }
 
   get cookie() {

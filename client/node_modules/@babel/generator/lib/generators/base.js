@@ -8,15 +8,9 @@ exports.Program = Program;
 exports.BlockStatement = BlockStatement;
 exports.Noop = Noop;
 exports.Directive = Directive;
+exports.DirectiveLiteral = DirectiveLiteral;
 exports.InterpreterDirective = InterpreterDirective;
-Object.defineProperty(exports, "DirectiveLiteral", {
-  enumerable: true,
-  get: function () {
-    return _types.StringLiteral;
-  }
-});
-
-var _types = require("./types");
+exports.Placeholder = Placeholder;
 
 function File(node) {
   if (node.program) {
@@ -64,6 +58,40 @@ function Directive(node) {
   this.semicolon();
 }
 
+const unescapedSingleQuoteRE = /(?:^|[^\\])(?:\\\\)*'/;
+const unescapedDoubleQuoteRE = /(?:^|[^\\])(?:\\\\)*"/;
+
+function DirectiveLiteral(node) {
+  const raw = this.getPossibleRaw(node);
+
+  if (raw != null) {
+    this.token(raw);
+    return;
+  }
+
+  const {
+    value
+  } = node;
+
+  if (!unescapedDoubleQuoteRE.test(value)) {
+    this.token(`"${value}"`);
+  } else if (!unescapedSingleQuoteRE.test(value)) {
+    this.token(`'${value}'`);
+  } else {
+    throw new Error("Malformed AST: it is not possible to print a directive containing" + " both unescaped single and double quotes.");
+  }
+}
+
 function InterpreterDirective(node) {
   this.token(`#!${node.value}\n`);
+}
+
+function Placeholder(node) {
+  this.token("%%");
+  this.print(node.name);
+  this.token("%%");
+
+  if (node.expectedNode === "Statement") {
+    this.semicolon();
+  }
 }

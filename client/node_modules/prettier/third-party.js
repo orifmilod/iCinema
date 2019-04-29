@@ -2,141 +2,12 @@
 
 function _interopDefault (ex) { return (ex && (typeof ex === 'object') && 'default' in ex) ? ex['default'] : ex; }
 
-var stream = _interopDefault(require('stream'));
 var os = _interopDefault(require('os'));
 var path = _interopDefault(require('path'));
 var util = _interopDefault(require('util'));
+var module$1 = _interopDefault(require('module'));
 var fs = _interopDefault(require('fs'));
-
-function commonjsRequire () {
-	throw new Error('Dynamic requires are not currently supported by rollup-plugin-commonjs');
-}
-
-
-
-function createCommonjsModule(fn, module) {
-	return module = { exports: {} }, fn(module, module.exports), module.exports;
-}
-
-var bufferStream = createCommonjsModule(function (module) {
-  'use strict';
-
-  var PassThrough = stream.PassThrough;
-
-  module.exports = function (opts) {
-    opts = Object.assign({}, opts);
-    var array = opts.array;
-    var encoding = opts.encoding;
-    var buffer = encoding === 'buffer';
-    var objectMode = false;
-
-    if (array) {
-      objectMode = !(encoding || buffer);
-    } else {
-      encoding = encoding || 'utf8';
-    }
-
-    if (buffer) {
-      encoding = null;
-    }
-
-    var len = 0;
-    var ret = [];
-    var stream$$1 = new PassThrough({
-      objectMode
-    });
-
-    if (encoding) {
-      stream$$1.setEncoding(encoding);
-    }
-
-    stream$$1.on('data', function (chunk) {
-      ret.push(chunk);
-
-      if (objectMode) {
-        len = ret.length;
-      } else {
-        len += chunk.length;
-      }
-    });
-
-    stream$$1.getBufferedValue = function () {
-      if (array) {
-        return ret;
-      }
-
-      return buffer ? Buffer.concat(ret, len) : ret.join('');
-    };
-
-    stream$$1.getBufferedLength = function () {
-      return len;
-    };
-
-    return stream$$1;
-  };
-});
-
-function getStream(inputStream, opts) {
-  if (!inputStream) {
-    return Promise.reject(new Error('Expected a stream'));
-  }
-
-  opts = Object.assign({
-    maxBuffer: Infinity
-  }, opts);
-  var maxBuffer = opts.maxBuffer;
-  var stream$$1;
-  var clean;
-  var p = new Promise(function (resolve, reject) {
-    var error = function error(err) {
-      if (err) {
-        // null check
-        err.bufferedData = stream$$1.getBufferedValue();
-      }
-
-      reject(err);
-    };
-
-    stream$$1 = bufferStream(opts);
-    inputStream.once('error', error);
-    inputStream.pipe(stream$$1);
-    stream$$1.on('data', function () {
-      if (stream$$1.getBufferedLength() > maxBuffer) {
-        reject(new Error('maxBuffer exceeded'));
-      }
-    });
-    stream$$1.once('error', error);
-    stream$$1.on('end', resolve);
-
-    clean = function clean() {
-      // some streams doesn't implement the `stream.Readable` interface correctly
-      if (inputStream.unpipe) {
-        inputStream.unpipe(stream$$1);
-      }
-    };
-  });
-  p.then(clean, clean);
-  return p.then(function () {
-    return stream$$1.getBufferedValue();
-  });
-}
-
-var getStream_1 = getStream;
-
-var buffer = function buffer(stream$$1, opts) {
-  return getStream(stream$$1, Object.assign({}, opts, {
-    encoding: 'buffer'
-  }));
-};
-
-var array = function array(stream$$1, opts) {
-  return getStream(stream$$1, Object.assign({}, opts, {
-    array: true
-  }));
-};
-
-getStream_1.buffer = buffer;
-getStream_1.array = array;
+var stream = _interopDefault(require('stream'));
 
 function _classCallCheck(instance, Constructor) {
   if (!(instance instanceof Constructor)) {
@@ -345,6 +216,16 @@ function _optionalCallableProperty(obj, name) {
   return value;
 }
 
+function commonjsRequire () {
+	throw new Error('Dynamic requires are not currently supported by rollup-plugin-commonjs');
+}
+
+
+
+function createCommonjsModule(fn, module) {
+	return module = { exports: {} }, fn(module, module.exports), module.exports;
+}
+
 var isArrayish = function isArrayish(obj) {
   if (!obj) {
     return false;
@@ -396,17 +277,25 @@ var errorEx = function errorEx(name, properties) {
         message = v;
       }
     });
+    var overwrittenStack = null;
     var stackDescriptor = Object.getOwnPropertyDescriptor(this, 'stack');
     var stackGetter = stackDescriptor.get;
     var stackValue = stackDescriptor.value;
     delete stackDescriptor.value;
     delete stackDescriptor.writable;
 
+    stackDescriptor.set = function (newstack) {
+      overwrittenStack = newstack;
+    };
+
     stackDescriptor.get = function () {
-      var stack = stackGetter ? stackGetter.call(this).split(/\r?\n+/g) : stackValue.split(/\r?\n+/g); // starting in Node 7, the stack builder caches the message.
+      var stack = (overwrittenStack || (stackGetter ? stackGetter.call(this) : stackValue)).split(/\r?\n+/g); // starting in Node 7, the stack builder caches the message.
       // just replace it.
 
-      stack[0] = this.name + ': ' + this.message;
+      if (!overwrittenStack) {
+        stack[0] = this.name + ': ' + this.message;
+      }
+
       var lineCount = 1;
 
       for (var key in properties) {
@@ -1107,17 +996,19 @@ var int_1 = new type('tag:yaml.org,2002:int', {
   construct: constructYamlInteger,
   predicate: isInteger,
   represent: {
-    binary: function binary(object) {
-      return '0b' + object.toString(2);
+    binary: function binary(obj) {
+      return obj >= 0 ? '0b' + obj.toString(2) : '-0b' + obj.toString(2).slice(1);
     },
-    octal: function octal(object) {
-      return '0' + object.toString(8);
+    octal: function octal(obj) {
+      return obj >= 0 ? '0' + obj.toString(8) : '-0' + obj.toString(8).slice(1);
     },
-    decimal: function decimal(object) {
-      return object.toString(10);
+    decimal: function decimal(obj) {
+      return obj.toString(10);
     },
-    hexadecimal: function hexadecimal(object) {
-      return '0x' + object.toString(16).toUpperCase();
+
+    /* eslint-disable max-len */
+    hexadecimal: function hexadecimal(obj) {
+      return obj >= 0 ? '0x' + obj.toString(16).toUpperCase() : '-0x' + obj.toString(16).toUpperCase().slice(1);
     }
   },
   defaultStyle: 'decimal',
@@ -1710,7 +1601,7 @@ function resolveJavascriptFunction(data) {
       range: true
     });
 
-    if (ast.type !== 'Program' || ast.body.length !== 1 || ast.body[0].type !== 'ExpressionStatement' || ast.body[0].expression.type !== 'FunctionExpression') {
+    if (ast.type !== 'Program' || ast.body.length !== 1 || ast.body[0].type !== 'ExpressionStatement' || ast.body[0].expression.type !== 'ArrowFunctionExpression' && ast.body[0].expression.type !== 'FunctionExpression') {
       return false;
     }
 
@@ -1729,7 +1620,7 @@ function constructJavascriptFunction(data) {
       params = [],
       body;
 
-  if (ast.type !== 'Program' || ast.body.length !== 1 || ast.body[0].type !== 'ExpressionStatement' || ast.body[0].expression.type !== 'FunctionExpression') {
+  if (ast.type !== 'Program' || ast.body.length !== 1 || ast.body[0].type !== 'ExpressionStatement' || ast.body[0].expression.type !== 'ArrowFunctionExpression' && ast.body[0].expression.type !== 'FunctionExpression') {
     throw new Error('Failed to resolve function');
   }
 
@@ -1739,9 +1630,16 @@ function constructJavascriptFunction(data) {
   body = ast.body[0].expression.body.range; // Esprima's ranges include the first '{' and the last '}' characters on
   // function expressions. So cut them out.
 
+  if (ast.body[0].expression.body.type === 'BlockStatement') {
+    /*eslint-disable no-new-func*/
+    return new Function(params, source.slice(body[0] + 1, body[1] - 1));
+  } // ES6 arrow functions can omit the BlockStatement. In that case, just return
+  // the body.
+
   /*eslint-disable no-new-func*/
 
-  return new Function(params, source.slice(body[0] + 1, body[1] - 1));
+
+  return new Function(params, 'return ' + source.slice(body[0], body[1]));
 }
 
 function representJavascriptFunction(object
@@ -3677,6 +3575,12 @@ function isPlainSafeFirst(c) {
   && c !== CHAR_MINUS && c !== CHAR_QUESTION && c !== CHAR_COLON && c !== CHAR_COMMA && c !== CHAR_LEFT_SQUARE_BRACKET && c !== CHAR_RIGHT_SQUARE_BRACKET && c !== CHAR_LEFT_CURLY_BRACKET && c !== CHAR_RIGHT_CURLY_BRACKET // | “#” | “&” | “*” | “!” | “|” | “>” | “'” | “"”
   && c !== CHAR_SHARP && c !== CHAR_AMPERSAND && c !== CHAR_ASTERISK && c !== CHAR_EXCLAMATION && c !== CHAR_VERTICAL_LINE && c !== CHAR_GREATER_THAN && c !== CHAR_SINGLE_QUOTE && c !== CHAR_DOUBLE_QUOTE // | “%” | “@” | “`”)
   && c !== CHAR_PERCENT && c !== CHAR_COMMERCIAL_AT && c !== CHAR_GRAVE_ACCENT;
+} // Determines whether block indentation indicator is required.
+
+
+function needIndentIndicator(string) {
+  var leadingSpaceRe = /^\n* /;
+  return leadingSpaceRe.test(string);
 }
 
 var STYLE_PLAIN = 1;
@@ -3748,7 +3652,7 @@ function chooseScalarStyle(string, singleLineOnly, indentPerLevel, lineWidth, te
   } // Edge case: block indentation indicator can only have one digit.
 
 
-  if (string[0] === ' ' && indentPerLevel > 9) {
+  if (indentPerLevel > 9 && needIndentIndicator(string)) {
     return STYLE_DOUBLE;
   } // At this point we know block styles are valid.
   // Prefer literal style unless we want to fold.
@@ -3815,7 +3719,7 @@ function writeScalar(state, string, level, iskey) {
 
 
 function blockHeader(string, indentPerLevel) {
-  var indentIndicator = string[0] === ' ' ? String(indentPerLevel) : ''; // note the special case: the string '\n' counts as a "trailing" empty line.
+  var indentIndicator = needIndentIndicator(string) ? String(indentPerLevel) : ''; // note the special case: the string '\n' counts as a "trailing" empty line.
 
   var clip = string[string.length - 1] === '\n';
   var keep = clip && (string[string.length - 2] === '\n' || string === '\n');
@@ -4324,9 +4228,118 @@ var jsYaml$2 = {
 
 var jsYaml = jsYaml$2;
 
-function loadJs(filepath) {
-  var result = require(filepath);
+var resolveFrom_1 = createCommonjsModule(function (module) {
+  'use strict';
 
+  var resolveFrom = function resolveFrom(fromDir, moduleId, silent) {
+    if (typeof fromDir !== 'string') {
+      throw new TypeError(`Expected \`fromDir\` to be of type \`string\`, got \`${typeof fromDir}\``);
+    }
+
+    if (typeof moduleId !== 'string') {
+      throw new TypeError(`Expected \`moduleId\` to be of type \`string\`, got \`${typeof moduleId}\``);
+    }
+
+    fromDir = path.resolve(fromDir);
+    var fromFile = path.join(fromDir, 'noop.js');
+
+    var resolveFileName = function resolveFileName() {
+      return module$1._resolveFilename(moduleId, {
+        id: fromFile,
+        filename: fromFile,
+        paths: module$1._nodeModulePaths(fromDir)
+      });
+    };
+
+    if (silent) {
+      try {
+        return resolveFileName();
+      } catch (err) {
+        return null;
+      }
+    }
+
+    return resolveFileName();
+  };
+
+  module.exports = function (fromDir, moduleId) {
+    return resolveFrom(fromDir, moduleId);
+  };
+
+  module.exports.silent = function (fromDir, moduleId) {
+    return resolveFrom(fromDir, moduleId, true);
+  };
+});
+
+var callsites = createCommonjsModule(function (module) {
+  'use strict';
+
+  module.exports = function () {
+    var _ = Error.prepareStackTrace;
+
+    Error.prepareStackTrace = function (_, stack) {
+      return stack;
+    };
+
+    var stack = new Error().stack.slice(1);
+    Error.prepareStackTrace = _;
+    return stack;
+  };
+});
+
+var callerCallsite = createCommonjsModule(function (module) {
+  'use strict';
+
+  module.exports = function () {
+    var c = callsites();
+    var caller;
+
+    for (var i = 0; i < c.length; i++) {
+      var hasReceiver = c[i].getTypeName() !== null;
+
+      if (hasReceiver) {
+        caller = i;
+        break;
+      }
+    }
+
+    return c[caller];
+  };
+});
+
+var callerPath = function callerPath() {
+  return callerCallsite().getFileName();
+};
+
+var importFresh = createCommonjsModule(function (module) {
+  'use strict';
+
+  module.exports = function (moduleId) {
+    if (typeof moduleId !== 'string') {
+      throw new TypeError('Expected a string');
+    }
+
+    var filePath = resolveFrom_1(path.dirname(callerPath()), moduleId); // Delete itself from module parent
+
+    if (require.cache[filePath] && require.cache[filePath].parent) {
+      var i = require.cache[filePath].parent.children.length;
+
+      while (i--) {
+        if (require.cache[filePath].parent.children[i].id === filePath) {
+          require.cache[filePath].parent.children.splice(i, 1);
+        }
+      }
+    } // Delete module from cache
+
+
+    delete require.cache[filePath]; // Return fresh module
+
+    return require(filePath);
+  };
+});
+
+function loadJs(filepath) {
+  var result = importFresh(filepath);
   return result;
 }
 
@@ -4963,11 +4976,351 @@ var findParentDir$1 = createCommonjsModule(function (module, exports) {
   };
 });
 
+var bufferStream = createCommonjsModule(function (module) {
+  'use strict';
+
+  var PassThrough = stream.PassThrough;
+
+  module.exports = function (opts) {
+    opts = Object.assign({}, opts);
+    var array = opts.array;
+    var encoding = opts.encoding;
+    var buffer = encoding === 'buffer';
+    var objectMode = false;
+
+    if (array) {
+      objectMode = !(encoding || buffer);
+    } else {
+      encoding = encoding || 'utf8';
+    }
+
+    if (buffer) {
+      encoding = null;
+    }
+
+    var len = 0;
+    var ret = [];
+    var stream$$1 = new PassThrough({
+      objectMode
+    });
+
+    if (encoding) {
+      stream$$1.setEncoding(encoding);
+    }
+
+    stream$$1.on('data', function (chunk) {
+      ret.push(chunk);
+
+      if (objectMode) {
+        len = ret.length;
+      } else {
+        len += chunk.length;
+      }
+    });
+
+    stream$$1.getBufferedValue = function () {
+      if (array) {
+        return ret;
+      }
+
+      return buffer ? Buffer.concat(ret, len) : ret.join('');
+    };
+
+    stream$$1.getBufferedLength = function () {
+      return len;
+    };
+
+    return stream$$1;
+  };
+});
+
+function getStream(inputStream, opts) {
+  if (!inputStream) {
+    return Promise.reject(new Error('Expected a stream'));
+  }
+
+  opts = Object.assign({
+    maxBuffer: Infinity
+  }, opts);
+  var maxBuffer = opts.maxBuffer;
+  var stream$$1;
+  var clean;
+  var p = new Promise(function (resolve, reject) {
+    var error = function error(err) {
+      if (err) {
+        // null check
+        err.bufferedData = stream$$1.getBufferedValue();
+      }
+
+      reject(err);
+    };
+
+    stream$$1 = bufferStream(opts);
+    inputStream.once('error', error);
+    inputStream.pipe(stream$$1);
+    stream$$1.on('data', function () {
+      if (stream$$1.getBufferedLength() > maxBuffer) {
+        reject(new Error('maxBuffer exceeded'));
+      }
+    });
+    stream$$1.once('error', error);
+    stream$$1.on('end', resolve);
+
+    clean = function clean() {
+      // some streams doesn't implement the `stream.Readable` interface correctly
+      if (inputStream.unpipe) {
+        inputStream.unpipe(stream$$1);
+      }
+    };
+  });
+  p.then(clean, clean);
+  return p.then(function () {
+    return stream$$1.getBufferedValue();
+  });
+}
+
+var getStream_1 = getStream;
+
+var buffer = function buffer(stream$$1, opts) {
+  return getStream(stream$$1, Object.assign({}, opts, {
+    encoding: 'buffer'
+  }));
+};
+
+var array = function array(stream$$1, opts) {
+  return getStream(stream$$1, Object.assign({}, opts, {
+    array: true
+  }));
+};
+
+getStream_1.buffer = buffer;
+getStream_1.array = array;
+
+var vendors = [{
+  "name": "AppVeyor",
+  "constant": "APPVEYOR",
+  "env": "APPVEYOR",
+  "pr": "APPVEYOR_PULL_REQUEST_NUMBER"
+}, {
+  "name": "Azure Pipelines",
+  "constant": "AZURE_PIPELINES",
+  "env": "SYSTEM_TEAMFOUNDATIONCOLLECTIONURI",
+  "pr": "SYSTEM_PULLREQUEST_PULLREQUESTID"
+}, {
+  "name": "Bamboo",
+  "constant": "BAMBOO",
+  "env": "bamboo_planKey"
+}, {
+  "name": "Bitbucket Pipelines",
+  "constant": "BITBUCKET",
+  "env": "BITBUCKET_COMMIT",
+  "pr": "BITBUCKET_PR_ID"
+}, {
+  "name": "Bitrise",
+  "constant": "BITRISE",
+  "env": "BITRISE_IO",
+  "pr": "BITRISE_PULL_REQUEST"
+}, {
+  "name": "Buddy",
+  "constant": "BUDDY",
+  "env": "BUDDY_WORKSPACE_ID",
+  "pr": "BUDDY_EXECUTION_PULL_REQUEST_ID"
+}, {
+  "name": "Buildkite",
+  "constant": "BUILDKITE",
+  "env": "BUILDKITE",
+  "pr": {
+    "env": "BUILDKITE_PULL_REQUEST",
+    "ne": "false"
+  }
+}, {
+  "name": "CircleCI",
+  "constant": "CIRCLE",
+  "env": "CIRCLECI",
+  "pr": "CIRCLE_PULL_REQUEST"
+}, {
+  "name": "Cirrus CI",
+  "constant": "CIRRUS",
+  "env": "CIRRUS_CI",
+  "pr": "CIRRUS_PR"
+}, {
+  "name": "AWS CodeBuild",
+  "constant": "CODEBUILD",
+  "env": "CODEBUILD_BUILD_ARN"
+}, {
+  "name": "Codeship",
+  "constant": "CODESHIP",
+  "env": {
+    "CI_NAME": "codeship"
+  }
+}, {
+  "name": "Drone",
+  "constant": "DRONE",
+  "env": "DRONE",
+  "pr": {
+    "DRONE_BUILD_EVENT": "pull_request"
+  }
+}, {
+  "name": "dsari",
+  "constant": "DSARI",
+  "env": "DSARI"
+}, {
+  "name": "GitLab CI",
+  "constant": "GITLAB",
+  "env": "GITLAB_CI"
+}, {
+  "name": "GoCD",
+  "constant": "GOCD",
+  "env": "GO_PIPELINE_LABEL"
+}, {
+  "name": "Hudson",
+  "constant": "HUDSON",
+  "env": "HUDSON_URL"
+}, {
+  "name": "Jenkins",
+  "constant": "JENKINS",
+  "env": ["JENKINS_URL", "BUILD_ID"],
+  "pr": {
+    "any": ["ghprbPullId", "CHANGE_ID"]
+  }
+}, {
+  "name": "Magnum CI",
+  "constant": "MAGNUM",
+  "env": "MAGNUM"
+}, {
+  "name": "Netlify CI",
+  "constant": "NETLIFY",
+  "env": "NETLIFY_BUILD_BASE",
+  "pr": {
+    "env": "PULL_REQUEST",
+    "ne": "false"
+  }
+}, {
+  "name": "Sail CI",
+  "constant": "SAIL",
+  "env": "SAILCI",
+  "pr": "SAIL_PULL_REQUEST_NUMBER"
+}, {
+  "name": "Semaphore",
+  "constant": "SEMAPHORE",
+  "env": "SEMAPHORE",
+  "pr": "PULL_REQUEST_NUMBER"
+}, {
+  "name": "Shippable",
+  "constant": "SHIPPABLE",
+  "env": "SHIPPABLE",
+  "pr": {
+    "IS_PULL_REQUEST": "true"
+  }
+}, {
+  "name": "Solano CI",
+  "constant": "SOLANO",
+  "env": "TDDIUM",
+  "pr": "TDDIUM_PR_ID"
+}, {
+  "name": "Strider CD",
+  "constant": "STRIDER",
+  "env": "STRIDER"
+}, {
+  "name": "TaskCluster",
+  "constant": "TASKCLUSTER",
+  "env": ["TASK_ID", "RUN_ID"]
+}, {
+  "name": "TeamCity",
+  "constant": "TEAMCITY",
+  "env": "TEAMCITY_VERSION"
+}, {
+  "name": "Travis CI",
+  "constant": "TRAVIS",
+  "env": "TRAVIS",
+  "pr": {
+    "env": "TRAVIS_PULL_REQUEST",
+    "ne": "false"
+  }
+}];
+
+var vendors$1 = Object.freeze({
+	default: vendors
+});
+
+var vendors$2 = ( vendors$1 && vendors ) || vendors$1;
+
+var ciInfo = createCommonjsModule(function (module, exports) {
+  'use strict';
+
+  var env = process.env; // Used for testing only
+
+  Object.defineProperty(exports, '_vendors', {
+    value: vendors$2.map(function (v) {
+      return v.constant;
+    })
+  });
+  exports.name = null;
+  exports.isPR = null;
+  vendors$2.forEach(function (vendor) {
+    var envs = Array.isArray(vendor.env) ? vendor.env : [vendor.env];
+    var isCI = envs.every(function (obj) {
+      return checkEnv(obj);
+    });
+    exports[vendor.constant] = isCI;
+
+    if (isCI) {
+      exports.name = vendor.name;
+
+      switch (typeof vendor.pr) {
+        case 'string':
+          // "pr": "CIRRUS_PR"
+          exports.isPR = !!env[vendor.pr];
+          break;
+
+        case 'object':
+          if ('env' in vendor.pr) {
+            // "pr": { "env": "BUILDKITE_PULL_REQUEST", "ne": "false" }
+            exports.isPR = vendor.pr.env in env && env[vendor.pr.env] !== vendor.pr.ne;
+          } else if ('any' in vendor.pr) {
+            // "pr": { "any": ["ghprbPullId", "CHANGE_ID"] }
+            exports.isPR = vendor.pr.any.some(function (key) {
+              return !!env[key];
+            });
+          } else {
+            // "pr": { "DRONE_BUILD_EVENT": "pull_request" }
+            exports.isPR = checkEnv(vendor.pr);
+          }
+
+          break;
+
+        default:
+          // PR detection not supported for this vendor
+          exports.isPR = null;
+      }
+    }
+  });
+  exports.isCI = !!(env.CI || // Travis CI, CircleCI, Cirrus CI, Gitlab CI, Appveyor, CodeShip, dsari
+  env.CONTINUOUS_INTEGRATION || // Travis CI, Cirrus CI
+  env.BUILD_NUMBER || // Jenkins, TeamCity
+  env.RUN_ID || // TaskCluster, dsari
+  exports.name || false);
+
+  function checkEnv(obj) {
+    if (typeof obj === 'string') return !!env[obj];
+    return Object.keys(obj).every(function (k) {
+      return env[k] === obj[k];
+    });
+  }
+});
+
+var isCi = ciInfo.isCI;
+
 var findParentDir = findParentDir$1.sync;
 var thirdParty = {
-  getStream: getStream_1,
   cosmiconfig: dist,
-  findParentDir
+  findParentDir,
+  getStream: getStream_1,
+  isCI:
+  /* istanbul ignore next */
+  function isCI() {
+    return isCi;
+  }
 };
 
 module.exports = thirdParty;

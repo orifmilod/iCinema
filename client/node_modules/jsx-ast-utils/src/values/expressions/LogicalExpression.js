@@ -1,5 +1,3 @@
-import getValue from './index';
-
 /**
  * Extractor function for a LogicalExpression type value node.
  * A logical expression is `a && b` or `a || b`, so we evaluate both sides
@@ -9,6 +7,8 @@ import getValue from './index';
  * @returns - The extracted value converted to correct type.
  */
 export default function extractValueFromLogicalExpression(value) {
+  // eslint-disable-next-line global-require
+  const getValue = require('./index.js').default;
   const { operator, left, right } = value;
   const leftVal = getValue(left);
   const rightVal = getValue(right);

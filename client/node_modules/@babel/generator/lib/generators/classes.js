@@ -8,6 +8,7 @@ exports.ClassBody = ClassBody;
 exports.ClassProperty = ClassProperty;
 exports.ClassPrivateProperty = ClassPrivateProperty;
 exports.ClassMethod = ClassMethod;
+exports.ClassPrivateMethod = ClassPrivateMethod;
 exports._classMethodHead = _classMethodHead;
 
 function t() {
@@ -154,6 +155,13 @@ function ClassPrivateProperty(node) {
 }
 
 function ClassMethod(node) {
+  this._classMethodHead(node);
+
+  this.space();
+  this.print(node.body, node);
+}
+
+function ClassPrivateMethod(node) {
   this._classMethodHead(node);
 
   this.space();

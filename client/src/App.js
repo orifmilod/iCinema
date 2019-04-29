@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 
 import { Route, Redirect, Switch, BrowserRouter as Router} from 'react-router-dom';
+
 import Movies from './components/movies';
 import Rentals from './components/rentals';
 import Customers from './components/customers';
@@ -24,8 +25,7 @@ class App extends Component {
             <Navbar/>
             <Switch> 
                 
-
-              <Route path="/movies/new" component={AddMovieForm}/>
+              <Route exact path="/movies/new" component={AddMovieForm}/>
               <Route exact path="/login" component={LoginForm}/>
               <Route path="/resigter" component={RegisterForm}/>
               <Route path="/movies" exact component={Movies}/> 

@@ -11,12 +11,10 @@ const MIMEType = require("whatwg-mimetype");
 const idlUtils = require("./jsdom/living/generated/utils.js");
 const VirtualConsole = require("./jsdom/virtual-console.js");
 const Window = require("./jsdom/browser/Window.js");
+const { parseIntoDocument } = require("./jsdom/browser/parser");
 const { fragmentSerialization } = require("./jsdom/living/domparsing/serialization.js");
 const ResourceLoader = require("./jsdom/browser/resources/resource-loader.js");
 const NoOpResourceLoader = require("./jsdom/browser/resources/no-op-resource-loader.js");
-
-// This symbol allows us to smuggle a non-public option through to the JSDOM constructor, for use by JSDOM.fromURL.
-const transportLayerEncodingLabelHiddenOption = Symbol("transportLayerEncodingLabel");
 
 class CookieJar extends toughCookie.CookieJar {
   constructor(store, options) {
@@ -30,9 +28,10 @@ let sharedFragmentDocument = null;
 
 class JSDOM {
   constructor(input, options = {}) {
-    const { html, encoding } = normalizeHTML(input, options[transportLayerEncodingLabelHiddenOption]);
+    const mimeType = new MIMEType(options.contentType === undefined ? "text/html" : options.contentType);
+    const { html, encoding } = normalizeHTML(input, mimeType);
 
-    options = transformOptions(options, encoding);
+    options = transformOptions(options, encoding, mimeType);
 
     this[window] = new Window(options.windowOptions);
 
@@ -40,8 +39,8 @@ class JSDOM {
 
     options.beforeParse(this[window]._globalProxy);
 
-    // TODO NEWAPI: this is still pretty hacky. It's also different than jsdom.jsdom. Does it work? Can it be better?
-    documentImpl._htmlToDom.appendToDocument(html, documentImpl);
+    parseIntoDocument(html, documentImpl);
+
     documentImpl.close();
   }
 
@@ -99,7 +98,7 @@ class JSDOM {
     }
   }
 
-  static fragment(string) {
+  static fragment(string = "") {
     if (!sharedFragmentDocument) {
       sharedFragmentDocument = (new JSDOM()).window.document;
     }
@@ -129,17 +128,10 @@ class JSDOM {
       return req.then(body => {
         const res = req.response;
 
-        let transportLayerEncodingLabel;
-        if ("content-type" in res.headers) {
-          const mimeType = new MIMEType(res.headers["content-type"]);
-          transportLayerEncodingLabel = mimeType.parameters.get("charset");
-        }
-
         options = Object.assign(options, {
           url: req.href + parsedURL.hash,
           contentType: res.headers["content-type"],
-          referrer: req.getHeader("referer"),
-          [transportLayerEncodingLabelHiddenOption]: transportLayerEncodingLabel
+          referrer: req.getHeader("referer")
         });
 
         return new JSDOM(body, options);
@@ -190,7 +182,7 @@ function normalizeFromFileOptions(filename, options) {
 
   if (normalized.contentType === undefined) {
     const extname = path.extname(filename);
-    if (extname === ".xhtml" || extname === ".xml") {
+    if (extname === ".xhtml" || extname === ".xht" || extname === ".xml") {
       normalized.contentType = "application/xhtml+xml";
     }
   }
@@ -202,7 +194,7 @@ function normalizeFromFileOptions(filename, options) {
   return normalized;
 }
 
-function transformOptions(options, encoding) {
+function transformOptions(options, encoding, mimeType) {
   const transformed = {
     windowOptions: {
       // Defaults
@@ -226,16 +218,13 @@ function transformOptions(options, encoding) {
     beforeParse() { }
   };
 
-  if (options.contentType !== undefined) {
-    const mimeType = new MIMEType(options.contentType);
-
-    if (!mimeType.isHTML() && !mimeType.isXML()) {
-      throw new RangeError(`The given content type of "${options.contentType}" was not a HTML or XML content type`);
-    }
-
-    transformed.windowOptions.contentType = mimeType.essence;
-    transformed.windowOptions.parsingMode = mimeType.isHTML() ? "html" : "xml";
+  // options.contentType was parsed into mimeType by the caller.
+  if (!mimeType.isHTML() && !mimeType.isXML()) {
+    throw new RangeError(`The given content type of "${options.contentType}" was not a HTML or XML content type`);
   }
+
+  transformed.windowOptions.contentType = mimeType.essence;
+  transformed.windowOptions.parsingMode = mimeType.isHTML() ? "html" : "xml";
 
   if (options.url !== undefined) {
     transformed.windowOptions.url = (new URL(options.url)).href;
@@ -292,7 +281,7 @@ function transformOptions(options, encoding) {
   return transformed;
 }
 
-function normalizeHTML(html = "", transportLayerEncodingLabel) {
+function normalizeHTML(html = "", mimeType) {
   let encoding = "UTF-8";
 
   if (ArrayBuffer.isView(html)) {
@@ -302,7 +291,10 @@ function normalizeHTML(html = "", transportLayerEncodingLabel) {
   }
 
   if (Buffer.isBuffer(html)) {
-    encoding = sniffHTMLEncoding(html, { defaultEncoding: "windows-1252", transportLayerEncodingLabel });
+    encoding = sniffHTMLEncoding(html, {
+      defaultEncoding: mimeType.isXML() ? "UTF-8" : "windows-1252",
+      transportLayerEncodingLabel: mimeType.parameters.get("charset")
+    });
     html = whatwgEncoding.decode(html, encoding);
   } else {
     html = String(html);

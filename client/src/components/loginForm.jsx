@@ -1,22 +1,18 @@
 import React from 'react'
 import Joi from '@hapi/joi';
 import Form from './common/form';
-import Axios from 'axios';
 import _ from 'lodash';
-// import { connect } from 'react-redux';
-// import { SignIn } from '../actions/authAction';
+import Input from './common/input';
+import { connect } from 'react-redux';
+import { SignIn } from '../actions/authAction';
 
 class LoginForm extends Form {
-    constructor() {
-        super();
-    }
     state = {
         data:{
             email:"",
             password:""
         },
         errors: { },
-        authError: ""
     }
 
     schema = {
@@ -26,26 +22,44 @@ class LoginForm extends Form {
 
     handleSubmit = (e) => {
         super.handleSubmit(e);
-        
-        if(_.isEmpty(this.state.errors)) {
-            console.log("requesting")
-            Axios
-            .post('/api/users/login', this.state.data)
-            .then(result => { this.setState({ authError: "" }); console.log(result)})
-            .catch(error => this.setState({ authError: error.response.data.error }))
-        }
+
+        if(_.isEmpty(this.state.errors)) 
+            this.props.SignIn(this.state.data)
     }
 
     render() { 
-        const { authError } = this.state;
+        const { email, password } = this.state.data;
+        const { errors } = this.state;
+        const { authMessage, loggedIn } = this.props;
+
+        if(loggedIn) this.props.history.push('/');
+        
         return ( 
             <div className="background-container">
                 <div className="container">
                 <h1 className="main-header">Login</h1>
                     <form onSubmit={this.handleSubmit}>
-                        {this.renderInput("email", "Email", "Please enter your email...", "fas fa-envelope", "email", true)}
-                        {this.renderInput("password", "Password","Please enter your password...", "fas fa-key", "password" )}
-                        {authError && <p className="bg-danger text-white ">{authError}</p>}
+                        <Input 
+                            name="email" 
+                            label="Email" 
+                            error={errors["email"]}
+                            iconClass="fas fa-envelope"
+                            onChange={this.handleChange}
+                            placeholder="Please enter your email..."
+                            value={email}
+                            autoFocus
+                        />
+                        <Input 
+                            name="password" 
+                            label="Password" 
+                            error={errors["password"]}
+                            iconClass="fas fa-key"
+                            onChange={this.handleChange}
+                            placeholder="Please enter your password..."
+                            value={password}
+                        />
+
+                        {authMessage && <p className="bg-info text-white ">{authMessage}</p>}
                         {this.renderSubmitButton("Login")}
                     </form>
                 </div>
@@ -53,17 +67,16 @@ class LoginForm extends Form {
         );
     }
 }
-// const mapStateToProps = state => {
-//     return { 
-//         authErrorr: state.auth.authError
-//     }
-// }
-// const mapDispatchToProps = dispatch => {
-//     console.log(dispatch);
-//     return {
-//         SignIn: (creds) => dispatch(SignIn(creds))  
-//     }
-// }
+const mapStateToProps = state => {
+    return { 
+        loggedIn: state.auth.loggedIn,
+        authMessage: state.auth.authMessage
+    }
+}
+const mapDispatchToProps = dispatch => {
+    return {
+        SignIn: (creds) => dispatch(SignIn(creds))  
+    }
+}
 
-  
-export default (LoginForm); 
+export default connect(mapStateToProps, mapDispatchToProps) (LoginForm); 

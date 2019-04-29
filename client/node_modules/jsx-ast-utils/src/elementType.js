@@ -19,7 +19,9 @@ export default function elementType(node = {}) {
   if (name.type === 'JSXMemberExpression') {
     const { object = {}, property = {} } = name;
     return resolveMemberExpressions(object, property);
-  } else if (name.type === 'JSXNamespacedName') {
+  }
+
+  if (name.type === 'JSXNamespacedName') {
     return `${name.namespace.name}:${name.name.name}`;
   }
 

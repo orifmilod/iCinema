@@ -110,7 +110,7 @@ for (const type of tsKeywordTypes) {
 });
 const fnOrCtr = {
   aliases: ["TSType"],
-  visitor: ["typeParameters", "typeAnnotation"],
+  visitor: ["typeParameters", "parameters", "typeAnnotation"],
   fields: signatureDeclarationCommon
 };
 (0, _utils.default)("TSFunctionType", fnOrCtr);
@@ -135,7 +135,7 @@ const fnOrCtr = {
   aliases: ["TSType"],
   visitor: ["exprName"],
   fields: {
-    exprName: (0, _utils.validateType)("TSEntityName")
+    exprName: (0, _utils.validateType)(["TSEntityName", "TSImportType"])
   }
 });
 (0, _utils.default)("TSTypeLiteral", {
@@ -322,6 +322,15 @@ const unionOrIntersection = {
   visitor: ["body"],
   fields: {
     body: (0, _utils.validateArrayOfType)("Statement")
+  }
+});
+(0, _utils.default)("TSImportType", {
+  aliases: ["TSType"],
+  visitor: ["argument", "qualifier", "typeParameters"],
+  fields: {
+    argument: (0, _utils.validateType)("StringLiteral"),
+    qualifier: (0, _utils.validateOptionalType)("TSEntityName"),
+    typeParameters: (0, _utils.validateOptionalType)("TSTypeParameterInstantiation")
   }
 });
 (0, _utils.default)("TSImportEqualsDeclaration", {

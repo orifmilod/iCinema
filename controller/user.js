@@ -5,6 +5,7 @@ const jwt = require('jsonwebtoken');
 
 
 exports.SIGN_UP = (req, res, next) => {
+    console.log(req.body);
     User
     .find({ email: req.body.email })    //Checking if the email exist
     .then(user => {

@@ -12,19 +12,24 @@ class HTMLButtonElementImpl extends HTMLElementImpl {
 
     this._customValidityErrorMessage = "";
     this._labels = null;
+
+    this._hasActivationBehavior = true;
   }
 
   _activationBehavior() {
     const { form } = this;
-    if (form) {
-      if (this.type === "submit" && !isDisabled(this)) {
+    if (form && !isDisabled(this)) {
+      if (this.type === "submit") {
         form._doSubmit();
+      }
+      if (this.type === "reset") {
+        form._doReset();
       }
     }
   }
 
   _getValue() {
-    const valueAttr = this.getAttribute("value");
+    const valueAttr = this.getAttributeNS(null, "value");
     return valueAttr === null ? "" : valueAttr;
   }
 
@@ -37,7 +42,7 @@ class HTMLButtonElementImpl extends HTMLElementImpl {
   }
 
   get type() {
-    const typeAttr = (this.getAttribute("type") || "").toLowerCase();
+    const typeAttr = (this.getAttributeNS(null, "type") || "").toLowerCase();
     switch (typeAttr) {
       case "submit":
       case "reset":
@@ -54,10 +59,10 @@ class HTMLButtonElementImpl extends HTMLElementImpl {
       case "submit":
       case "reset":
       case "button":
-        this.setAttribute("type", v);
+        this.setAttributeNS(null, "type", v);
         break;
       default:
-        this.setAttribute("type", "submit");
+        this.setAttributeNS(null, "type", "submit");
         break;
     }
   }
