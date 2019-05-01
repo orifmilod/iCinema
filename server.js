@@ -9,7 +9,7 @@ const userRoute = require('./routes/users');
 
 
 //Connecting mongoDB
-mongoose.connect("mongodb+srv://admin:TxSLxLKRYfk2OiHZ@icinema-4p2wg.mongodb.net/iCinema?retryWrites=true", {useNewUrlParser: true});
+mongoose.connect(process.env.MONGO_URI, {useNewUrlParser: true});
 mongoose.Promise = global.Promise;
 
 //Checking the connection to db
@@ -20,6 +20,8 @@ db.once('open', () => {
 });
 
 app.use(express.static('./uploads'));
+if(process.env.NODE_ENV === 'production')
+    app.use(express.static("client/build"))
 
 // Body parser middleware
 app.use(bodyParser.urlencoded({ extended: true, limit: '10mb' }));
@@ -61,6 +63,6 @@ app.use((error, req, res, next) => {
     // exit();
 });
 
-const port = 5000;
+const port = process.env.PORT || 5000;
 app.listen(port, () => console.log(`Server running on port ${port}`));
 module.exports = app; 
