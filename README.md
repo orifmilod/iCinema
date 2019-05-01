@@ -15,8 +15,8 @@ npm run dev
  
 <h2> Built with  </h2>
 <ul>
-  <li>FrontEnd: <b> Node.JS, Express.JS </b> </li>
-  <li>Backend:  <b> React.JS, Redux Library, Bootstrap, HTML/CSS</b> </li>
+  <li>FrontEnd: <b> React.JS, Redux Library, Bootstrap, HTML/CSS</b></li>
+  <li>Backend:  <b> Node.JS, Express.JS </b> </li>
   <li>Database: <b> MongoDB</b> </li>
 </ul>
 
@@ -34,7 +34,7 @@ npm run dev
 <ul>
   <li> <b>POST</b> /api/users/signup </li>
   <li> <b>POST</b>  /api/users/login  </li>
-  <li> <b>DELETE</b>  /api/users/delete </li>
+  <li> <b>DELETE</b>  /api/users/:userID </li>
 </ul>
 
 <h4> Movies </h4>
