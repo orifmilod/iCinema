@@ -12,12 +12,12 @@ import Input from './common/input';
 
 import { connect } from "react-redux";
 import { GetMovies } from '../actions/moviesAction';
+import { GetGenres } from '../actions/genreAction';
 
 class Movies extends Component {
 
   state = {
-    allMovies:[],
-    genres:[],
+    genres: [],
     pageSize: 12,
     currentPage: 1,
     currentGenre: "All",
@@ -26,9 +26,10 @@ class Movies extends Component {
     searchFilter:"title"
   };
 
-  async componentDidMount() {
+  componentDidMount() {
     //Get movies form MongoDB
-    GetMovies();
+    this.props.GetMovies();
+    this.props.GetGenres();
   }
 
   handleDelete = movie => {
@@ -64,27 +65,27 @@ class Movies extends Component {
       currentGenre, 
       currentPage, 
       pageSize, 
-      genres,  
       sortColumn,
       search,
       searchFilter
     } = this.state;
 
-    const { allMovies } = this.props;
+    let movies = [];
+    let categorizedMovie = [];
+    const { allMovies, genres } = this.props;
 
-    let searchedMovies;
-    if(!_.isEmpty(allMovies)) {
+    if(_.isEmpty(allMovies)) console.log("No Movies Yet");
+    else {
+      let searchedMovies;
       /* Checking for searched item if nothing searched it will just set it to allMovies*/
       searchedMovies = _.isEmpty(search) ? allMovies : SearchItem(search, allMovies, searchFilter)
       // search ? searchedMovies = SearchItem(search, allMovies, searchFilter) : searchedMovies = allMovies
       
-      const categorizedMovie = categorize(searchedMovies, currentGenre) 
+      categorizedMovie = categorize(searchedMovies, currentGenre) 
       const sortedMovies = _.orderBy(categorizedMovie, [sortColumn.path], [sortColumn.order])
-      const movies = paginate(sortedMovies, currentPage, pageSize);
+      movies = paginate(sortedMovies, currentPage, pageSize);
     }
-    const { length: count } = searchedMovies;
-  
-
+    
     return (
      <div className="background-container">
         <div className="container">
@@ -98,7 +99,7 @@ class Movies extends Component {
               />
               <Link to="/movies/new" className="btn blue btn-block my-2 text-white"> Add Movie </Link>
             </div>
-            {/* <div id="split-line"/> */}
+           
             <div className="col-10">
               <Input 
                 name="search" 
@@ -106,18 +107,21 @@ class Movies extends Component {
                 iconClass="fas fa-search"
                 placeholder="Search..."
               />
-              
-              <p className="text-left text-muted">{count} items available.</p>
-              
-              <MoviesTable
-                onDelete={this.handleDelete} 
-                onLike={this.handleLike}
-                movies={movies}
-                sortColumn={sortColumn}
-                onSort={this.handleSort}
-              />
+              <p className="text-left text-muted"> { movies ? `${movies.length}` : "0"} items available.</p>
+              {
+                movies ?
+                  <MoviesTable
+                    onDelete={this.handleDelete} 
+                    onLike={this.handleLike}
+                    movies={movies}
+                    sortColumn={sortColumn}
+                    onSort={this.handleSort}
+                  />  :
+                  <div>No Movies</div>
+              }
+              <br/>
               <Pagination
-                itemsCount={categorizedMovie.count}
+                itemsCount={categorizedMovie.length}
                 pageSize={this.state.pageSize}
                 onPageChange={this.handlePageChange}
                 currentPage={this.state.currentPage}
@@ -132,12 +136,14 @@ class Movies extends Component {
 
 const mapStateToProps = state => {
   return { 
-      allMovies: state.movie.movies
+      allMovies: state.movie.movies,
+      genres: state.genre.genres
   }
 }
 const mapDispatchToProps = dispatch => {
   return { 
-      GetMovies: () => dispatch(GetMovies()) 
+      GetMovies: () => dispatch(GetMovies()),
+      GetGenres: () => dispatch(GetGenres())
   }
 }
 

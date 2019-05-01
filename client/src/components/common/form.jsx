@@ -10,7 +10,7 @@ class Form extends Component {
         errors: {},
     }
 
-    validate = e => {
+    validate = (e) => {
         const options = { abortEarly: false }
         const result = Joi.validate(this.state.data, this.schema, options);
         if(!result.error) return null;
@@ -19,6 +19,7 @@ class Form extends Component {
         result.error.details.forEach(element => {
             errors[element.path[0]] = element.message;
         });
+
         return errors;
     }
 
@@ -55,8 +56,7 @@ class Form extends Component {
         )
     }
 
-    renderSubmitButton(label)
-    {
+    renderSubmitButton(label){
         return(        
             <button 
                 type="submit"

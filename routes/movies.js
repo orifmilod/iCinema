@@ -6,6 +6,6 @@ const movieController = require('../controller/movie');
 
 //Handling all the incoming requests 
 router.get('/', movieController.GET_ALL_MOVIES);
-router.post('/addmovie', checkAuth, movieController.ADD_MOVIE);
+router.post('/addmovie', movieController.ADD_MOVIE); //, checkAuth
 
 module.exports = router;

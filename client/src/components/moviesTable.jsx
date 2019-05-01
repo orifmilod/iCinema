@@ -29,7 +29,7 @@ class MoviesTable extends Component {
         const { movies, onSort, sortColumn } = this.props;
         return ( 
             <div className="row">
-                {movies.map(movie => <MovieCard movie={movie}/>)}
+                {movies.map(movie => <MovieCard key={movie._id} movie={movie}/>)}
             </div>
         );
     }

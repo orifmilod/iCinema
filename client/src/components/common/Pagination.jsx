@@ -1,7 +1,7 @@
 import React from 'react';
 import propTypes from 'prop-types';
 import _ from 'lodash';
-
+import '../../css/pagination.css';
 
 const Pagination = (props) => {
 
@@ -12,11 +12,11 @@ const Pagination = (props) => {
 
     return ( 
         <div className="justify-content-center d-flex">
-            <nav aria-label="Page navigation example">
-                <ul className="pagination">
+            <nav id="pageNav">
+                <ul>
                     {pages.map(page => (
-                        <li className={page === currentPage ? 'page-item active' : 'page-item'} key={page}>
-                            <a className="page-link" onClick={() => onPageChange(page)}> {page} </a>
+                        <li onClick={() => onPageChange(page)} className={page === currentPage ? 'page-active page-btn' : 'page-btn'} key={page}>
+                            {page}
                         </li>
                     ))}
                 </ul>

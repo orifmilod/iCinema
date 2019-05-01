@@ -1,27 +1,7 @@
 const mongoose = require('mongoose');
 const Movie = require('../models/movie');
 const multer = require('multer');
-
-const storage = multer.diskStorage({
-    destination: (req, file, callback) => {
-        callback(null, './uploads/')
-    },
-    filename: (req, file, callback) =>  {
-        callback(null, Date.now() + file.originalname)
-    }
-});
-const fileFilter = (req, file, callback) => {
-    if(file.mimetype === 'image/jpeg' || file.mimetype === 'image/png')
-        callback(null, true);
-    else  
-        callback(null, false);
-}
-const upload = multer({ 
-    storage: storage, 
-    limits: { fileSize: 1024 * 1024 * 5 },
-    fileFilter: fileFilter
-});
-
+const fs = require('fs');
 
 exports.GET_ALL_MOVIES = (req, res, next) => {
     Movie
@@ -35,25 +15,56 @@ exports.GET_ALL_MOVIES = (req, res, next) => {
     .catch(err => res.status(500).json({ error: err }) ); 
 }
 
-exports.ADD_MOVIE = upload.single('image'), (req, res, next) => {
-    const newMovie = new Movie({
-        _id: mongoose.Types.ObjectId(),
-        title: req.body.title,
-        numberInStock: req.body.numberInStock,
-        genre: req.body.genre,
-        dailyRentalRate: req.body.dailyRentalRate,
-        image: req.file.path
-    })
+const storage = multer.diskStorage({
+    destination: (req, file, callback) => {
+        callback(null, './uploads/')
+    },
+    filename: (req, file, callback) =>  {
+        callback(null, Date.now() + "-" + file.originalname)
+    }
+});
+const upload = multer({ storage: storage }).single('image');
 
-    //Saving new movie in db
-    newMovie.save((err, movie) => 
-    {
-        if(err) res.status(500).json({ error: err });
-        else{
-            res.status(201).json({ 
-                message: "A new movie added.",
-                movie: movie
+exports.ADD_MOVIE = (req, res, next) => {
+    upload(req, res, (err) => {
+        if(err) res.status(500).json(err)
+        else {
+            // console.log(req.file)
+            fs.readFile(req.file.path, function(err, data) {
+                if (err) throw err;
+                else {
+                    const contentType = req.file.mimetype;
+
+                    
+                    const newMovie = new Movie({
+                        _id: mongoose.Types.ObjectId(),
+                        title: req.body.title,
+                        numberInStock: req.body.numberInStock,
+                        genre: req.body.genre,
+                        image: {data, contentType},
+                        rate: 0, 
+                    }) 
+                
+                    //Saving new movie in db
+                    newMovie.save((err, movie) => 
+                    {
+                        if(err) res.status(500).json({ error: err });
+                        else{
+                            res.status(201).json({ 
+                                message: "A new movie added.",
+                                movie: movie
+                            });
+                        }
+                    })
+
+                    // Encode to base64
+                    // let encodedImage = new Buffer(data, 'binary').toString('base64');
+                    // Decode from base64
+                    // let decodedImage = new Buffer(encodedImage, 'base64').toString('binary');
+                }
             });
-        }
+            // const data = fs.readFileSync(req.file.path)
+
+        } 
     })
 }

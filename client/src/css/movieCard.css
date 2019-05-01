@@ -1,14 +1,21 @@
 .card-box{
     text-align: left;
-    margin: 20px 0px;
+    margin: 15px 0px;
 }
 .card-box > p {
-    margin: 0px 5px;
+    margin: -40px 5px 0px 5px;
     color: white;
 }
-.card-box > img {
+.card-box > div > img {
     border-radius: 5px;
     height: 300px;
+    width: 100%;
+    box-shadow: -8px 8px #26252544;
+}
+.card-box:hover {
+    transform: scale(1.05);
+    cursor: pointer;
+    transition: 0.3s ease-in-out;
 }
 .card-box > small {
     margin: 5px;
@@ -17,11 +24,17 @@
 }
 .card-box > span {
     position: relative;
-    background: orange;
-    padding: 15px;
+    display: block;
+    background: rgb(230, 158, 24);
+    height: 60px;
+    padding: 18px;
+    width: 60px;
     border-radius: 50%;
+    text-align: center;
+    top: -100px;
+    z-index: 3;
     left: 80%;
-    bottom: 100px; 
+
     color: white;
     font-weight: 700;
 }

@@ -17,7 +17,8 @@ const Categories = props =>
                 onClick={() => onGenreChange('All')}
             > All</li>
            
-            {
+            { 
+                allGenres &&
                 allGenres.map(element => (
                 <li 
                     key={element._id} 

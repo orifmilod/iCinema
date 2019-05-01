@@ -26,7 +26,9 @@
   cursor: pointer;
 }
 .background-container {
-  padding-top: 40px;
+  scroll-behavior: smooth;
+
+  padding: 40px 0px;
   background: #343a40;
   min-height: 100vh;
   height: fit-content;
