@@ -9,7 +9,7 @@ const userRoute = require('./routes/users');
 
 
 //Connecting mongoDB
-mongoose.connect(process.env.MONGO_URI, {useNewUrlParser: true});
+mongoose.connect("mongodb+srv://admin:TxSLxLKRYfk2OiHZ@icinema-4p2wg.mongodb.net/iCinema?retryWrites=true", {useNewUrlParser: true});
 mongoose.Promise = global.Promise;
 
 //Checking the connection to db
@@ -61,13 +61,13 @@ app.use((error, req, res, next) => {
     // exit();
 });
 
+
 if(process.env.NODE_ENV === 'production') {
     app.use(express.static("client/build"))
     app.get('*', (req, res) => {
         res.sendFile(path.resolve(__dirname, 'client', 'build', 'index.html'))
     });
 }
-
 
 const port = process.env.PORT || 5000;
 app.listen(port, () => console.log(`Server running on port ${port}`));
