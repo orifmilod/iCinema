@@ -1,6 +1,7 @@
 # iCinema
 A website for movie theatres where user can search for movies and filter by rating and genres that are available,
 and admin can add movie to the list and much more.
+<img width="1438" alt="ss" src="https://user-images.githubusercontent.com/25881325/57013947-29509680-6c0e-11e9-8d1b-babad3ed11cd.png">
 
 <small>This project will be completed and hosted very soon! </small>
 
@@ -14,8 +15,8 @@ npm run dev
  
 <h2> Built with  </h2>
 <ul>
-  <li>FrontEnd: <b> Node.JS, Express.JS </b> </li>
-  <li>Backend:  <b> React.JS, Redux Library, Bootstrap, HTML/CSS</b> </li>
+  <li>FrontEnd: <b> React.JS, Redux Library, Bootstrap, HTML/CSS</b></li>
+  <li>Backend:  <b> Node.JS, Express.JS </b> </li>
   <li>Database: <b> MongoDB</b> </li>
 </ul>
 
@@ -33,7 +34,7 @@ npm run dev
 <ul>
   <li> <b>POST</b> /api/users/signup </li>
   <li> <b>POST</b>  /api/users/login  </li>
-  <li> <b>DELETE</b>  /api/users/delete </li>
+  <li> <b>DELETE</b>  /api/users/:userID </li>
 </ul>
 
 <h4> Movies </h4>
