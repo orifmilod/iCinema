@@ -6,7 +6,7 @@
   "scripts": {
     "client-install": "cd client && npm install",
     "start": "node server.js",
-    "server": "nodemon server.js --ignore client",
+    "server": "nodemon server.js",
     "client": "cd client && npm start",
     "dev": "concurrently \"npm run server\" \"npm run client\"",
     "heroku-postbuild": "cd client && npm install && npm run build"
@@ -27,7 +27,7 @@
     "validator": "^9.4.1"
   },
   "devDependencies": {
-    "nodemon": "^1.18.11"
+    "nodemon": "^1.19.0"
   },
   "engines": {
     "node": "10.14.2"
