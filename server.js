@@ -47,11 +47,11 @@ app.use('/api/users', userRoute);
 
 
 //Invalid routes
-app.use((req, res, next) => {
-    const error = new Error('This route does not exist.');
-    error.status = 404;
-    next(error);
-});
+// app.use((req, res, next) => {
+//     const error = new Error('This route does not exist.');
+//     error.status = 404;
+//     next(error);
+// });
 var exit = function exit() {
     setTimeout(function () {
       process.exit(1);
