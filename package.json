@@ -1,5 +1,5 @@
 {
-  "name": "iCinema",
+  "name": "icinema",
   "version": "1.0.0",
   "description": "Website for movie theaters.",
   "main": "server.js",
