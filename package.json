@@ -1,7 +1,7 @@
 {
-  "name": "devconnector",
+  "name": "iCinema",
   "version": "1.0.0",
-  "description": "Social network for developers",
+  "description": "Website for movie theaters.",
   "main": "server.js",
   "scripts": {
     "client-install": "cd client && npm install",

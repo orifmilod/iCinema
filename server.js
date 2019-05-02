@@ -61,18 +61,16 @@ app.use((error, req, res, next) => {
     res.status(error.status || 500).json(error.message); 
     // exit();
 });
-app.use(express.static(path.join(__dirname, "client", "build")))
-app.get("*", (req, res) => {
-    res.sendFile(path.join(__dirname, "client", "build", "index.html"));
-});
-// app.use('/', express.static(path.join(__dirname, '/client/build/index.html')));
-// if(process.env.NODE_ENV === 'production') {
-    // app.use(express.static("/client/build"))
-    // app.get('*', (req, res) => {
-        //Relative path
-        // res.sendFile(path.resolve(__dirname, 'client', 'build', 'index.html'))
-    // });
-// }
+
+//production mode
+if(process.env.NODE_ENV === 'production') {
+    console.log("PRODUCTIOn");
+    app.use(express.static('client/build'));
+    
+    app.get('*', (req, res) => {
+      res.sendfile(path.join(__dirname, 'client/build/index.html'));
+    })
+}
 
 const port = process.env.PORT || 5000;
 app.listen(port, () => console.log(`Server running on port ${port}`));
