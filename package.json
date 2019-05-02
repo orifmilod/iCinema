@@ -5,9 +5,10 @@
   "main": "server.js",
   "scripts": {
     "client-install": "cd client && npm install",
+    "start": "node server.js",
     "server": "nodemon server.js --ignore client",
     "client": "cd client && npm start",
-    "start": "concurrently \"npm run server\" \"npm run client\"",
+    "dev": "concurrently \"npm run server\" \"npm run client\"",
     "heroku-postbuild": "cd client && npm install && npm run build"
   },
   "author": "Orif Milod",
