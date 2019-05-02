@@ -11,8 +11,6 @@ const Navbar = props => {
 
             <ul className="navbar-list">
                 <li> <NavLink to="/movies">Movies <span className="sr-only">(current)</span></NavLink></li>
-                {/* <li> <NavLink to="/customers">Customers</NavLink> </li>
-                <li> <NavLink to="/rentals">Rentals</NavLink> </li> */}
                 { 
                     !props.loggedIn ? (
                         <>

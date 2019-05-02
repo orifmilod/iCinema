@@ -9,7 +9,8 @@ const userRoute = require('./routes/users');
 
 
 //Connecting mongoDB
-mongoose.connect(process.env.MONGODB_URI, {useNewUrlParser: true});
+const databaseConfig = require('./config/keys');
+mongoose.connect(databaseConfig.mongoURI, {useNewUrlParser: true});
 mongoose.Promise = global.Promise;
 
 //Checking the connection to db
@@ -46,6 +47,22 @@ app.use('/api/genres', genreRoute);
 app.use('/api/users', userRoute);
 
 
+//production mode
+if(process.env.NODE_ENV === 'production') {
+  app.use(express.static('client/build'));
+  
+  app.get('/*', (req, res) => {
+    res.sendfile(path.join(__dirname, './client/build/index.html'));
+  })
+}
+else {
+app.use(express.static(path.join(__dirname, '/client/public')));
+app.get("/*", function(req, res) {
+  res.sendFile(path.join(__dirname, "./client/public/index.html"));
+});
+}
+
+
 //Invalid routes
 // app.use((req, res, next) => {
 //     const error = new Error('This route does not exist.');
@@ -61,21 +78,6 @@ app.use((error, req, res, next) => {
     res.status(error.status || 500).json(error.message); 
     // exit();
 });
-
-//production mode
-if(process.env.NODE_ENV === 'production') {
-    app.use(express.static('client/build'));
-    
-    app.get('/*', (req, res) => {
-      res.sendfile(path.join(__dirname, './client/build/index.html'));
-    })
-}
-else {
-  app.use(express.static(path.join(__dirname, '/client/public')));
-  app.get("/*", function(req, res) {
-    res.sendFile(path.join(__dirname, "./client/public/index.html"));
-  });
-}
 
 
 const port = process.env.PORT || 5000;

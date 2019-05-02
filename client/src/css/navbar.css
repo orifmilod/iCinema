@@ -30,6 +30,7 @@ nav > ul > li {
     display: inline-block;
     list-style: none;
     letter-spacing: 1.5px;
+    padding: 0px;
 }
 nav > ul > li > a {
     padding: 20px 40px;
@@ -40,3 +41,10 @@ nav > ul > li > a:hover {
     cursor: pointer;
     transition: 0.2s ease-in;
 }
+
+
+
+
+
+
+

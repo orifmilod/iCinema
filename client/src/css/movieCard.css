@@ -1,28 +1,39 @@
-.card-box{
+.card-container {
     text-align: left;
-    margin: 15px 0px;
+    height: 300px;
+    margin: 50px 0px;
+    position: relative;
 }
-.card-box > p {
-    margin: -40px 5px 0px 5px;
+
+.thecard {
+    position: absolute;
+    width: 90%;
+    height: 100%;
+    transform-style: preserve-3d;
+    transition: 0.5s ease-in-out;
+}
+.details {
+    top: 310px;
+    /* margin-top: 150px.; */
+    position: absolute;
+}
+.details > p {
+    margin: 0px;
     color: white;
 }
-.card-box > div > img {
+.details > small {
+    margin: 5px;
+    font-size: 13px;
+    color: rgba(255, 255, 255, 0.5);
+}
+.front-card > img {
     border-radius: 5px;
     height: 300px;
     width: 100%;
     box-shadow: -8px 8px #26252544;
 }
-.card-box:hover {
-    transform: scale(1.05);
-    cursor: pointer;
-    transition: 0.3s ease-in-out;
-}
-.card-box > small {
-    margin: 5px;
-    font-size: 13px;
-    color: rgba(255, 255, 255, 0.5);
-}
-.card-box > span {
+
+.front-card > span {
     position: relative;
     display: block;
     background: rgb(230, 158, 24);
@@ -32,9 +43,33 @@
     border-radius: 50%;
     text-align: center;
     top: -100px;
-    z-index: 3;
-    left: 80%;
 
+    left: 80%;
     color: white;
     font-weight: 700;
+}
+
+.thecard:hover{
+    transform: rotateY(180deg);
+}
+.front-card{
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    backface-visibility: hidden;
+    color: rgb(67, 67, 67);
+}
+.back-card {
+    padding: 20px;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: rgb(52, 49, 49);
+    border-radius: 5px;
+    backface-visibility: hidden;
+    transform: rotateY(180deg);
+}
+.back-card > p{
+    font-size: 14px;
+    color: #cccccc;
 }

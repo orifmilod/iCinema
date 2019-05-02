@@ -9,7 +9,7 @@ import categorize from '../Utils/categorize';
 import { Link } from 'react-router-dom';
 import { SearchItem } from './common/search';
 import Input from './common/input';
-
+import CardFlip from './common/cardFlip';
 import { connect } from "react-redux";
 import { GetMovies } from '../actions/moviesAction';
 import { GetGenres } from '../actions/genreAction';
@@ -72,7 +72,7 @@ class Movies extends Component {
 
     let movies = [];
     let categorizedMovie = [];
-    const { allMovies, genres } = this.props;
+    const { allMovies, genres, loggedIn } = this.props;
 
     if(_.isEmpty(allMovies)) console.log("No Movies Yet");
     else {
@@ -97,7 +97,7 @@ class Movies extends Component {
                 onGenreChange={this.handleGenreChange}
                 allGenres={genres}
               />
-              <Link to="/movies/new" className="btn blue btn-block my-2 text-white"> Add Movie </Link>
+              { loggedIn && <Link to="/movies/new" className="btn blue btn-block my-2 text-white"> Add Movie </Link> }
             </div>
            
             <div className="col-10">
@@ -108,8 +108,9 @@ class Movies extends Component {
                 placeholder="Search..."
               />
               <p className="text-left text-muted"> { movies ? `${movies.length}` : "0"} items available.</p>
+
               {
-                movies ?
+                  movies.length > 0 ?
                   <MoviesTable
                     onDelete={this.handleDelete} 
                     onLike={this.handleLike}
@@ -117,7 +118,7 @@ class Movies extends Component {
                     sortColumn={sortColumn}
                     onSort={this.handleSort}
                   />  :
-                  <div>No Movies</div>
+                  <h1 className="text-white">Loading...</h1>
               }
               <br/>
               <Pagination
@@ -137,7 +138,8 @@ class Movies extends Component {
 const mapStateToProps = state => {
   return { 
       allMovies: state.movie.movies,
-      genres: state.genre.genres
+      genres: state.genre.genres,
+      loggedIn: state.auth.loggedIn
   }
 }
 const mapDispatchToProps = dispatch => {
