@@ -15,6 +15,7 @@ import RegisterForm from './components/registerForm';
 import AddMovieForm from './components/addMovie';
 import { Provider } from 'react-redux';
 import store from './store';
+import Footer from './components/footer';
 
 class App extends Component {
   render() {
@@ -38,6 +39,7 @@ class App extends Component {
               <Redirect exact from='/' to='/movies'/>
               <Redirect to='not-found'/>
             </Switch>
+            <Footer/>
           </div>
         </Router>
       </Provider>

@@ -21,6 +21,9 @@
 .blue {
   background: #22A7F0;  
 }
+.black-bg{
+  background: rgb(31, 31, 31);
+}
 
 .clickable {
   cursor: pointer;
