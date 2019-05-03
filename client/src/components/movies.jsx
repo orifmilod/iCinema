@@ -9,7 +9,6 @@ import categorize from '../Utils/categorize';
 import { Link } from 'react-router-dom';
 import { SearchItem } from './common/search';
 import Input from './common/input';
-import CardFlip from './common/cardFlip';
 import { connect } from "react-redux";
 import { GetMovies } from '../actions/moviesAction';
 import { GetGenres } from '../actions/genreAction';
@@ -79,7 +78,6 @@ class Movies extends Component {
       let searchedMovies;
       /* Checking for searched item if nothing searched it will just set it to allMovies*/
       searchedMovies = _.isEmpty(search) ? allMovies : SearchItem(search, allMovies, searchFilter)
-      // search ? searchedMovies = SearchItem(search, allMovies, searchFilter) : searchedMovies = allMovies
       
       categorizedMovie = categorize(searchedMovies, currentGenre) 
       const sortedMovies = _.orderBy(categorizedMovie, [sortColumn.path], [sortColumn.order])
