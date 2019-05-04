@@ -87,7 +87,7 @@
 
 .show-card {
     z-index: 3;
-    transform: scale(2);
+    transform: scale(1.7);
 }
 .show-card > .thecard {
     transform: rotateY(180deg);

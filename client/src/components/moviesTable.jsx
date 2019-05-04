@@ -2,6 +2,9 @@ import React, {Component} from 'react';
 import Like from "./common/like.jsx";
 import { Link } from 'react-router-dom';
 import MovieCard from './common/movieCard';
+import { connect } from 'react-redux';
+import { ToggleFavouriteCard } from '../actions/userAction';
+import '../css/movieCard.css';
 
 class MoviesTable extends Component {
 
@@ -26,13 +29,33 @@ class MoviesTable extends Component {
     ]
 
     render() { 
-        const { movies, onSort, sortColumn } = this.props;
+        const { movies, onSort, sortColumn, favouriteMovies, ToggleFavouriteCard } = this.props;
+
         return ( 
             <div className="row">
-                {movies.map(movie => <MovieCard key={movie._id} movie={movie}/>)}
+                { 
+                    movies.map(movie => 
+                    <MovieCard 
+                        key={movie._id} 
+                        liked={favouriteMovies ? favouriteMovies.includes(movie._id) : false} movie={movie}
+                        ToggleFavouriteCard={ToggleFavouriteCard}
+                    />) 
+                }  
             </div>
         );
     }
 }
+
+
+const mapStateToProps = state => {
+    return {
+        favouriteMovies: state.auth.userData.favouriteMovies
+    }
+}
  
-export default MoviesTable;
+const mapDispatchToProps = dispatch => {
+    return {
+        ToggleFavouriteCard: (favouriteMovies) => dispatch(ToggleFavouriteCard(favouriteMovies))
+    }
+}
+export default connect(mapStateToProps, mapDispatchToProps) (MoviesTable);
