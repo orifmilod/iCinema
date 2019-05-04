@@ -29,7 +29,7 @@ class MoviesTable extends Component {
     ]
 
     render() { 
-        const { movies, onSort, sortColumn, favouriteMovies, ToggleFavouriteCard } = this.props;
+        const { movies, onSort, sortColumn, favouriteMovies, ToggleFavouriteCard, userID } = this.props;
 
         return ( 
             <div className="row">
@@ -38,7 +38,7 @@ class MoviesTable extends Component {
                     <MovieCard 
                         key={movie._id} 
                         liked={favouriteMovies ? favouriteMovies.includes(movie._id) : false} movie={movie}
-                        ToggleFavouriteCard={ToggleFavouriteCard}
+                        ToggleFavouriteCard={() => ToggleFavouriteCard(userID)}
                     />) 
                 }  
             </div>
@@ -46,10 +46,14 @@ class MoviesTable extends Component {
     }
 }
 
+function FavouriteMovie() {
+    
+}
 
 const mapStateToProps = state => {
     return {
-        favouriteMovies: state.auth.userData.favouriteMovies
+        favouriteMovies: state.auth.userData.favouriteMovies,
+        userID: state.auth.userData.ID
     }
 }
  
