@@ -48,6 +48,7 @@ class RegisterForm extends Form {
                         <Input 
                             name="email" 
                             label="Email" 
+                            type="email"
                             error={errors["email"]}
                             iconClass="fas fa-envelope"
                             onChange={this.handleChange}
@@ -58,6 +59,7 @@ class RegisterForm extends Form {
                         <Input 
                             name="password" 
                             label="Password" 
+                            type="password"
                             error={errors["password"]}
                             iconClass="fas fa-key"
                             onChange={this.handleChange}
@@ -66,6 +68,7 @@ class RegisterForm extends Form {
                         /> 
                           <Input 
                             name="passwordRepeat" 
+                            type="password"
                             label="Repeat Password" 
                             error={errors["passwordRepeat"]}
                             iconClass="fas fa-key"
@@ -74,7 +77,7 @@ class RegisterForm extends Form {
                             value={passwordRepeat}
                         /> 
                        
-                        { authMessage || passwordError && <p className="bg-info text-white"> {authMessage} {passwordError}</p>}
+                        { authMessage || passwordError ? <p className="bg-info text-white"> {authMessage} {passwordError}</p> : <> </>}
                        
                         <button type="submit" className="btn special-btn" disabled={this.validate()}>
                             Sign Up

@@ -17,6 +17,7 @@ class AddMovieForm extends Form {
             title:"",
             genre:"",
             numberInStock:"",
+            description:"",
             image: null,
         },
         genres:[],
@@ -28,6 +29,7 @@ class AddMovieForm extends Form {
         title: Joi.string().required().label("Title"),
         genre: Joi.string().required().label("Genre"),
         numberInStock: Joi.number().min(0).required().label("Number In Stocks"),
+        description: Joi.string().required().label("Description"),
         image: Joi.object().allow(null).label("Cover Image"),
     }
 
@@ -38,9 +40,7 @@ class AddMovieForm extends Form {
     }
     uploadImage = e => {
         if(e.target.files[0]) {    
-            // const imageFile = URL.createObjectURL(e.target.files[0]);
             const data = {...this.state.data}
-            // data["imageURL"] = imageFile;
             data["image"] = e.target.files[0];
             this.setState({ data });
         }
@@ -54,7 +54,7 @@ class AddMovieForm extends Form {
 
     render() {
         const { errors } = this.state;
-        const { title, genre, numberInStock } = this.state.data;
+        const { title, genre, numberInStock, description } = this.state.data;
         
         //Restructuring genres object
         const _genres = [];
@@ -87,7 +87,7 @@ class AddMovieForm extends Form {
                             name="numberInStock"
                             label="Number In Stock"
                             onChange={this.handleChange}
-                            placeholder="Enter the stock..."
+                            placeholder="Enter numbers the stock..."
                             error={errors["numberInStock"]}
                             iconClass="fas fa-hashtag"
                             value={numberInStock}
@@ -102,10 +102,16 @@ class AddMovieForm extends Form {
                             accept="image/*"
                             type="file"
                         />
+                        <Input
+                            name="description"
+                            label="Description"
+                            placeholder="Enter description about this movie..."
+                            iconClass="fas fa-info"
+                            error={errors["description"]}
+                            type="textarea"
+                        />
                         {this.renderSubmitButton('Add Movie')}
-                        {/* <button type="submit" className="btn special-btn" disabled={this.validate()}>
-                            Add movie
-                        </button> */}
+                    
                     </form>
                 </div>
             </div>

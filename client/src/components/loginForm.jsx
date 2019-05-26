@@ -42,6 +42,7 @@ class LoginForm extends Form {
                         <Input 
                             name="email" 
                             label="Email" 
+                            type="email"
                             error={errors["email"]}
                             iconClass="fas fa-envelope"
                             onChange={this.handleChange}
@@ -51,6 +52,7 @@ class LoginForm extends Form {
                         />
                         <Input 
                             name="password" 
+                            type="password"
                             label="Password" 
                             error={errors["password"]}
                             iconClass="fas fa-key"

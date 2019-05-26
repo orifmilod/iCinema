@@ -73,7 +73,13 @@ class Movies extends Component {
     let categorizedMovie = [];
     const { allMovies, genres, loggedIn } = this.props;
 
-    if(_.isEmpty(allMovies)) console.log("No Movies Yet");
+    if(_.isEmpty(allMovies)){ 
+      return (
+        <div className="background-container">
+          <h1 className="text-muted">Loading Movies...</h1>
+        </div>
+      )
+    }
     else {
       let searchedMovies;
       /* Checking for searched item if nothing searched it will just set it to allMovies*/
@@ -83,7 +89,7 @@ class Movies extends Component {
       const sortedMovies = _.orderBy(categorizedMovie, [sortColumn.path], [sortColumn.order])
       movies = paginate(sortedMovies, currentPage, pageSize);
     }
-    
+
     return (
      <div className="background-container">
         <div className="container">
@@ -106,7 +112,6 @@ class Movies extends Component {
                 placeholder="Search..."
               />
               <p className="text-left text-muted"> { movies ? `${movies.length}` : "0"} items available.</p>
-
               {
                   movies.length > 0 ?
                   <MoviesTable
@@ -116,7 +121,7 @@ class Movies extends Component {
                     sortColumn={sortColumn}
                     onSort={this.handleSort}
                   />  :
-                  <h1 className="text-white">Loading...</h1>
+                  <h1 className="text-white">No Movies</h1>
               }
               <br/>
               <Pagination

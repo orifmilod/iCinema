@@ -3,11 +3,17 @@ import Like from "./common/like.jsx";
 import { Link } from 'react-router-dom';
 import MovieCard from './common/movieCard';
 import { connect } from 'react-redux';
-import { ToggleFavouriteCard } from '../actions/userAction';
+import { UpdateFavouriteMovies } from '../actions/userAction';
+import PropTypes from "prop-types";
+import { withRouter } from "react-router";
 import '../css/movieCard.css';
+import { throws } from 'assert';
 
 class MoviesTable extends Component {
-
+    state = {
+        favouriteMovies:[],
+        movies: []
+    }
     columns = [
         { 
             path: 'title',
@@ -27,10 +33,29 @@ class MoviesTable extends Component {
             <button onClick={() => this.props.onDelete(movie)} className="btn btn-danger btn-sm">Delete</button> 
         }
     ]
-
+    favouriteCard = (movieID) => {
+        let { auth, UpdateFavouriteMovies, favouriteMovies } = this.props
+ 
+        if(!auth.loggedIn) this.props.history.push('/login')
+        else {
+            if(favouriteMovies.includes(movieID)) favouriteMovies = favouriteMovies.filter(fmID => fmID !== movieID);
+            else favouriteMovies.push(movieID);
+            
+            UpdateFavouriteMovies(auth.userData.ID, { favouriteMovies: favouriteMovies });
+        }
+    }
+    componentWillReceiveProps(props) {
+        const { movies, favouriteMovies } = props;
+        console.log(favouriteMovies);
+        this.setState({ movies, favouriteMovies });
+    }
+    componentWillMount(){
+        const { movies, favouriteMovies } = this.props;
+        this.setState({ movies, favouriteMovies });
+    }
     render() { 
-        const { movies, onSort, sortColumn, favouriteMovies, ToggleFavouriteCard, userID } = this.props;
-
+        const { movies, favouriteMovies } = this.state;
+        console.log(favouriteMovies);
         return ( 
             <div className="row">
                 { 
@@ -38,7 +63,7 @@ class MoviesTable extends Component {
                     <MovieCard 
                         key={movie._id} 
                         liked={favouriteMovies ? favouriteMovies.includes(movie._id) : false} movie={movie}
-                        ToggleFavouriteCard={() => ToggleFavouriteCard(userID)}
+                        ToggleFavouriteCard={this.favouriteCard}
                     />) 
                 }  
             </div>
@@ -46,20 +71,20 @@ class MoviesTable extends Component {
     }
 }
 
-function FavouriteMovie() {
-    
+MoviesTable.propTypes = {
+    history: PropTypes.object.isRequired
 }
-
 const mapStateToProps = state => {
+    console.log(state.auth.userData.favouriteMovies)
     return {
         favouriteMovies: state.auth.userData.favouriteMovies,
-        userID: state.auth.userData.ID
+        auth: state.auth
     }
 }
  
 const mapDispatchToProps = dispatch => {
     return {
-        ToggleFavouriteCard: (favouriteMovies) => dispatch(ToggleFavouriteCard(favouriteMovies))
+        UpdateFavouriteMovies: (userID, movieID) => dispatch(UpdateFavouriteMovies(userID, movieID))
     }
 }
-export default connect(mapStateToProps, mapDispatchToProps) (MoviesTable);
+export default withRouter(connect(mapStateToProps, mapDispatchToProps) (MoviesTable));

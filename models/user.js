@@ -8,6 +8,7 @@ const userSchema = mongoose.Schema({
         match:  /^(([^<>()\[\]\.,;:\s@\"]+(\.[^<>()\[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/
     },
     password: { type: String, required: true }, 
+    favouriteMovies: [ {type: String} ]
 })
 
 module.exports = mongoose.model('User', userSchema, 'users');
