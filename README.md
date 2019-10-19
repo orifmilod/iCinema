@@ -1,5 +1,5 @@
 # iCinema
-A website for movie theatres where user can search for movies and filter by rating and genres that are available,
+A Full stack MERN website for movie theatres where user can search for movies and filter by rating and genres that are available,
 and admin can add movie to the list and much more.
 <img width="1438" alt="ss" src="https://user-images.githubusercontent.com/25881325/57013947-29509680-6c0e-11e9-8d1b-babad3ed11cd.png">
 
