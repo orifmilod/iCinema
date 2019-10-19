@@ -1,6 +1,5 @@
 import Axios from "axios";
 import { GET_MOVIES_SUCCESS, GET_MOVIES_ERROR } from './actionTypes';
-
 export const GetMovies = () => {
     return async (dispatch) => {
         await Axios.get('/api/movies')

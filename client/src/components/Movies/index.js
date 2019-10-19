@@ -1,20 +1,20 @@
 import React, { Component } from "react";
-import _ from 'lodash';
-import Pagination from './common/Pagination.jsx';
-import paginate from '../Utils/paginate';
-import MoviesTable from './moviesTable.jsx';
-
-import Categories from "./categories.jsx";
-import categorize from '../Utils/categorize';
 import { Link } from 'react-router-dom';
-import { SearchItem } from './common/search';
-import Input from './common/input';
 import { connect } from "react-redux";
-import { GetMovies } from '../actions/moviesAction';
-import { GetGenres } from '../actions/genreAction';
+import _ from 'lodash';
+
+import Pagination from '../common/Pagination.jsx';
+import paginate from '../../Utils/paginate';
+import MoviesTable from '../MoviesTable';
+
+import Categories from "../categories";
+import categorize from '../../Utils/categorize';
+import { SearchItem } from '../common/search';
+import Input from '../common/input';
+import { GetMovies } from '../../actions/moviesAction';
+import { GetGenres } from '../../actions/genreAction';
 
 class Movies extends Component {
-
   state = {
     genres: [],
     pageSize: 12,
@@ -66,13 +66,13 @@ class Movies extends Component {
       pageSize, 
       sortColumn,
       search,
-      searchFilter
+      searchFilter,
+      
     } = this.state;
 
     let movies = [];
     let categorizedMovie = [];
-    const { allMovies, genres, loggedIn } = this.props;
-
+    const { allMovies, genres, loggedIn } = this.props; 
     if(_.isEmpty(allMovies)){ 
       return (
         <div className="background-container">
@@ -94,7 +94,7 @@ class Movies extends Component {
      <div className="background-container">
         <div className="container">
           <div className="row">
-            <div className='col-2'>
+            <div className='col-md-2 col-sm-12'>
               <h4 className="text-muted text-left p-1">Filters</h4>
               <Categories
                 currentGenre={currentGenre}
@@ -104,7 +104,7 @@ class Movies extends Component {
               { loggedIn && <Link to="/movies/new" className="btn blue btn-block my-2 text-white"> Add Movie </Link> }
             </div>
            
-            <div className="col-10">
+            <div className="col-md-10 col-sm-12">
               <Input 
                 name="search" 
                 onChange={this.handleSearch} 

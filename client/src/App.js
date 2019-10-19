@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 
 import { Route, Redirect, Switch, BrowserRouter as Router} from 'react-router-dom';
 
-import Movies from './components/movies';
+import Movies from './components/Movies';
 import Rentals from './components/rentals';
 import Customers from './components/customers';
 import NotFound from './components/notfound';

@@ -4,13 +4,11 @@ const multer = require('multer');
 const fs = require('fs');
 
 exports.GET_ALL_MOVIES = (req, res, next) => {
-    Movie
-    .find()
-    .select('-__v') 
+    Movie.find()
     .then(movies => res.status(200).json({
-            count: movies.length,
-            movies: movies
-        }
+        count: movies.length,
+        movies: movies
+      }
     ))
     .catch(err => res.status(500).json({ error: err }) ); 
 }
@@ -34,15 +32,13 @@ exports.ADD_MOVIE = (req, res, next) => {
                 if (err) throw err;
                 else {
                     const contentType = req.file.mimetype;
-
-                    
                     const newMovie = new Movie({
-                        _id: mongoose.Types.ObjectId(),
-                        title: req.body.title,
-                        numberInStock: req.body.numberInStock,
-                        genre: req.body.genre,
-                        image: {data, contentType},
-                        rate: 0, 
+                      _id: mongoose.Types.ObjectId(),
+                      title: req.body.title,
+                      numberInStock: req.body.numberInStock,
+                      genre: req.body.genre,
+                      image: {data, contentType},
+                      rate: 0, 
                     }) 
                 
                     //Saving new movie in db
@@ -51,12 +47,11 @@ exports.ADD_MOVIE = (req, res, next) => {
                         if(err) res.status(500).json({ error: err });
                         else{
                             res.status(201).json({ 
-                                message: "A new movie added.",
-                                movie: movie
+                              message: "A new movie added.",
+                              movie: movie
                             });
                         }
                     })
-
                     // Encode to base64
                     // let encodedImage = new Buffer(data, 'binary').toString('base64');
                     // Decode from base64
@@ -64,7 +59,6 @@ exports.ADD_MOVIE = (req, res, next) => {
                 }
             });
             // const data = fs.readFileSync(req.file.path)
-
         } 
     })
 }

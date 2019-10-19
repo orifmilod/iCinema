@@ -1,24 +1,24 @@
-const express = require('express');
-const app = express();
-const bodyParser = require('body-parser');
-const mongoose = require('mongoose');
+const cors = require('cors');
 const path = require('path');
+const express = require('express')
+const mongoose = require('mongoose');
+const bodyParser = require('body-parser');
 const movieRoute = require('./routes/movies');
 const genreRoute = require('./routes/genres');
 const userRoute = require('./routes/users');
 
+const app = express();
+//To prevent CORS errors
+app.use(cors());
 
 //Connecting mongoDB
 const databaseConfig = require('./config/keys');
-mongoose.connect(databaseConfig.mongoURI, {useNewUrlParser: true});
-mongoose.Promise = global.Promise;
+mongoose.connect('mongodb+srv://admin:7fx6wiDzAGOOm3ZH@icinema-4p2wg.mongodb.net/iCinema?retryWrites=true', { useNewUrlParser: true, useUnifiedTopology: true })
 
 //Checking the connection to db
 var db = mongoose.connection;
+db.once('open', () => console.log("Mongo Database is connected now!"));
 db.on('error', console.error.bind(console, 'connection error:'));
-db.once('open', () => {
-    console.log("Mongo Database is connected now!")
-});
 
 app.use(express.static('./uploads'));
 
@@ -26,26 +26,12 @@ app.use(express.static('./uploads'));
 app.use(bodyParser.urlencoded({ extended: true, limit: '10mb' }));
 app.use(bodyParser.json({ limit: '10mb' }));
 
-//To prevent CORS errors
-app.get((req, res, next) => {
-    res.header("Access-Control-Allow-Origin", "*");
-    res.header('Access-Control-Allow-Headers', 
-        "Origin, X-Requested-With, Content-Type, Accept, Authorization"
-    );
-
-    if(req.method === 'OPTIONS') {
-        res.header('Access-Control-Allow-Methods', 'PUT, POST, PATCH, DELETE, GET, HEAD');
-        return res.status(200).json({ });
-    }
-    next();
-});
 
 
 //App routes to handle requests
 app.use('/api/movies', movieRoute);
 app.use('/api/genres', genreRoute);
 app.use('/api/users', userRoute);
-
 
 //Serve our static asset if in production
 if(process.env.NODE_ENV === 'production') {

@@ -1,15 +1,10 @@
-# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
-
-node_modules/
 # dependencies
 /client/node_modules/
-/.pnp
-.pnp.js
-
-# testing
-/coverage
+node_modules/
+package-lock.json
 
 # production
+.vscode/
 /client/build
 
 # misc
