@@ -4,6 +4,13 @@
   height: 100%;
   backface-visibility: hidden;
   transform: rotateY(180deg);
-  background: gray;
+  background: #6C7A89;
   border-radius: 5px;
+  text-align: left;
+  padding: 15px;
+}
+
+p {
+  font-size: 12px;
+  color: white;
 }

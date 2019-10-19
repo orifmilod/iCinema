@@ -1,7 +1,7 @@
 .movies-grid {
   display: grid;
   grid-auto-flow: row;
-  grid-template-columns: repeat(4, 1fr);
-  grid-column-gap: 20px;
+  grid-template-columns: repeat(3, 1fr);
+  grid-column-gap: 10px;
   grid-row-gap: 20px;
 }

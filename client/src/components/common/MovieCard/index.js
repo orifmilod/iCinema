@@ -27,13 +27,13 @@ import './style.css';
         <div className='card-container'>     
           <div className='card-wrapper' id={_id} onClick={() => FlipCard(_id)}>
             <FlippingCardFront 
+              description={description}
               coverImage={coverImage}
               rate={rate}
               genre={genre}
               title={title}
             />
             <FlippingCardBack
-              description={description}
               liked={liked}
               ToggleFavouriteCard={ToggleFavouriteCard}
             />

@@ -7,7 +7,7 @@ import Rentals from './components/rentals';
 import Customers from './components/customers';
 import NotFound from './components/notfound';
 
-import Navbar from './components/navbar';
+import Navbar from './components/Navbar';
 import MovieForm from './components/movieForm';
 import LoginForm from './components/loginForm';
 import './App.css';
@@ -15,7 +15,7 @@ import RegisterForm from './components/registerForm';
 import AddMovieForm from './components/addMovie';
 import { Provider } from 'react-redux';
 import store from './store';
-import Footer from './components/footer';
+import Footer from './components/Footer';
 
 class App extends Component {
   render() {
@@ -25,7 +25,6 @@ class App extends Component {
           <div className="App">
             <Navbar/>
             <Switch> 
-                
               <Route exact path="/movies/new" component={AddMovieForm}/>
               <Route exact path="/login" component={LoginForm}/>
               <Route path="/resigter" component={RegisterForm}/>

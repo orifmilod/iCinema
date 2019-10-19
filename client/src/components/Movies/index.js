@@ -26,7 +26,6 @@ class Movies extends Component {
   };
 
   componentDidMount() {
-    //Get movies form MongoDB
     this.props.GetMovies();
     this.props.GetGenres();
   }
@@ -67,7 +66,6 @@ class Movies extends Component {
       sortColumn,
       search,
       searchFilter,
-      
     } = this.state;
 
     let movies = [];
@@ -92,9 +90,9 @@ class Movies extends Component {
 
     return (
      <div className="background-container">
-        <div className="container">
+        <div className="container py-5">
           <div className="row">
-            <div className='col-md-2 col-sm-12'>
+            <div className='col-lg-2 col-sm-12'>
               <h4 className="text-muted text-left p-1">Filters</h4>
               <Categories
                 currentGenre={currentGenre}
@@ -103,8 +101,8 @@ class Movies extends Component {
               />
               { loggedIn && <Link to="/movies/new" className="btn blue btn-block my-2 text-white"> Add Movie </Link> }
             </div>
-           
-            <div className="col-md-10 col-sm-12">
+          
+            <div className='col-lg-10 col-sm-12'>
               <Input 
                 name="search" 
                 onChange={this.handleSearch} 
