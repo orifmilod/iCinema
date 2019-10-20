@@ -2,8 +2,21 @@ import React from 'react';
 import './style.css';
 
 const ListGroup = props => {
-  const { onGenreChange, currentGenre, allGenres } = props;
-  allGenres.sort();
+  let { onGenreChange, currentGenre, allGenres } = props;
+  // console.log(allGenres);
+  // if(typeof(allGenres === 'string'))
+  // { 
+  //   allGenres = allGenres.split('},');
+  //   let aallGenres = allGenres.map((el, index) => {
+  //     console.log(index);
+  //     if(index !== allGenres.length - 1) el += '}'
+  //     console.log(el);
+  //     return JSON.parse(el); 
+  //   })
+  //   console.log(aallGenres);
+  // }
+    // allGenres.sort();
+  //  console.log(allGenres);
   return ( 
     <div className="list-group">  
       <li 
@@ -22,10 +35,10 @@ const ListGroup = props => {
     </div>
   );
 }
+export default ListGroup;
 
 function CheckClass(genre, currentGenre) {
   const classButtons = "list-group-item list-item";
   return genre === currentGenre ? classButtons + ' list-item-active' :  classButtons;
 }
  
-export default ListGroup;

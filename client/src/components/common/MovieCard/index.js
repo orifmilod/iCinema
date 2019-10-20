@@ -18,7 +18,7 @@ import './style.css';
     render() {
       const { ToggleFavouriteCard } = this.props;
       const { liked, movie } = this.state;
-      const { title, rate, genre, image, description, _id } = movie;
+      const { title, rate, genre, image, description, _id, trailerLink, movieLength } = movie;
       let encodedImage;
       if(image !== undefined)
         encodedImage = new Buffer(image.data, 'binary').toString('base64');
@@ -27,14 +27,16 @@ import './style.css';
         <div className='card-container'>     
           <div className='card-wrapper' id={_id} onClick={() => FlipCard(_id)}>
             <FlippingCardFront 
-              description={description}
+              trailerLink={trailerLink}
               coverImage={coverImage}
               rate={rate}
+              movieLength={movieLength}
               genre={genre}
               title={title}
             />
             <FlippingCardBack
               liked={liked}
+              description={description}
               ToggleFavouriteCard={ToggleFavouriteCard}
             />
           </div>

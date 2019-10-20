@@ -1,10 +1,14 @@
 const mongoose = require('mongoose');
 const Genre = require('../models/genre');
+const redisClient = require('../Redis');
 
 exports.GET_ALL_GENRES = (req, res, next) => {
   Genre
   .find()
-  .then(docs => res.status(200).json(docs))
+  .then(docs => { 
+    // redisClient.SETEX('genres', 3600, docs.toString());
+    return res.status(200).json(docs)
+  })
   .catch(err => res.status(500).json(err))
 }
 exports.ADD_GENRE = (req, res, next) => {

@@ -13,6 +13,12 @@
   border-radius: 5px;
 }
 
+.like {
+  position: absolute;
+  right: 0;
+  bottom: 70px !important;
+}
+
 /* 
 .front>span {
   position: absolute;
@@ -40,7 +46,7 @@
   background: #1e1b26;
 }
 
-.card-footer>button,
+.card-footer>.trailer-btn,
 i {
   color: rgb(240, 98, 73);
   border-color: rgb(240, 98, 73);
@@ -52,17 +58,21 @@ i {
   right: 15px;
 }
 
-.card-footer>button {
+.card-footer>.trailer-btn {
+  border: 1px solid;
   position: absolute;
+  padding: 3px 7px;
   background: transparent;
   border-radius: 5px;
   bottom: 20px;
   left: 15px;
 }
 
-.card-footer>button:hover {
+.card-footer>.trailer-btn:hover {
+  text-decoration: none;
   cursor: pointer;
   background: rgb(240, 98, 73);
+  border-color: rgb(240, 98, 73);
   color: white;
 }
 

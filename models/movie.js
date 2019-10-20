@@ -7,7 +7,9 @@ const movieSchema = mongoose.Schema({
   genre: { type: String, required: true },
   image: { data: Buffer, contentType: String },
   rate: { type: Number, required: true },
-  description: { type: String, require: true }
+  description: { type: String, require: true },
+  trailerLink:  { type: String, require: true },
+  movieLength: { type: String, require: true },
 });
 
 module.exports = mongoose.model('Movie', movieSchema, 'movies');

@@ -10,9 +10,9 @@ export const GetMovies = () => {
 
 export const AddMovie = (movie) => {
     const contentType = {
-        headers: {
-            "content-type": "multipart/form-data"
-        }
+      headers: {
+        "content-type": "multipart/form-data"
+      }
     }
     let formData = new FormData();
     formData.append("title", movie.title);
@@ -21,8 +21,8 @@ export const AddMovie = (movie) => {
     formData.append("image", movie.image);
      
     return async (dispatch) => {
-        await Axios.post('/api/movies/addmovie', formData, contentType)
-        .then(docs => { console.log("Movie added"); dispatch({ type: GET_MOVIES_SUCCESS, payload: docs.data.movies }) })
-        .catch(error => dispatch({ type: GET_MOVIES_ERROR, error }))   
+      await Axios.post('/api/movies/addmovie', formData, contentType)
+      .then(docs => { console.log("Movie added"); dispatch({ type: GET_MOVIES_SUCCESS, payload: docs.data.movies }) })
+      .catch(error => dispatch({ type: GET_MOVIES_ERROR, error }))   
     }
 }

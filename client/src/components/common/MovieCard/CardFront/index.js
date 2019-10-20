@@ -1,15 +1,18 @@
 import React from 'react';
-// import noPosterIMG from '../../../../images/noposter.jpg';
 import './style.css';
-const CardFront = ({ description, image, coverImage, rate, title, genre }) => {
+
+const CardFront = ({ coverImage, rate, title, genre, trailerLink, movieLength }) => {
   return ( 
     <div className="front">
       <img src={coverImage} alt="coverImage"/>
       <div className='card-footer'>
         <h4> {title} </h4>
-        <p> 2h 15min / {genre} </p>
-        <button>watch trailer</button>
+        <p> {movieLength} / {genre} </p>
+        <a href={trailerLink} target='_blank' rel='noopener noreferrer' className='trailer-btn'>watch trailer</a>
         <i className="far fa-heart fa-2x"/>
+        <i class="far fa-thumbs-up like"> {rate}</i>
+
+        {/* <i onClick={() => ToggleFavouriteCard(id)} className={liked ? "fas fa-heart fa-2x": "far fa-heart fa-2x"} />  */}
       </div>
     </div>
    );
