@@ -6,7 +6,7 @@ const bodyParser = require('body-parser');
 const movieRoute = require('./routes/movies');
 const genreRoute = require('./routes/genres');
 const userRoute = require('./routes/users');
-const redisClinet = require('./Redis'); 
+// const redisClinet = require('./Redis'); 
 
 
 const app = express();
