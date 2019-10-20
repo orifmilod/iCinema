@@ -44,7 +44,7 @@ app.use(bodyParser.json({ limit: '10mb' }));
 
 //App routes to handle requests
 app.use('/api/movies', movieRoute);
-app.use('/api/genres' ,genreRoute); //cache
+app.use('/api/genres', genreRoute); //cache
 app.use('/api/users', userRoute);
 
 //Serve our static asset if in production
@@ -56,10 +56,10 @@ if(process.env.NODE_ENV === 'production') {
   });
 }
 else {
-    app.use(express.static(path.join(__dirname, '/client/public')));
-    app.get("*", function(req, res) {
-    res.sendFile(path.join(__dirname, "./client/public/index.html"));
-    });
+  app.use(express.static(path.join(__dirname, '/client/public')));
+  app.get("*", function(req, res) {
+  res.sendFile(path.join(__dirname, "./client/public/index.html"));
+  });
 }
 
 

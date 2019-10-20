@@ -15,7 +15,7 @@ const ListGroup = props => {
   //   })
   //   console.log(aallGenres);
   // }
-    // allGenres.sort();
+    allGenres.sort();
   //  console.log(allGenres);
   return ( 
     <div className="list-group">  
