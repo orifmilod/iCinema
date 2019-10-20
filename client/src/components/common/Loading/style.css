@@ -1,0 +1,80 @@
+.loader {
+  width: 5em;
+  height: 5em;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-wrap: wrap;
+      flex-wrap: wrap;
+  margin: auto;
+}
+
+.loader .square {
+  width: 25%;
+  height: 25%;
+  background: #ff5252;
+  -webkit-animation: zoom 1.4s ease-in-out infinite;
+          animation: zoom 1.4s ease-in-out infinite;
+}
+
+.loader .square:nth-child(13) {
+  -webkit-animation-delay: 0s;
+          animation-delay: 0s;
+}
+
+.loader .square:nth-child(9), .loader .square:nth-child(14) {
+  -webkit-animation-delay: 0.1s;
+          animation-delay: 0.1s;
+}
+
+.loader .square:nth-child(5), .loader .square:nth-child(10), .loader .square:nth-child(15) {
+  -webkit-animation-delay: 0.2s;
+          animation-delay: 0.2s;
+}
+
+.loader .square:nth-child(1), .loader .square:nth-child(6), .loader .square:nth-child(11), .loader .square:nth-child(16) {
+  -webkit-animation-delay: 0.3s;
+          animation-delay: 0.3s;
+}
+
+.loader .square:nth-child(2), .loader .square:nth-child(7), .loader .square:nth-child(12) {
+  -webkit-animation-delay: 0.4s;
+          animation-delay: 0.4s;
+}
+
+.loader .square:nth-child(3), .loader .square:nth-child(8) {
+  -webkit-animation-delay: 0.4s;
+          animation-delay: 0.4s;
+}
+
+.loader .square:nth-child(4) {
+  -webkit-animation-delay: 0.5s;
+          animation-delay: 0.5s;
+}
+
+@-webkit-keyframes zoom {
+  35% {
+    -webkit-transform: scale(0);
+            transform: scale(0);
+  }
+  0%,
+  70%,
+  to {
+    -webkit-transform: scale(1);
+            transform: scale(1);
+  }
+}
+
+@keyframes zoom {
+  35% {
+    -webkit-transform: scale(0);
+            transform: scale(0);
+  }
+  0%,
+  70%,
+  to {
+    -webkit-transform: scale(1);
+            transform: scale(1);
+  }
+}
+/*# sourceMappingURL=style.css.map */

@@ -1,16 +1,15 @@
 import React from 'react';
-import '../css/listGroup.css';
-const Categories = props =>
-{
-  const {
-    onGenreChange,
-    currentGenre,
-    allGenres
-  } = props;
+import './style.css';
 
+const ListGroup = props => {
+  const { onGenreChange, currentGenre, allGenres } = props;
+  allGenres.sort();
   return ( 
-    <div className="list-group">
-      <li key="allGenres" href="/" className={CheckClass('All', currentGenre)} onClick={() => onGenreChange('All')}> All</li>
+    <div className="list-group">  
+      <li 
+        key='all'className={CheckClass('All', currentGenre)} 
+        onClick={() => onGenreChange('All')}> All
+      </li>
       { 
         allGenres &&
         allGenres.map(element => <li 
@@ -29,4 +28,4 @@ function CheckClass(genre, currentGenre) {
   return genre === currentGenre ? classButtons + ' list-item-active' :  classButtons;
 }
  
-export default Categories;
+export default ListGroup;

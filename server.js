@@ -13,7 +13,7 @@ app.use(cors());
 
 //Connecting mongoDB
 const databaseConfig = require('./config/keys');
-mongoose.connect('mongodb+srv://admin:7fx6wiDzAGOOm3ZH@icinema-4p2wg.mongodb.net/iCinema?retryWrites=true', { useNewUrlParser: true, useUnifiedTopology: true })
+mongoose.connect(databaseConfig, { useNewUrlParser: true, useUnifiedTopology: true })
 
 //Checking the connection to db
 var db = mongoose.connection;

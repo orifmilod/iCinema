@@ -1,0 +1,25 @@
+.pagination-container {
+  justify-content: center;
+  display: flex;
+}
+
+
+.page-active {
+  background: rgb(240, 98, 73) !important;
+  transition: 0.2s ease-in-out;
+}
+
+
+.pagination-container>ul>li {
+  padding: 15px;
+  display: inline-block;
+  text-align: center;
+  height: 50px;
+  width: 50px;
+  border-radius: 5px;
+  margin: 0px 5px;
+  background: #42474b;
+  color: white;
+  list-style-type: none;
+  text-align: center;
+}

@@ -1,0 +1,66 @@
+.loader {
+
+  width: 5em;
+  height: 5em;
+  display: flex;
+  flex-wrap: wrap;
+  margin: auto;
+
+  .square {
+    width: 25%;
+    height: 25%;
+    background: #ff5252;
+    animation: zoom 1.4s ease-in-out infinite;
+
+    // stagger from left-bottom to right-top
+    // order: 13 - 9,14 - 5,10,15 - 1,6,11,16 - 2,7,12 - 3,8 - 4
+    &:nth-child(13) {
+      animation-delay: 0s;
+    }
+
+    &:nth-child(9),
+    &:nth-child(14) {
+      animation-delay: 0.1s;
+    }
+
+    &:nth-child(5),
+    &:nth-child(10),
+    &:nth-child(15) {
+      animation-delay: 0.2s;
+    }
+
+    &:nth-child(1),
+    &:nth-child(6),
+    &:nth-child(11),
+    &:nth-child(16) {
+      animation-delay: 0.3s;
+    }
+
+    &:nth-child(2),
+    &:nth-child(7),
+    &:nth-child(12) {
+      animation-delay: 0.4s;
+    }
+
+    &:nth-child(3),
+    &:nth-child(8) {
+      animation-delay: 0.4s;
+    }
+
+    &:nth-child(4) {
+      animation-delay: 0.5s;
+    }
+  }
+}
+
+@keyframes zoom {
+  35% {
+    transform: scale(0);
+  }
+
+  0%,
+  70%,
+  to {
+    transform: scale(1);
+  }
+}

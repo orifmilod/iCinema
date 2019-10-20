@@ -1,50 +1,47 @@
 import React from 'react';
-import Form from './common/form';
+// import Form from './common/form';
 import Joi from '@hapi/joi';
-import Input from './common/input';
+import Input from './common/Input';
 import Select from './common/select';
 
 import { connect } from 'react-redux';
 import { AddMovie } from '../actions/moviesAction';
 import Axios from 'axios';
 
-class AddMovieForm extends Form {
-    constructor() {
-        super();
-    }
-    state = {
-        data:{
-            title:"",
-            genre:"",
-            numberInStock:"",
-            description:"",
-            image: null,
-        },
-        genres:[],
-        errors:{}
-    }
+class AddMovieForm extends React.Component {
+  state = {
+      data:{
+          title:"",
+          genre:"",
+          numberInStock:"",
+          description:"",
+          image: null,
+      },
+      genres:[],
+      errors:{}
+  }
 
-    schema = {
-        id: Joi.string(),
-        title: Joi.string().required().label("Title"),
-        genre: Joi.string().required().label("Genre"),
-        numberInStock: Joi.number().min(0).required().label("Number In Stocks"),
-        description: Joi.string().required().label("Description"),
-        image: Joi.object().allow(null).label("Cover Image"),
-    }
+  schema = {
+      id: Joi.string(),
+      title: Joi.string().required().label("Title"),
+      genre: Joi.string().required().label("Genre"),
+      numberInStock: Joi.number().min(0).required().label("Number In Stocks"),
+      description: Joi.string().required().label("Description"),
+      image: Joi.object().allow(null).label("Cover Image"),
+  }
 
-    //Overriding handleSubmit method
-    handleSubmit = (e) => {
-        super.handleSubmit(e);
-        this.props.AddMovie(this.state.data);
+  //Overriding handleSubmit method
+  handleSubmit = (e) => {
+    super.handleSubmit(e);
+    this.props.AddMovie(this.state.data);
+  }
+  uploadImage = e => {
+    if(e.target.files[0]) {    
+        const data = {...this.state.data}
+        data["image"] = e.target.files[0];
+        this.setState({ data });
     }
-    uploadImage = e => {
-        if(e.target.files[0]) {    
-            const data = {...this.state.data}
-            data["image"] = e.target.files[0];
-            this.setState({ data });
-        }
-    }
+  }
     async componentDidMount()
     {
         Axios.get('/api/genres')

@@ -6,7 +6,7 @@ package-lock.json
 # production
 .vscode/
 /client/build
-
+./config/keys_dev.js
 # misc
 .DS_Store
 .env.local
@@ -18,4 +18,3 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 /.vscode
-/config/keys_dev.js

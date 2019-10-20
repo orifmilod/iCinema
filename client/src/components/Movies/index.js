@@ -3,16 +3,17 @@ import { Link } from 'react-router-dom';
 import { connect } from "react-redux";
 import _ from 'lodash';
 
-import Pagination from '../common/Pagination.jsx';
+import Pagination from '../Pagination';
 import paginate from '../../Utils/paginate';
 import MoviesTable from '../MoviesTable';
 
-import Categories from "../categories";
+import GenreFilter from "../common/GenreFilter";
 import categorize from '../../Utils/categorize';
-import { SearchItem } from '../common/search';
-import Input from '../common/input';
+import { SearchItem } from '../../Utils/Search';
+import Input from '../common/Input';
 import { GetMovies } from '../../actions/moviesAction';
 import { GetGenres } from '../../actions/genreAction';
+import Loading from "../common/Loading";
 
 class Movies extends Component {
   state = {
@@ -71,22 +72,21 @@ class Movies extends Component {
     let movies = [];
     let categorizedMovie = [];
     const { allMovies, genres, loggedIn } = this.props; 
-    if(_.isEmpty(allMovies)){ 
+
+    if(_.isEmpty(allMovies)) { 
       return (
-        <div className="background-container">
-          <h1 className="text-muted">Loading Movies...</h1>
+        <div className="background-container pt-5">
+         <Loading/>
         </div>
       )
     }
-    else {
-      let searchedMovies;
-      /* Checking for searched item if nothing searched it will just set it to allMovies*/
-      searchedMovies = _.isEmpty(search) ? allMovies : SearchItem(search, allMovies, searchFilter)
-      
-      categorizedMovie = categorize(searchedMovies, currentGenre) 
-      const sortedMovies = _.orderBy(categorizedMovie, [sortColumn.path], [sortColumn.order])
-      movies = paginate(sortedMovies, currentPage, pageSize);
-    }
+    let searchedMovies;
+    /* Checking for searched item if nothing searched it will just set it to allMovies*/
+    searchedMovies = _.isEmpty(search) ? allMovies : SearchItem(search, allMovies, searchFilter)
+    
+    categorizedMovie = categorize(searchedMovies, currentGenre) 
+    const sortedMovies = _.orderBy(categorizedMovie, [sortColumn.path], [sortColumn.order])
+    movies = paginate(sortedMovies, currentPage, pageSize);
 
     return (
      <div className="background-container">
@@ -94,7 +94,7 @@ class Movies extends Component {
           <div className="row">
             <div className='col-lg-2 col-sm-12'>
               <h4 className="text-muted text-left p-1">Filters</h4>
-              <Categories
+              <GenreFilter
                 currentGenre={currentGenre}
                 onGenreChange={this.handleGenreChange}
                 allGenres={genres}
@@ -103,13 +103,8 @@ class Movies extends Component {
             </div>
           
             <div className='col-lg-10 col-sm-12'>
-              <Input 
-                name="search" 
-                onChange={this.handleSearch} 
-                iconClass="fas fa-search"
-                placeholder="Search..."
-              />
-              <p className="text-left text-muted"> { movies ? `${movies.length}` : "0"} items available.</p>
+              <Input name="search" onChange={this.handleSearch}  label="Search Movie" iconClass="fas fa-search" placeholder="Search..."/>
+              <p className="text-left text-muted"> { categorizedMovie.length > 0 ? `${categorizedMovie.length}` : "0"} movies found.</p>
               {
                   movies.length > 0 ?
                   <MoviesTable
@@ -138,15 +133,15 @@ class Movies extends Component {
 
 const mapStateToProps = state => {
   return { 
-      allMovies: state.movie.movies,
-      genres: state.genre.genres,
-      loggedIn: state.auth.loggedIn
+    allMovies: state.movie.movies,
+    genres: state.genre.genres,
+    loggedIn: state.auth.loggedIn
   }
 }
 const mapDispatchToProps = dispatch => {
   return { 
-      GetMovies: () => dispatch(GetMovies()),
-      GetGenres: () => dispatch(GetGenres())
+    GetMovies: () => dispatch(GetMovies()),
+    GetGenres: () => dispatch(GetGenres())
   }
 }
 

@@ -2,49 +2,9 @@ body {
   padding-top: 70px;
 }
 
-.special-btn {
-  color: white;
-  padding: 15px 50px;
-  border: 0px;
-  border-radius: 50px;
-  background: #FF416C;
-  background: -webkit-linear-gradient(to top, #FF4B2B, #FF416C);
-  background: linear-gradient(to top, #FF4B2B, #FF416C);
-}
-
 .background-container {
   scroll-behavior: smooth;
   background: #343a40;
   min-height: 100vh;
   height: fit-content;
-}
-
-.main-header {
-  color: #ccc;
-  font: 45px italic;
-  padding-bottom: 20px;
-}
-
-@keyframes drop-top {
-  0% {
-    opacity: 0;
-    transform: translateY(-50px);
-  }
-
-  60% {
-    opacity: 1;
-    transform: translateY(10px);
-  }
-
-  100% {
-    opacity: 1;
-    transform: translateY(0px);
-  }
-}
-
-#split-line {
-  width: 1px;
-  background-color: rgb(23, 23, 23);
-  position: absolute;
-  height: 100%;
 }

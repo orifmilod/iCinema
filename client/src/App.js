@@ -9,9 +9,9 @@ import NotFound from './components/notfound';
 
 import Navbar from './components/Navbar';
 import MovieForm from './components/movieForm';
-import LoginForm from './components/loginForm';
+import Login from './components/Login';
 import './App.css';
-import RegisterForm from './components/registerForm';
+import Register from './components/Register';
 import AddMovieForm from './components/addMovie';
 import { Provider } from 'react-redux';
 import store from './store';
@@ -26,8 +26,8 @@ class App extends Component {
             <Navbar/>
             <Switch> 
               <Route exact path="/movies/new" component={AddMovieForm}/>
-              <Route exact path="/login" component={LoginForm}/>
-              <Route path="/resigter" component={RegisterForm}/>
+              <Route exact path="/login" component={Login}/>
+              <Route path="/resigter" component={Register}/>
               <Route path="/movies" exact component={Movies}/> 
               <Route path='/movies/:id' exact component={MovieForm}/>
               
