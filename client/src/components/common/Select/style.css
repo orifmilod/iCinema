@@ -4,15 +4,17 @@
   margin: 15px 0;
 }
 
+
 .input-container>label {
   margin: 5px 0px;
   color: aliceblue;
 }
 
-.input-container>input {
+.input-container>select {
   width: 100%;
-  padding: 10px 40px;
+  padding: 10px 50px;
   height: 50px;
+  -webkit-appearance: none;
   background: #42474b;
   border-bottom-color: rgb(240, 98, 73);
   border-top: 0px;
@@ -23,15 +25,16 @@
   color: white;
 }
 
-.input-container>input:focus {
+.input-container>select>option {
+  padding: 10px 40px;
+}
+
+.input-container>select:focus {
   outline: 0;
 }
 
-.input-container>#input:focus {
-  outline: none;
-}
 
-.input-container>.input-icon {
+.input-icon {
   position: absolute;
   color: wheat;
   z-index: 2;

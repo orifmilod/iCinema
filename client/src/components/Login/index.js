@@ -17,13 +17,8 @@ class Login extends React.Component {
   };
 
   schema = {
-    email: Joi.string()
-      .email()
-      .required()
-      .label("Email"),
-    password: Joi.string()
-      .required()
-      .label("Password")
+    email: Joi.string().email().required().label("Email"),
+    password: Joi.string().required().label("Password")
   };
   handleChange = ({ currentTarget: input }) => {
     const errors = { ...this.state.errors };

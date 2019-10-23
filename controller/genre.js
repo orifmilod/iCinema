@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 const Genre = require('../models/genre');
-const redisClient = require('../Redis');
+// const redisClient = require('../Redis');
 
 exports.GET_ALL_GENRES = (req, res, next) => {
   Genre

@@ -23,12 +23,12 @@ class MoviesTable extends Component {
     }
   }
   componentWillReceiveProps(props) {
-      const { movies, favouriteMovies } = props;
-      this.setState({ movies, favouriteMovies });
+    const { movies, favouriteMovies } = props;
+    this.setState({ movies, favouriteMovies });
   }
   componentWillMount(){
-      const { movies, favouriteMovies } = this.props;
-      this.setState({ movies, favouriteMovies });
+    const { movies, favouriteMovies } = this.props;
+    this.setState({ movies, favouriteMovies });
   }
   render() { 
     const { movies, favouriteMovies } = this.state;
@@ -52,10 +52,9 @@ MoviesTable.propTypes = {
   history: PropTypes.object.isRequired
 }
 const mapStateToProps = state => {
-    return {
-      favouriteMovies: state.auth.userData.favouriteMovies,
-      auth: state.auth
-    }
+  return {
+    auth: state.auth
+  }
 }
  
 const mapDispatchToProps = dispatch => {

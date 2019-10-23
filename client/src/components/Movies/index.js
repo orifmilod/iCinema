@@ -94,27 +94,23 @@ class Movies extends Component {
           <div className="row">
             <div className='col-lg-2 col-sm-12'>
               <h4 className="text-muted text-left p-1">Filters</h4>
-              <GenreFilter
-                currentGenre={currentGenre}
-                onGenreChange={this.handleGenreChange}
-                allGenres={genres}
-              />
-              { loggedIn && <Link to="/movies/new" className="btn blue btn-block my-2 text-white"> Add Movie </Link> }
+              <GenreFilter currentGenre={currentGenre} onGenreChange={this.handleGenreChange} allGenres={genres} />
+              { loggedIn && <Link to="/movies/new" className="btn btn-primary btn-block my-2 text-white"> Add Movie </Link> }
             </div>
           
             <div className='col-lg-10 col-sm-12'>
               <Input name="search" onChange={this.handleSearch}  label="Search Movie" iconClass="fas fa-search" placeholder="Search..."/>
               <p className="text-left text-muted"> { categorizedMovie.length > 0 ? `${categorizedMovie.length}` : "0"} movies found.</p>
               {
-                  movies.length > 0 ?
-                  <MoviesTable
-                    onDelete={this.handleDelete} 
-                    onLike={this.handleLike}
-                    movies={movies}
-                    sortColumn={sortColumn}
-                    onSort={this.handleSort}
-                  />  :
-                  <h1 className="text-white">No Movies</h1>
+                movies.length > 0 ?
+                <MoviesTable
+                  onDelete={this.handleDelete} 
+                  onLike={this.handleLike}
+                  movies={movies}
+                  sortColumn={sortColumn}
+                  onSort={this.handleSort}
+                />  :
+                <h1 className="text-white">No Movies</h1>
               }
               <br/>
               <Pagination

@@ -58,7 +58,6 @@ class RegisterForm extends React.Component {
     const { authMessage, loggedIn } = this.props;
     const { errors, passwordError } = this.state;
     const { email, password, passwordRepeat } = this.state.data;
-    console.log(passwordError)
     if(loggedIn) this.props.history.push('/');
 
     return ( 
