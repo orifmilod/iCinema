@@ -23,7 +23,9 @@ npm run dev
 <h2> Features </h2>
 <ul>
   <li> Sign In / Sign Up / Sign Out the user. </li>
-  <li> Add a new movie.</li>
+  <li> Recieving a welcoming email when sign-up using Nodemailer. </li>
+  <li> Add a new movie to the list.</li>
+  <li> Recieve montly emails about new movies.</li>
   <li> Favorite or like a movie and save it in your list of favourites. </li>
 </ul>
 
