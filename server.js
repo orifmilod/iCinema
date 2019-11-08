@@ -49,16 +49,16 @@ app.use('/api/users', userRoute);
 
 //Serve our static asset if in production
 if(process.env.NODE_ENV === 'production') {
-  app.use(express.static('client/build'));
+  app.use(express.static('frontend/build'));
   
   app.get('*', (req, res) => {
-    res.sendfile(path.resolve(__dirname, 'client', 'build', 'index.html'));
+    res.sendfile(path.resolve(__dirname, 'frontend', 'build', 'index.html'));
   });
 }
 else {
-  app.use(express.static(path.join(__dirname, '/client/public')));
+  app.use(express.static(path.join(__dirname, '/frontend/public')));
   app.get("*", function(req, res) {
-  res.sendFile(path.join(__dirname, "./client/public/index.html"));
+  res.sendFile(path.join(__dirname, "./frontend/public/index.html"));
   });
 }
 
