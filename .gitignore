@@ -1,13 +1,12 @@
 # dependencies
 /frontend/node_modules/
-/backend/node_modules/
 node_modules/
 
 package-lock.json
 password.txt
 # production
 .vscode/
-/client/build
+/frontend/build
 ./config/keys_dev.js
 # misc
 .DS_Store
