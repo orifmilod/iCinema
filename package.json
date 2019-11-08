@@ -4,12 +4,12 @@
   "description": "Website for movie theaters.",
   "main": "server.js",
   "scripts": {
-    "client-install": "cd client && npm install",
+    "client-install": "cd frontend && npm install",
     "start": "node server.js",
     "server": "nodemon server.js",
-    "client": "cd client && npm start",
-    "dev": "concurrently \"npm run server\" \"npm run client\"",
-    "heroku-postbuild": "NPM_CONFIG_PRODUCTION=false npm install --prefix client && npm run build --prefix client"
+    "client": "cd frontend && npm start",
+    "dev": "concurrently \"npm run server\" \"npm run frontend\"",
+    "heroku-postbuild": "NPM_CONFIG_PRODUCTION=false npm install --prefix frontend && npm run build --prefix frontend"
   },
   "author": "Orif Milod",
   "license": "MIT",

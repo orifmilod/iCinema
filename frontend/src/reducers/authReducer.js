@@ -7,7 +7,6 @@ const initState = {
 };
 
 export default function(state = initState, action) {
-  console.log(action.type)
   switch (action.type) {
     case LOGIN_SUCCESS:
       return {

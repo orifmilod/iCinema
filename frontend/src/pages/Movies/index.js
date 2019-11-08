@@ -4,7 +4,8 @@ import _ from 'lodash';
 
 import { search, categorize, filterRating } from '../../Utils';
 import { MoviesTable, Pagination } from '../../components';
-import { Input, Loading, ListGroup, Rating } from '../../components/common';
+import { Input, Loading, ListGroup } from '../../components/common';
+// import { Link } from 'react-router-dom';
 
 import { getMovies } from '../../actions/moviesAction';
 import { getGenres } from '../../actions/genreAction';

@@ -1,8 +1,7 @@
-import React, {Component} from 'react';
+import React from 'react';
 import './style.css';
 
 import MovieCard from './MovieCard';
-import Select from '../common/Select';
 
 const MoviesTable = ({ movies, currentPage, pageSize }) => {
   const currentMovies = movies.slice((currentPage - 1) * pageSize, pageSize * currentPage);
