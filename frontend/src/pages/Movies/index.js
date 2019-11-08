@@ -58,7 +58,7 @@ class Movies extends Component {
             <div className='col-lg-2 col-sm-12'>
               <h4 className='text-muted text-left p-1'>Filters</h4>
               <ListGroup active={currentGenre} onChange={val => this.handleChange('currentGenre', val)} options={genres} />
-              <Input label={'Rating'} min={0} max={10} placeholder='0-10' type='number'/>
+              <Input onChange={val => this.handleChange('rating', val.target.value)} label={'Rating'} min={0} max={10} placeholder='0-10' type='number'/>
               {/* { loggedIn && <Link to='/movies/new' className='btn btn-primary btn-block my-2 text-white'> Add Movie </Link> } */}
               {/* <Rating total={5} filled={rating} onChange={val => this.handleChange('rating', val)}/> */}
             </div>
