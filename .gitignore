@@ -2,7 +2,7 @@
 /client/node_modules/
 node_modules/
 package-lock.json
-
+password.txt
 # production
 .vscode/
 /client/build

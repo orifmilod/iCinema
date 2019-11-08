@@ -1,0 +1,42 @@
+{
+  "name": "client",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "@hapi/joi": "^15.0.0",
+    "axios": "^0.18.1",
+    "bcrypt": "^3.0.0",
+    "bootstrap": "^4.3.1",
+    "font-awesome": "^4.7.0",
+    "lodash": "^4.17.15",
+    "mongoose": "^5.5.3",
+    "prop-types": "^15.6.2",
+    "react": "^16.7.0",
+    "react-dom": "^16.7.0",
+    "react-redux": "^6.0.0",
+    "react-router-dom": "^4.3.1",
+    "react-scripts": "^2.1.1",
+    "reactstrap": "^6.5.0",
+    "redux": "^4.0.1",
+    "redux-thunk": "^2.3.0",
+    "string-similarity": "^3.0.0",
+    "webpack-sources": "^1.4.3"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject",
+    "heroku-postbuild": "npm run build"
+  },
+  "browserslist": [
+    ">0.2%",
+    "not dead",
+    "not ie <= 11",
+    "not op_mini all"
+  ],
+  "devDependencies": {
+    "@fortawesome/fontawesome-free": "^5.5.0"
+  },
+  "proxy": "http://localhost:5000"
+}

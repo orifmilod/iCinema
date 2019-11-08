@@ -1,0 +1,12 @@
+.rating-container {
+  background: #42474b;
+  margin: 15px auto;
+  padding: 10px 0px;
+  border-radius: 3px;
+}
+
+@media only screen and (max-width: 1400px) {
+  .container {
+    padding: 10px 5px;
+  }
+}

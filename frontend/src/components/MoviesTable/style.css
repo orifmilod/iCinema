@@ -1,0 +1,27 @@
+.movies-grid {
+  display: grid;
+  grid-auto-flow: row;
+  grid-template-columns: repeat(4, 1fr);
+  grid-column-gap: 25px;
+  justify-items: center;
+  grid-row-gap: 20px;
+}
+
+@media only screen and (max-width: 1400px) {
+  .movies-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media only screen and (max-width: 1092px) {
+  .movies-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+
+@media only screen and (max-width: 620px) {
+  .movies-grid {
+    grid-template-columns: repeat(1, 1fr);
+  }
+}

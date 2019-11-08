@@ -1,0 +1,125 @@
+.nav-wrapper {
+  position: fixed;
+  height: 70px;
+  z-index: 9;
+  background: rgb(27, 30, 45);
+  top: 0;
+  right: 0;
+  left: 0;
+  display: grid;
+  grid-auto-flow: column;
+}
+
+.nav {
+  margin: 30px 0;
+  list-style: none;
+  display: grid;
+  grid-auto-flow: column;
+  align-items: center;
+  justify-content: start;
+  grid-column-gap: 25px;
+}
+
+.nav>li {
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 3px;
+}
+
+.slider {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: -100px;
+  z-index: 888;
+  background: rgba(0, 0, 0, 1);
+  transition: 0.5s ease-in-out;
+  transform: translateY(-200vh);
+}
+
+.active {
+  transform: translateY(0);
+}
+
+.burger {
+  z-index: 999;
+  margin: auto 0 auto 20px;
+  cursor: pointer;
+}
+
+.line1 {
+  position: relative;
+  top: 0%;
+  transition: 0.5s ease-in-out;
+}
+
+.list {
+  display: grid;
+  position: relative;
+  margin: 100px auto;
+  width: 400px;
+}
+
+@media only screen and (max-width: 720px) {
+  .list {
+    position: absolute;
+    width: 80%;
+  }
+}
+
+@keyframes listItemFade {
+  from {
+    opacity: 0;
+    transform: translateX(50px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateX(0px);
+  }
+}
+
+.list>a {
+  opacity: 0;
+  color: white;
+  padding: 20px 0 20px 0;
+  text-transform: capitalize;
+  list-style-type: none;
+  border-bottom: 0.1px solid rgb(240, 98, 73);
+}
+
+.line2 {
+  position: relative;
+  top: 5%;
+  transition: 0.5s ease-in-out;
+}
+
+.line3 {
+  position: relative;
+  top: 10%;
+  transition: 0.5s ease-in-out;
+}
+
+.burger-active .line1 {
+  background: rgb(240, 98, 73);
+  transform: rotate(45deg);
+  top: 5%;
+}
+
+.burger-active .line2 {
+  transform: translateX(-50px);
+}
+
+.burger-active .line3 {
+  background: rgb(240, 98, 73);
+  transform: rotate(-45deg);
+  top: -5%;
+}
+
+.burger>div {
+  width: 30px;
+  height: 4px;
+  border-radius: 15px;
+  background: rgb(240, 98, 73);
+}
