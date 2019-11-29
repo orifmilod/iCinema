@@ -12,16 +12,16 @@ function toggleNav(e) {
   burger.classList.toggle('burger-active')
   slider.classList.toggle('active')
   list.childNodes.forEach((e, index) => {
-    if(e.style.animation)
-      e.style.animation=''
-    else 
+    if (e.style.animation)
+      e.style.animation = ''
+    else
       e.style.animation = `listItemFade 0.5s ease forwards ${index / 5 + 0.3}s`;
   });
 }
 const Navbar = props => {
-  return ( 
+  return (
     <nav className="nav-wrapper">
-       <div className="burger" onClick={e => toggleNav(e)}>
+      <div className="burger" onClick={e => toggleNav(e)}>
         <div className='line1'></div>
         <div className='line2'></div>
         <div className='line3'></div>
@@ -30,11 +30,11 @@ const Navbar = props => {
       <div className='slider'>
         <ul className='list'>
           <Link onClick={() => toggleNav()} to="/movies">Home</Link>
-          { !props.loggedIn ? <>
-              <Link onClick={() => toggleNav()} to="/login">Login</Link>
-              <Link onClick={() => toggleNav()} to="/resigter">Register</Link>
-            </>
-            : <Link onClick={() => {toggleNav(); props.signOut()}} to="/#">Log out</Link>
+          {!props.loggedIn ? <>
+            <Link onClick={() => toggleNav()} to="/login">Login</Link>
+            <Link onClick={() => toggleNav()} to="/resigter">Register</Link>
+          </>
+            : <Link onClick={() => { toggleNav(); props.signOut() }} to="/#">Log out</Link>
           }
         </ul>
       </div>
@@ -42,14 +42,14 @@ const Navbar = props => {
   )
 }
 const mapStateToProps = state => {
-  return { 
+  return {
     loggedIn: state.auth.loggedIn
   }
 }
 const mapDispatchToProps = dispatch => {
-  return { 
+  return {
     signOut: () => dispatch(signOut())
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps) (Navbar);
+export default connect(mapStateToProps, mapDispatchToProps)(Navbar);

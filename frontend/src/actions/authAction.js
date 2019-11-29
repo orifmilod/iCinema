@@ -2,11 +2,11 @@ import { LOGIN_SUCCESS, LOGIN_ERROR, SIGNOUT, SIGNUP_SUCCESS, SIGNUP_ERROR } fro
 import Axios from 'axios';
 
 export const signIn = (credentials) => {
-  return async (dispatch) => {    
+  return async (dispatch) => {
     try {
-     const result = await Axios.post('/api/users/login', credentials)
+      const result = await Axios.post('/api/users/login', credentials)
       dispatch({ type: LOGIN_SUCCESS, payload: result })
-    } 
+    }
     catch (error) {
       dispatch({ type: LOGIN_ERROR, error })
     }
@@ -14,12 +14,12 @@ export const signIn = (credentials) => {
 }
 
 export const signUp = (credentials) => {
-  return async (dispatch) => {      
+  return async (dispatch) => {
     try {
-    const result = await Axios.post('/api/users/signup', credentials)
+      const result = await Axios.post('/api/users/signup', credentials)
       dispatch({ type: SIGNUP_SUCCESS, payload: result })
     }
-    catch(error) { 
+    catch (error) {
       dispatch({ type: SIGNUP_ERROR, error })
     }
   }
