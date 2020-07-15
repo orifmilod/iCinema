@@ -1,8 +1,7 @@
-import Button from './Button';
-import Select from './Select';
-import ListGroup from './ListGroup';
-import Input from './Input';
-import Loading from './Loading';
-import Rating from './Rating';
+export { default as Loading } from "./Loading";
+export { default as Button } from "./Button";
+export { default as Select } from "./Select";
+export { default as ListGroup } from "./ListGroup";
+export { default as Input } from "./Input";
+export { default as Rating } from "./Rating";
 
-export { Loading, Input, ListGroup, Select, Button, Rating };

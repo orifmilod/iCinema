@@ -1,6 +1,5 @@
-import Footer from './Footer';
-import Navbar from './Navbar';
-import Pagination from './Pagination';
-import MoviesTable from './MoviesTable';
+export { default as Footer } from "./Footer";
+export { default as Navbar } from "./Navbar";
+export { default as Pagination } from "./Pagination";
+export { default as MoviesTable } from "./MoviesTable";
 
-export { Pagination, MoviesTable, Navbar, Footer };

@@ -7,7 +7,7 @@
   backface-visibility: hidden;
 }
 
-.front>img {
+.front > img {
   width: 100%;
   height: 100%;
   border-radius: 5px;
@@ -19,8 +19,7 @@
   bottom: 70px !important;
 }
 
-
-.front>span {
+.front > span {
   position: absolute;
   display: block;
   color: white;
@@ -47,19 +46,20 @@
   background: #1e1b26;
 }
 
-.card-footer>.trailer-btn,
+.card-footer > .trailer-btn,
 i {
   color: rgb(240, 98, 73);
   border-color: rgb(240, 98, 73);
+  transition: 0.15s ease-in-out;
 }
 
-.card-footer>i {
+.card-footer > i {
   position: absolute;
   bottom: 20px;
   right: 15px;
 }
 
-.card-footer>.trailer-btn {
+.card-footer > .trailer-btn {
   border: 1px solid;
   position: absolute;
   padding: 3px 7px;
@@ -69,7 +69,7 @@ i {
   left: 15px;
 }
 
-.card-footer>.trailer-btn:hover {
+.card-footer > .trailer-btn:hover {
   text-decoration: none;
   cursor: pointer;
   background: rgb(240, 98, 73);
@@ -77,7 +77,7 @@ i {
   color: white;
 }
 
-.card-footer>h4 {
+.card-footer > h4 {
   margin: 2px 0;
   text-align: left;
   font-size: 13px;
@@ -85,7 +85,7 @@ i {
   color: white;
 }
 
-.card-footer>h5 {
+.card-footer > h5 {
   margin: 2px 0;
   text-align: left;
   font-size: 13px;
@@ -93,9 +93,10 @@ i {
   color: white;
 }
 
-.card-footer>p {
+.card-footer > p {
   text-align: left;
   font-weight: 100;
   font-size: 11px;
   color: rgb(255, 255, 255);
 }
+

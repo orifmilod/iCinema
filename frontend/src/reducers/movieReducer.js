@@ -1,26 +1,27 @@
-import { GET_MOVIES_SUCCESS, GET_MOVIES_ERROR } from '../actions/actionTypes';
+import { GET_MOVIES_SUCCESS, GET_MOVIES_ERROR } from "../actions/actionTypes";
 
 const initialState = {
   movies: [],
   movie: {},
-  error: null
-}
+  error: null,
+};
 
-export default function(state = initialState, action) {
+export default function (state = initialState, action) {
   switch (action.type) {
     case GET_MOVIES_SUCCESS:
-      return { 
+      return {
         ...state,
-        movies: action.payload
+        movies: action.payload,
       };
 
     case GET_MOVIES_ERROR:
-      return { 
+      return {
         ...state,
-        error: action.error
+        error: action.error,
       };
-      
+
     default:
       return state;
   }
 }
+

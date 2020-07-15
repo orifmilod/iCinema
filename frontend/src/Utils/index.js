@@ -1,6 +1,5 @@
-import search from './search';
-import paginate from './paginate';
-import categorize from './categorize';
-import filterRating from './filterRating';
+export { default as search } from "./search";
+export { default as paginate } from "./paginate";
+export { default as categorize } from "./categorize";
+export { default as filterRating } from "./filterRating";
 
-export { search, paginate, categorize, filterRating };

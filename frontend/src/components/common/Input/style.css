@@ -4,12 +4,12 @@
   margin: 15px 0;
 }
 
-.input-container>label {
+.input-container > label {
   margin: 5px 0px;
   color: aliceblue;
 }
 
-.input-container>input {
+.input-container > input {
   width: 100%;
   padding: 10px 40px;
   height: 50px;
@@ -23,19 +23,20 @@
   color: white;
 }
 
-.input-container>input:focus {
+.input-container > input:focus {
   outline: 0;
 }
 
-.input-container>#input:focus {
+.input-container > #input:focus {
   outline: none;
 }
 
-.input-container>.input-icon {
+.input-container > .input-icon {
   position: absolute;
   color: wheat;
   z-index: 2;
   text-align: left;
-  top: 50px;
+  top: 48px;
   left: 15px;
 }
+

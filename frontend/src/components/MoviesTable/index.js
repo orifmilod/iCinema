@@ -1,17 +1,22 @@
-import React from 'react';
-import './style.css';
+import React from "react";
 
-import MovieCard from './MovieCard';
+import MovieCard from "./MovieCard";
+import "./style.css";
 
-const MoviesTable = ({ movies, currentPage, pageSize }) => {
-  const currentMovies = movies.slice((currentPage - 1) * pageSize, pageSize * currentPage);
+export default function MoviesTable({ movies, currentPage, pageSize }) {
+  const currentMovies = movies.slice(
+    (currentPage - 1) * pageSize,
+    pageSize * currentPage
+  );
+
   return (
-    <div className='movies-grid'>
-      { 
-        !!movies &&
-        currentMovies.map(movie => <MovieCard movie={movie} key={movie._id}/>) 
-      }  
+    <div className="movies-grid">
+      {!!movies &&
+        currentMovies.map((movie) => (
+          <MovieCard movie={movie} key={movie._id} />
+        ))}
+       
     </div>
-  )
+  );
 }
-export default MoviesTable;
+

@@ -1,25 +1,26 @@
-import React from 'react';
-import Joi from '@hapi/joi';
-import _ from 'lodash';
-import Input from '../../components/common/Input';
-import { connect } from 'react-redux';
-import { signIn } from '../../actions/authAction';
-import Button from '../../components/common/Button';
-import './style.css';
+import React from "react";
+import Joi from "@hapi/joi";
+import _ from "lodash";
+import Input from "../../components/common/Input";
+import { connect } from "react-redux";
+import { signIn } from "../../actions/authAction";
+import Button from "../../components/common/Button";
+import "./style.css";
 
 class Login extends React.Component {
   state = {
     data: {
-      email: '',
-      password: ''
+      email: "",
+      password: "",
     },
-    errors: {}
+    errors: {},
   };
 
   schema = {
-    email: Joi.string().email().required().label('Email'),
-    password: Joi.string().required().label('Password')
+    email: Joi.string().email().required().label("Email"),
+    password: Joi.string().required().label("Password"),
   };
+
   handleChange = ({ currentTarget: input }) => {
     const errors = { ...this.state.errors };
     const errorMessage = this.validateProperty(input);
@@ -32,7 +33,7 @@ class Login extends React.Component {
     this.setState({ data, errors });
   };
 
-  validateProperty = input => {
+  validateProperty = (input) => {
     const { name, value } = input;
     const obj = { [name]: value };
     const schema = { [name]: this.schema[name] };
@@ -47,11 +48,11 @@ class Login extends React.Component {
 
     const errors = {};
     result.error.details.forEach(
-      element => (errors[element.path[0]] = element.message)
+      (element) => (errors[element.path[0]] = element.message)
     );
     return errors;
   };
-  handleSubmit = e => {
+  handleSubmit = (e) => {
     e.preventDefault();
     const errors = this.validate();
     if (_.isEmpty(errors)) this.props.signIn(this.state.data);
@@ -61,51 +62,51 @@ class Login extends React.Component {
     const { data, errors } = this.state;
     const { email, password } = data;
     const { authMessage, loggedIn } = this.props;
-    if (loggedIn) this.props.history.push('/');
+    if (loggedIn) this.props.history.push("/");
     return (
-      <div className='background-container pt-5'>
-        <div className='container'>
-          <h1 className='header'>Login</h1>
+      <div className="background-container pt-5">
+        <div className="container">
+          <h1 className="header">Login</h1>
           <form onSubmit={this.handleSubmit}>
             <Input
-              name='email'
-              label='Email'
-              type='email'
-              error={errors['email']}
-              iconClass='fas fa-envelope'
+              name="email"
+              label="Email"
+              type="email"
+              error={errors["email"]}
+              iconClass="fas fa-envelope"
               onChange={this.handleChange}
-              placeholder='Please enter your email...'
+              placeholder="Please enter your email..."
               value={email}
               autoFocus
             />
             <Input
-              name='password'
-              type='password'
-              label='Password'
-              error={errors['password']}
-              iconClass='fas fa-key'
+              name="password"
+              type="password"
+              label="Password"
+              error={errors["password"]}
+              iconClass="fas fa-key"
               onChange={this.handleChange}
-              placeholder='Please enter your password...'
+              placeholder="Please enter your password..."
               value={password}
             />
-            {authMessage && <p className='text-white'>{authMessage}</p>}
-            <Button disabled={this.validate()} type='submit' label='Login'/>
+            {authMessage && <p className="text-white">{authMessage}</p>}
+            <Button disabled={this.validate()} type="submit" label="Login" />
           </form>
         </div>
       </div>
     );
   }
 }
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
   return {
     loggedIn: state.auth.loggedIn,
-    authMessage: state.auth.authMessage
+    authMessage: state.auth.authMessage,
   };
 };
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch) => {
   return {
-    signIn: creds => dispatch(signIn(creds))
+    signIn: (creds) => dispatch(signIn(creds)),
   };
 };
 
-export default connect(mapStateToProps,mapDispatchToProps)(Login);
+export default connect(mapStateToProps, mapDispatchToProps)(Login);

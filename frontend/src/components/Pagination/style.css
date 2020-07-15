@@ -3,14 +3,12 @@
   display: flex;
 }
 
-
 .page-active {
   background: rgb(240, 98, 73) !important;
   transition: 0.2s ease-in-out;
 }
 
-
-.pagination-container>ul>li {
+.pagination-container > ul > li {
   padding: 15px;
   display: inline-block;
   text-align: center;
@@ -24,6 +22,7 @@
   text-align: center;
 }
 
-.pagination-container>ul>li:hover {
+.pagination-container > ul > li:hover {
   cursor: pointer;
 }
+

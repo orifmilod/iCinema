@@ -1,3 +1,59 @@
+.ico-btn {
+  z-index: 999;
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 36px;
+  height: 36px;
+  cursor: pointer;
+  transition: all 0.2s ease-in;
+  border-radius: 50%;
+  color: white;
+}
+
+.ico-btn:hover {
+  background-color: rgba(255, 255, 255, 0.14);
+}
+
+.ico-btn__burger,
+.ico-btn__burger::before,
+.ico-btn__burger::after {
+  width: 20px;
+  height: 2px;
+  background: currentColor;
+  border-radius: 2px;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.ico-btn__burger::before {
+  content: "";
+  position: absolute;
+  transform: translateY(-6px);
+}
+
+.ico-btn__burger::after {
+  content: "";
+  position: absolute;
+  transform: translateY(6px);
+}
+
+.ico-btn.is-active .ico-btn__burger {
+  background: transparent;
+}
+
+.ico-btn.is-active .ico-btn__burger::before {
+  transform: rotate(-45deg);
+}
+
+.ico-btn.is-active .ico-btn__burger::after {
+  transform: rotate(45deg);
+}
+
+.ico-btn.is-active {
+  transform: rotate(360deg);
+}
+
 .nav-wrapper {
   position: fixed;
   height: 70px;
@@ -6,8 +62,10 @@
   top: 0;
   right: 0;
   left: 0;
-  display: grid;
-  grid-auto-flow: column;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  padding: 0 10px;
 }
 
 .nav {
@@ -20,7 +78,7 @@
   grid-column-gap: 25px;
 }
 
-.nav>li {
+.nav > li {
   font-size: 14px;
   font-weight: 600;
   letter-spacing: 3px;
@@ -46,12 +104,6 @@
   z-index: 999;
   margin: auto 0 auto 20px;
   cursor: pointer;
-}
-
-.line1 {
-  position: relative;
-  top: 0%;
-  transition: 0.5s ease-in-out;
 }
 
 .list {
@@ -80,7 +132,7 @@
   }
 }
 
-.list>a {
+.list > a {
   opacity: 0;
   color: white;
   padding: 20px 0 20px 0;
@@ -89,37 +141,3 @@
   border-bottom: 0.1px solid rgb(240, 98, 73);
 }
 
-.line2 {
-  position: relative;
-  top: 5%;
-  transition: 0.5s ease-in-out;
-}
-
-.line3 {
-  position: relative;
-  top: 10%;
-  transition: 0.5s ease-in-out;
-}
-
-.burger-active .line1 {
-  background: rgb(240, 98, 73);
-  transform: rotate(45deg);
-  top: 5%;
-}
-
-.burger-active .line2 {
-  transform: translateX(-50px);
-}
-
-.burger-active .line3 {
-  background: rgb(240, 98, 73);
-  transform: rotate(-45deg);
-  top: -5%;
-}
-
-.burger>div {
-  width: 30px;
-  height: 4px;
-  border-radius: 15px;
-  background: rgb(240, 98, 73);
-}

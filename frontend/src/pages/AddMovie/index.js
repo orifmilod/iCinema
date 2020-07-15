@@ -1,76 +1,59 @@
-import React from 'react';
-import Joi from '@hapi/joi';
-import { connect } from 'react-redux';
+import React from "react";
+import Joi from "@hapi/joi";
+import { connect } from "react-redux";
 
-import Input from '../../components/common/Input';
-import Select from '../../components/common/Select';
-import { addMovie } from '../../actions/moviesAction';
+import Input from "../../components/common/Input";
+import Select from "../../components/common/Select";
+import { addMovie } from "../../actions/moviesAction";
+import { movieSchema } from "./schema";
 
 class AddMovieForm extends React.Component {
   state = {
     data: {
-      title:"",
-      genre:"",
-      numberInStock:"",
-      description:"",
+      title: "",
+      genre: "",
+      numberInStock: "",
+      description: "",
       image: null,
     },
     genres: [],
-    errors: {}
-  }
-
-  schema = {
-    id: Joi.string(),
-    title: Joi.string().required().label("Title"),
-    genre: Joi.string().required().label("Genre"),
-    numberInStock: Joi.number().min(0).required().label("Number In Stocks"),
-    description: Joi.string().required().label("Description"),
-    image: Joi.object().allow(null).label("Cover Image"),
-  }
+    errors: {},
+  };
 
   handleChange = ({ currentTarget: input }) => {
-    const errors = { ...this.state.errors };
-    const errorMessage = this.validateProperty(input);
-
-    if (errorMessage) errors[input.name] = errorMessage;
-    else delete errors[input.name];
-
     const data = { ...this.state.data };
     data[input.name] = input.value;
-    this.setState({ data, errors });
+    this.setState({ data });
   };
 
-  validateProperty = input => {
-    const { name, value } = input;
-    const obj = { [name]: value };
-    const schema = { [name]: this.schema[name] };
-    const { error } = Joi.validate(obj, schema);
-    return error ? error.details[0].message : null;
-  };
-
-  handleSubmit = e => {
+  handleSubmit = (e) => {
     e.preventDefault();
-    this.props.addMovie(this.state.data);
-  }
-  
-  uploadImage = e => {
-    if(e.target.files[0]) {    
-      const data = {...this.state.data}
-      data["image"] = e.target.files[0];
+    //TODO: Validate property
+    const { error } = Joi.validate(this.state, movieSchema);
+    this.setState({ errors: error });
+    if (!error) this.props.addMovie(this.state.data);
+  };
+
+  uploadImage = (e) => {
+    if (e.target.files[0]) {
+      const data = { ...this.state.data };
+      data.image = e.target.files[0];
       this.setState({ data });
     }
-  }
+  };
 
   render() {
     const { errors, data } = this.state;
     const { title, genre, numberInStock } = data;
     const { genres } = this.props;
-    return ( 
+
+    return (
       <div className="background-container pt-5">
         <div className="container">
           <h1 className="header">Add a new movie</h1>
-          <form onSubmit={this.handleSubmit} encType="multipart/form-data" >
-            <Input 
+
+          <form onSubmit={this.handleSubmit} encType="multipart/form-data">
+            <Input
               name="title"
               value={title}
               label="Title"
@@ -80,6 +63,7 @@ class AddMovieForm extends React.Component {
               iconClass="fas fa-film"
               autoFocus
             />
+
             <Select
               name="genre"
               label="Genre"
@@ -87,19 +71,21 @@ class AddMovieForm extends React.Component {
               value={genre}
               error={errors["genre"]}
               options={genres}
-              iconClass='fas fa-address-card'
+              iconClass="fas fa-address-card"
             />
-            <Input  
-              name="numberInStock" 
-              label="Number In Stock" 
-              onChange={this.handleChange} 
-              placeholder="Enter numbers the stock..." 
-              error={errors["numberInStock"]} 
-              iconClass="fas fa-hashtag" 
-              value={numberInStock} 
+
+            <Input
+              name="numberInStock"
+              label="Number In Stock"
+              onChange={this.handleChange}
+              placeholder="Enter numbers the stock..."
+              error={errors["numberInStock"]}
+              iconClass="fas fa-hashtag"
+              value={numberInStock}
               type="number"
             />
-            <Input 
+
+            <Input
               name="image"
               label="Cover Image"
               onChange={this.uploadImage}
@@ -108,6 +94,7 @@ class AddMovieForm extends React.Component {
               accept="image/*"
               type="file"
             />
+
             <Input
               name="description"
               label="Description"
@@ -122,15 +109,17 @@ class AddMovieForm extends React.Component {
     );
   }
 }
-const mapDispatchToProps = dipatch => {
+const mapDispatchToProps = (dipatch) => {
   return {
     addMovie: (movie) => dipatch(addMovie(movie)),
-  }
-}
+  };
+};
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
   return {
-    genres: state.genre.genres
-  }
-}
-export default connect(mapStateToProps, mapDispatchToProps) (AddMovieForm);
+    genres: state.genre.genres,
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(AddMovieForm);
+
