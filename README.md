@@ -8,6 +8,10 @@ and admin can add movie to the list and much more.
 <h2>Installation </h2>
 
 Use the package manager [npm](https://www.npmjs.com/) to install iCinema.
+Setup the project and install the packages by running: 
+```bash
+npm run setup
+```
  Run project with command
 ```bash
 npm run dev
@@ -15,9 +19,9 @@ npm run dev
  
 <h2> Built with  </h2>
 <ul>
-  <li>FrontEnd: <b> React.JS, Redux Library, Bootstrap, HTML/CSS</b></li>
+  <li>FrontEnd: <b> React.JS, Redux Library, Bootstrap, HTML/CSS </b></li>
   <li>Backend:  <b> Node.JS, Express.JS </b> </li>
-  <li>Database: <b> MongoDB</b> </li>
+  <li>Database: <b> MongoDB, Mongoose </b> </li>
 </ul>
 
 <h2> Features </h2>
@@ -25,8 +29,6 @@ npm run dev
   <li> Sign In / Sign Up / Sign Out the user. </li>
   <li> Recieving a welcoming email when sign-up using Nodemailer. </li>
   <li> Add a new movie to the list.</li>
-  <li> Recieve montly emails about new movies.</li>
-  <li> Favorite or like a movie and save it in your list of favourites. </li>
 </ul>
 
 
