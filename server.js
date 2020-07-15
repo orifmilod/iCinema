@@ -35,22 +35,13 @@ app.use("/api/movies", movieRoute);
 app.use("/api/genres", genreRoute); //cache
 app.use("/api/users", userRoute);
 
-//Serve our static asset if in production
-if (process.env.NODE_ENV === "production") {
-  app.use(express.static("frontend/build"));
+//Serve our static asset
+app.use(express.static("frontend/build"));
 
-  app.get("*", (req, res) => {
-    res.sendfile(path.resolve(__dirname, "frontend", "build", "index.html"));
-  });
-} else {
-  app.use(express.static(path.join(__dirname, "/frontend/public")));
-
-  app.get("*", function (req, res) {
-    res.sendFile(path.join(__dirname, "./frontend/public/index.html"));
-  });
-}
+app.get("*", (req, res) => {
+  res.sendFile(path.resolve(__dirname, "frontend", "build", "index.html"));
+});
 
 const port = process.env.PORT || 5000;
 app.listen(port, () => console.log(`Server running on port ${port}`));
 module.exports = app;
-
