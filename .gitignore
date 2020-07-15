@@ -9,7 +9,6 @@ password.txt
 
 .vscode/
 
-# config/keys_dev.js
 # misc
 .DS_Store
 .env.local
