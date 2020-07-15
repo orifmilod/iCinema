@@ -14,6 +14,7 @@ app.use(cors());
 
 //Connecting mongoDB
 const databaseConfig = require("./config/keys");
+console.log(databaseConfig);
 mongoose.connect(databaseConfig, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
@@ -43,5 +44,6 @@ app.get("*", (req, res) => {
 });
 
 const port = process.env.PORT || 5000;
+console.log(port);
 app.listen(port, () => console.log(`Server running on port ${port}`));
 module.exports = app;
