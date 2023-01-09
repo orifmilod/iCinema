@@ -1,5 +1,5 @@
 import React from "react";
-import Joi from "@hapi/joi";
+import Joi from "joi";
 import _ from "lodash";
 import Input from "../../components/common/Input";
 import { connect } from "react-redux";

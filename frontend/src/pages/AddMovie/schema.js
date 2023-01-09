@@ -1,4 +1,4 @@
-import Joi from "@hapi/joi";
+import Joi from "joi";
 
 export const movieSchema = {
   id: Joi.string(),

@@ -1,5 +1,5 @@
 import React from "react";
-import Joi from "@hapi/joi";
+import Joi from "joi";
 import Input from "../../components/common/Input";
 import { connect } from "react-redux";
 import { signUp } from "../../actions/authAction";
@@ -136,4 +136,3 @@ const mapDispatchToProps = (dispatch) => {
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(RegisterForm);
-

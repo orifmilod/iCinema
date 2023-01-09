@@ -3,11 +3,11 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@hapi/joi": "^15.0.0",
     "axios": "^0.21.2",
     "bcrypt": "^5.0.0",
     "bootstrap": "^4.3.1",
     "font-awesome": "^4.7.0",
+    "joi": "^17.7.0",
     "lodash": "^4.17.15",
     "mongoose": "^5.5.3",
     "prop-types": "^15.6.2",
