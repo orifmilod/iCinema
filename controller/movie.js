@@ -2,7 +2,9 @@ import express from "express";
 const router = express.Router();
 
 import Movie from "../models/movie.js";
-// import multer from "multer";
+import Genre from "../models/genre.js";
+
+import { upload } from "../utils/cloudinary.js";
 
 // get all movies
 router.get("/", async (req, res) => {
@@ -31,21 +33,35 @@ router.get("/:movieId", async (req, res) => {
 });
 
 // add new movie
-router.get("/", async (req, res) => {
-  try {
-    const movieTitle = req.body.title.toLowerCase();
+router.post("/", upload.single("image"), async (req, res) => {
+  const { title, genre, rate, description, trailerLink, movieLength } =
+    req.body;
 
-    const isMovieExists = await Movie.findOne({ title: movieTitle });
+  try {
+    const isMovieExists = await Movie.findOne({ title });
+
     if (isMovieExists) {
       return res.status(400).json({ message: "Movie already exists" });
     }
 
-    const newMovie = new Movie(req.body);
+    const newMovie = new Movie({
+      title,
+      genre,
+      rate,
+      description,
+      trailerLink,
+      movieLength,
+      image: req.file.path,
+    });
+
     await newMovie.save();
 
     res.status(201).json({ message: "Movie added successfully" });
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    console.log(error);
+    res
+      .status(500)
+      .json({ error: "Failed to add movie", message: error.message });
   }
 });
 
