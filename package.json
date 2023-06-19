@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "Website for movie theaters.",
   "main": "server.js",
+  "type": "module",
   "scripts": {
     "setup": "npm install && npm run setup-frontend",
     "dev": "concurrently \"npm run server\" \"npm run frontend\"",
@@ -18,8 +19,10 @@
   "dependencies": {
     "bcrypt": "^5.0.0",
     "body-parser": "^1.19.0",
+    "cloudinary": "^1.37.1",
     "concurrently": "^3.6.1",
     "cors": "^2.8.5",
+    "dotenv": "^16.3.1",
     "express": "^4.17.1",
     "gravatar": "^1.8.0",
     "jsonwebtoken": "^9.0.0",
