@@ -1,40 +1,33 @@
-const cors = require("cors");
-const path = require("path");
-const express = require("express");
-const mongoose = require("mongoose");
-const bodyParser = require("body-parser");
-const movieRoute = require("./routes/movies");
-const genreRoute = require("./routes/genres");
-const userRoute = require("./routes/users");
+import cors from "cors";
+import path from "path";
+import express from "express";
+import bodyParser from "body-parser";
+
+import dotenv from "dotenv";
+dotenv.config();
 
 const app = express();
 
+import users from "./controller/user.js";
+import auth from "./controller/auth.js";
+import movie from "./controller/movie.js";
+import genre from "./controller/genre.js";
+
 //To prevent CORS errors
 app.use(cors());
-
-//Connecting mongoDB
-const databaseConfig = require("./config/keys");
-console.log(databaseConfig);
-mongoose.connect(databaseConfig, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-});
-
-//Checking the connection to db
-var db = mongoose.connection;
-db.once("open", () => console.log("Mongo Database is connected now!"));
-db.on("error", console.error.bind(console, "connection error:"));
-
-app.use(express.static("./uploads"));
 
 // Body parser middleware
 app.use(bodyParser.urlencoded({ extended: true, limit: "10mb" }));
 app.use(bodyParser.json({ limit: "10mb" }));
 
+//Connecting mongoDB
+import "./utils/mongodb.js"; //Database
+
 //App routes to handle requests
-app.use("/api/movies", movieRoute);
-app.use("/api/genres", genreRoute); //cache
-app.use("/api/users", userRoute);
+app.use("/api/movies", movie);
+app.use("/api/genres", genre);
+app.use("/api/users", users);
+app.use("/api/auth", auth);
 
 //Serve our static asset
 app.use(express.static("frontend/build"));
@@ -44,6 +37,4 @@ app.get("*", (req, res) => {
 });
 
 const port = process.env.PORT || 5000;
-console.log(port);
 app.listen(port, () => console.log(`Server running on port ${port}`));
-module.exports = app;

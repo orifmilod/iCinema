@@ -1,60 +1,52 @@
-const mongoose = require("mongoose");
-const Movie = require("../models/movie");
-const multer = require("multer");
-const fs = require("fs");
+import express from "express";
+const router = express.Router();
 
-exports.getAllMovies = (req, res) => {
-  Movie.find()
-    .then((movies) =>
-      res.status(200).json({
-        count: movies.length,
-        movies: movies,
-      })
-    )
-    .catch((err) => res.status(500).json({ error: err }));
-};
+import Movie from "../models/movie.js";
+// import multer from "multer";
 
-const storage = multer.diskStorage({
-  destination: (req, file, callback) => {
-    callback(null, "./uploads/");
-  },
-  filename: (req, file, callback) => {
-    callback(null, Date.now() + "-" + file.originalname);
-  },
+// get all movies
+router.get("/", async (req, res) => {
+  try {
+    const movies = await Movie.find();
+    res.status(200).json({
+      count: movies.length,
+      movies: movies,
+    });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
 });
 
-const upload = multer({ storage: storage }).single("image");
+// get one movie
+router.get("/:movieId", async (req, res) => {
+  try {
+    const movie = await Movie.findById({ _id: req.params.movieId });
+    if (movie) return res.status(202).json(movie);
+    return res
+      .status(404)
+      .json({ error: "The movie you are looking doesn't exist" });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
 
-exports.addMovie = (req, res) => {
-  upload(req, res, (err) => {
-    if (err) res.status(500).json(err);
-    else {
-      fs.readFile(req.file.path, function (err, data) {
-        if (err) throw err;
-        else {
-          const contentType = req.file.mimetype;
-          const newMovie = new Movie({
-            _id: mongoose.Types.ObjectId(),
-            title: req.body.title,
-            numberInStock: req.body.numberInStock,
-            genre: req.body.genre,
-            image: { data, contentType },
-            rate: 0,
-          });
+// add new movie
+router.get("/", async (req, res) => {
+  try {
+    const movieTitle = req.body.title.toLowerCase();
 
-          //Saving new movie in db
-          newMovie.save((err, movie) => {
-            if (err) res.status(500).json({ error: err });
-            else {
-              res.status(201).json({
-                message: "A new movie added.",
-                movie: movie,
-              });
-            }
-          });
-        }
-      });
+    const isMovieExists = await Movie.findOne({ title: movieTitle });
+    if (isMovieExists) {
+      return res.status(400).json({ message: "Movie already exists" });
     }
-  });
-};
 
+    const newMovie = new Movie(req.body);
+    await newMovie.save();
+
+    res.status(201).json({ message: "Movie added successfully" });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+export default router;
