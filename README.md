@@ -9,7 +9,7 @@ Use the package manager [npm](https://www.npmjs.com/) to install iCinema.
 Fork the Project by using:
 
 ```bash
-git clone https://github.com/abhinav2712/iCinema.git
+git clone https://github.com/orifmilod/iCinema.git
 ```
 
 then cd into the project by using:
