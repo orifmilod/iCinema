@@ -8,10 +8,10 @@ dotenv.config();
 
 const app = express();
 
-import users from "./controller/user.js";
-import auth from "./controller/auth.js";
-import movie from "./controller/movie.js";
-import genre from "./controller/genre.js";
+import user from "./controllers/user.js";
+import auth from "./controllers/auth.js";
+import movie from "./controllers/movie.js";
+import genre from "./controllers/genre.js";
 
 //To prevent CORS errors
 app.use(cors());
@@ -26,7 +26,7 @@ import "./utils/mongodb.js"; //Database
 //App routes to handle requests
 app.use("/api/movies", movie);
 app.use("/api/genres", genre);
-app.use("/api/users", users);
+app.use("/api/users", user);
 app.use("/api/auth", auth);
 
 //Serve our static asset
@@ -38,3 +38,5 @@ app.get("*", (req, res) => {
 
 const port = process.env.PORT || 5000;
 app.listen(port, () => console.log(`Server running on port ${port}`));
+
+// module.exports = app;

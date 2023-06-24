@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 
 const movieSchema = mongoose.Schema({
   title: { type: String, required: true },
-  genre: [{ type: String }],
+  genre: [{ type: String, ref: "Genre" }],
   image: { type: String },
   rate: { type: Number, required: true, default: 0 },
   description: { type: String, require: true },
@@ -11,4 +11,5 @@ const movieSchema = mongoose.Schema({
 });
 
 const Movie = mongoose.model("Movie", movieSchema);
+
 export default Movie;
