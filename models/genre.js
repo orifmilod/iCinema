@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 
 const genreSchema = mongoose.Schema({
-  genre: { type: String, required: true, trim: true },
+  name: { type: String, default: "uncategorized" },
 });
 
 const Genre = mongoose.model("Genre", genreSchema);
