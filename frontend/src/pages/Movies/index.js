@@ -3,26 +3,52 @@ import { connect } from "react-redux";
 import _ from "lodash";
 
 import { search, categorize, filterRating } from "../../utils";
-import { MoviesTable, Pagination } from "../../components";
+import { Pagination } from "../../components";
 import { Input, Loading, ListGroup } from "../../components/common";
 
-import { getMovies } from "../../actions/moviesAction";
 import { getGenres } from "../../actions/genreAction";
 
 class Movies extends Component {
   state = {
     genres: [],
+    movies: [],
     pageSize: 12,
     currentPage: 1,
     currentGenre: "All",
     searchFilter: "",
     rating: 0,
+    loading: true,
+    totalResults: 0,
   };
 
   componentDidMount() {
-    this.props.getMovies();
+    this.fetchMovies();
     this.props.getGenres();
   }
+  
+
+  fetchMovies = async (page = 1) => {
+    const apiKey = '5e221987';
+    const url = `http://www.omdbapi.com/?s=all&apikey=${apiKey}`;
+    this.setState({ loading: true });
+
+    try {
+      const response = await fetch(url);
+      const data = await response.json();
+      if (data.Response === "True") {
+        this.setState((prevState) => ({
+          movies: [...prevState.movies, ...data.Search],
+          loading: false,
+          totalResults: parseInt(data.totalResults, 10),
+        }));
+      } else {
+        this.setState({ loading: false });
+      }
+    } catch (error) {
+      console.error("Error fetching movies:", error);
+      this.setState({ loading: false });
+    }
+  };
 
   handleChange = (name, value) => {
     this.setState({ [name]: value, currentPage: 1 });
@@ -32,6 +58,11 @@ class Movies extends Component {
     this.setState({ currentPage: page });
   };
 
+  handleLoadMore = () => {
+    const nextPage = Math.ceil(this.state.movies.length / 10) + 1;
+    this.fetchMovies(nextPage);
+  };
+
   render() {
     const {
       currentGenre,
@@ -39,11 +70,14 @@ class Movies extends Component {
       searchFilter,
       pageSize,
       rating,
+      loading,
+      movies,
+      totalResults,
     } = this.state;
 
-    const { movies, genres, loggedIn } = this.props;
+    const { genres, loggedIn } = this.props;
 
-    if (_.isEmpty(movies)) {
+    if (loading && _.isEmpty(movies)) {
       return (
         <div className="background-container pt-5">
           <Loading />
@@ -51,12 +85,23 @@ class Movies extends Component {
       );
     }
 
+    if (_.isEmpty(movies) && !loading) {
+      return (
+        <div className="background-container pt-5">
+          <h1>No movies found.</h1>
+        </div>
+      );
+    }
+
     let filteredMovies = [];
 
     /* Checking for searched item if nothing searched it will just set it to allMovies*/
-    filteredMovies = search(movies, searchFilter, "title");
+    filteredMovies = search(movies, searchFilter, "Title");
     filteredMovies = categorize(filteredMovies, currentGenre);
     filteredMovies = filterRating(filteredMovies, rating);
+
+    const startIndex = (currentPage - 1) * pageSize;
+    const moviesToDisplay = filteredMovies.slice(startIndex, startIndex + pageSize);
 
     return (
       <div className="background-container">
@@ -81,8 +126,6 @@ class Movies extends Component {
                 type="number"
                 iconClass="fas fa-star"
               />
-              {/* { loggedIn && <Link to='/movies/new' className='btn btn-primary btn-block my-2 text-white'> Add Movie </Link> } */}
-              {/* <Rating total={5} filled={rating} onChange={val => this.handleChange('rating', val)}/> */}
             </div>
 
             <div className="col-lg-10 col-sm-12">
@@ -99,16 +142,31 @@ class Movies extends Component {
                 movies found.
               </p>
 
-              {!!filteredMovies ? (
-                <MoviesTable
-                  pageSize={pageSize}
-                  currentPage={currentPage}
-                  movies={filteredMovies}
-                />
-              ) : (
-                <h1 className="text-white">No Movies</h1>
+              <div className="row">
+                {moviesToDisplay.map((movie) => (
+                  <div key={movie.imdbID} className="col-lg-3 col-md-4 col-sm-6 mb-4">
+                    <div className="card h-100">
+                      <img
+                        src={movie.Poster}
+                        className="card-img-top"
+                        alt={movie.Title}
+                      />
+                      <div className="card-body">
+                        <h5 className="card-title">{movie.Title}</h5>
+                        <p className="card-text">Year: {movie.Year}</p>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              {movies.length < totalResults && (
+                <div className="text-center my-4">
+                  <button className="btn btn-primary" onClick={this.handleLoadMore}>
+                    Load More
+                  </button>
+                </div>
               )}
-              <br />
 
               <Pagination
                 itemsCount={filteredMovies.length}
@@ -126,7 +184,6 @@ class Movies extends Component {
 
 const mapStateToProps = (state) => {
   return {
-    movies: state.movie.movies,
     genres: state.genre.genres,
     loggedIn: state.auth.loggedIn,
   };
@@ -134,7 +191,6 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    getMovies: () => dispatch(getMovies()),
     getGenres: () => dispatch(getGenres()),
   };
 };
