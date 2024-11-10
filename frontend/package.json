@@ -5,7 +5,7 @@
   "dependencies": {
     "axios": "^1.6.0",
     "bcrypt": "^5.0.0",
-    "bootstrap": "^4.3.1",
+    "bootstrap": "^5.0.0",
     "font-awesome": "^4.7.0",
     "joi": "^17.7.0",
     "lodash": "^4.17.15",
