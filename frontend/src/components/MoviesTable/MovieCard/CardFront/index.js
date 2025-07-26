@@ -15,7 +15,7 @@ const CardFront = ({
       <div className="card-footer">
         <h4> {title} </h4>
         <p>
-          {movieLength} / {genre}
+          {movieLength} / {genre.map((g) => g.name).join(", ")}
         </p>
 
         <a
@@ -32,4 +32,3 @@ const CardFront = ({
   );
 };
 export default CardFront;
-

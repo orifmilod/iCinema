@@ -4,21 +4,42 @@ import { connect } from "react-redux";
 
 import Input from "../../components/common/Input";
 import Select from "../../components/common/Select";
+import { Button } from "../../components/common";
 import { addMovie } from "../../actions/moviesAction";
+import { getGenres } from "../../actions/genreAction";
 import { movieSchema } from "./schema";
 
 class AddMovieForm extends React.Component {
+  _isMounted = false;
+
   state = {
     data: {
       title: "",
       genre: "",
-      numberInStock: "",
+      rate: "",
       description: "",
       image: null,
+      trailerLink: "",
+      movieLength: "",
     },
-    genres: [],
     errors: {},
   };
+
+  componentDidMount() {
+    this._isMounted = true;
+    this.props.getGenres();
+  }
+
+  componentDidUpdate(prevProps) {
+    if (this.props.genres.length > 0 && prevProps.genres.length === 0) {
+      this.setState((prevState) => ({
+        data: {
+          ...prevState.data,
+          genre: this.props.genres[0]._id,
+        },
+      }));
+    }
+  }
 
   handleChange = ({ currentTarget: input }) => {
     const data = { ...this.state.data };
@@ -26,12 +47,34 @@ class AddMovieForm extends React.Component {
     this.setState({ data });
   };
 
-  handleSubmit = (e) => {
+  handleSubmit = async (e) => {
     e.preventDefault();
-    //TODO: Validate property
-    const { error } = Joi.valid(this.state, movieSchema);
-    this.setState({ errors: error });
-    if (!error) this.props.addMovie(this.state.data);
+    const { data } = this.state;
+    const { error } = movieSchema.validate(data);
+    this.setState({ errors: error ? error.details : {} });
+    if (error) {
+      console.log("Validation error:", error.details);
+      return;
+    }
+    try {
+      await this.props.addMovie(data, this.props.history);
+      if (this._isMounted) {
+        this.setState({
+          data: {
+            title: "",
+            genre: "",
+            rate: "",
+            description: "",
+            image: null,
+            trailerLink: "",
+            movieLength: "",
+          },
+          errors: {},
+        });
+      }
+    } catch (err) {
+      console.error("Error adding movie:", err);
+    }
   };
 
   uploadImage = (e) => {
@@ -42,13 +85,17 @@ class AddMovieForm extends React.Component {
     }
   };
 
+  componentWillUnmount() {
+    this._isMounted = false;
+  }
+
   render() {
     const { errors, data } = this.state;
-    const { title, genre, numberInStock } = data;
+    const { title, genre, rate, description, trailerLink, movieLength } = data;
     const { genres } = this.props;
 
     return (
-      <div className="background-container pt-5">
+      <div className="background-container pt-5 pb-3">
         <div className="container">
           <h1 className="header">Add a new movie</h1>
 
@@ -75,13 +122,13 @@ class AddMovieForm extends React.Component {
             />
 
             <Input
-              name="numberInStock"
-              label="Number In Stock"
+              name="rate"
+              label="Rating"
               onChange={this.handleChange}
-              placeholder="Enter numbers the stock..."
-              error={errors["numberInStock"]}
-              iconClass="fas fa-hashtag"
-              value={numberInStock}
+              placeholder="Enter the rating..."
+              error={errors["rate"]}
+              iconClass="fas fa-star"
+              value={rate}
               type="number"
             />
 
@@ -96,13 +143,36 @@ class AddMovieForm extends React.Component {
             />
 
             <Input
+              name="trailerLink"
+              label="Trailer Link"
+              onChange={this.handleChange}
+              placeholder="Enter the trailer link..."
+              error={errors["trailerLink"]}
+              iconClass="fas fa-link"
+              value={trailerLink}
+            />
+
+            <Input
+              name="movieLength"
+              label="Movie Length"
+              onChange={this.handleChange}
+              placeholder="Enter the movie length..."
+              error={errors["movieLength"]}
+              iconClass="fas fa-clock"
+              value={movieLength}
+            />
+
+            <Input
               name="description"
               label="Description"
               placeholder="Enter description about this movie..."
               iconClass="fas fa-info"
               error={errors["description"]}
               type="textarea"
+              value={description}
+              onChange={this.handleChange}
             />
+            <Button type="submit" label="Add Movie" />
           </form>
         </div>
       </div>
@@ -111,7 +181,8 @@ class AddMovieForm extends React.Component {
 }
 const mapDispatchToProps = (dipatch) => {
   return {
-    addMovie: (movie) => dipatch(addMovie(movie)),
+    addMovie: (movie, history) => dipatch(addMovie(movie, history)),
+    getGenres: () => dipatch(getGenres()),
   };
 };
 

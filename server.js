@@ -1,10 +1,10 @@
+import dotenv from "dotenv";
+dotenv.config();
+
 import cors from "cors";
 import path from "path";
 import express from "express";
 import bodyParser from "body-parser";
-
-import dotenv from "dotenv";
-dotenv.config();
 
 const app = express();
 
@@ -31,6 +31,11 @@ app.use("/api/auth", auth);
 
 //Serve our static asset
 app.use(express.static("frontend/build"));
+
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 app.get("*", (req, res) => {
   res.sendFile(path.resolve(__dirname, "frontend", "build", "index.html"));

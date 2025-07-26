@@ -1,4 +1,9 @@
-import { GET_GENRES_ERROR, GET_GENRES_SUCCESS } from "../actions/actionTypes";
+import {
+  GET_GENRES_ERROR,
+  GET_GENRES_SUCCESS,
+  ADD_GENRE_SUCCESS,
+  ADD_GENRE_ERROR,
+} from "../actions/actionTypes";
 
 const initialState = {
   genres: [],
@@ -15,6 +20,18 @@ export default function (state = initialState, action) {
       };
 
     case GET_GENRES_ERROR:
+      return {
+        ...state,
+        error: action.error,
+      };
+
+    case ADD_GENRE_SUCCESS:
+      return {
+        ...state,
+        newGenre: action.payload,
+      };
+
+    case ADD_GENRE_ERROR:
       return {
         ...state,
         error: action.error,

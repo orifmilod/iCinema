@@ -8,6 +8,7 @@ import {
 
 import Movies from "./pages/Movies";
 import AddMovieForm from "./pages/AddMovie";
+import AddGenre from "./pages/AddGenre";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 import Login from "./pages/Login";
@@ -28,8 +29,9 @@ class App extends Component {
             <Navbar />
             <Switch>
               <Route exact path="/movies/new" component={AddMovieForm} />
+              <Route exact path="/genres/new" component={AddGenre} />
               <Route exact path="/login" component={Login} />
-              <Route path="/resigter" component={Register} />
+              <Route path="/register" component={Register} />
               <Route path="/movies" exact component={Movies} />
 
               <Redirect exact from="/" to="/movies" />

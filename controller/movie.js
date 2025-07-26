@@ -3,6 +3,8 @@ const router = express.Router();
 
 import Movie from "../models/movie.js";
 import Genre from "../models/genre.js";
+import checkAuth from "../middleware/checkAuth.js";
+import checkAdmin from "../middleware/checkAdmin.js";
 
 import { upload } from "../utils/cloudinary.js";
 
@@ -14,7 +16,10 @@ import { upload } from "../utils/cloudinary.js";
  */
 router.get("/", async (req, res) => {
   try {
-    const movies = await Movie.find().populate("genre", "name").exec();
+    const movies = await Movie.find().populate({
+      path: "genre",
+      select: "name",
+    });
     res.status(200).json({
       count: movies.length,
       movies: movies,
@@ -58,27 +63,27 @@ router.get("/:movieId", async (req, res) => {
  * @returns {object} A success message if the movie is added successfully.
  * @throws {Error} If the movie already exists, an error occurs while saving the movie, or validation fails.
  */
-router.post("/addMovie", upload.single("image"), async (req, res) => {
-  try {
-    const { title, genre, rate, description, trailerLink, movieLength } =
+router.post(
+  "/addMovie",
+  upload.single("image"),
+  checkAuth,
+  checkAdmin,
+  async (req, res) => {
+    console.log("Received request to add movie:", req.body);
+    try {
+      const { title, genre, rate, description, trailerLink, movieLength } =
       req.body;
-    console.log(req.body);
+    console.log("Request body:", req.body);
     const isMovieExists = await Movie.findOne({ title });
 
     if (isMovieExists) {
+      console.log("Movie already exists:", title);
       return res.status(400).json({ message: "Movie already exists" });
-    }
-
-    let existingGenre = await Genre.findOne({ name: genre });
-
-    if (!existingGenre) {
-      existingGenre = new Genre({ name: genre });
-      await existingGenre.save();
     }
 
     const newMovie = new Movie({
       title,
-      genre: existingGenre._id,
+      genre: genre,
       rate,
       description,
       trailerLink,
@@ -86,10 +91,14 @@ router.post("/addMovie", upload.single("image"), async (req, res) => {
       image: req.file.path,
     });
     await newMovie.save();
-
-    res.status(201).json({ message: "Movie added successfully" });
+    console.log("Movie saved successfully:", newMovie);
+    const movies = await Movie.find().populate({
+      path: "genre",
+      select: "name",
+    });
+    res.status(201).json({ message: "Movie added successfully", movies: movies });
   } catch (error) {
-    console.log(error);
+    console.error("Error adding movie to database:", error);
     res
       .status(500)
       .json({ error: "Failed to add movie", message: error.message });
@@ -103,7 +112,7 @@ router.post("/addMovie", upload.single("image"), async (req, res) => {
  * @returns {object} A success message and the updated movie object.
  * @throws {Error} If the movie is not found, an error occurs while updating it, or validation fails.
  */
-router.patch("/:movieId", async (req, res) => {
+router.patch("/:movieId", checkAuth, checkAdmin, async (req, res) => {
   try {
     const updateMovie = await Movie.findByIdAndUpdate(
       { _id: req.params.movieId },

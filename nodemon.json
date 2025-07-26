@@ -1,5 +1,6 @@
 {
-    "env":{
-        "JWT_KEY": "MONGO_SECRET"
-    }
+  "ignore": ["frontend/*"],
+  "env": {
+    "JWT_KEY": "MONGO_SECRET"
+  }
 }

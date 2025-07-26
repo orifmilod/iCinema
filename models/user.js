@@ -9,6 +9,11 @@ const userSchema = mongoose.Schema(
     },
     password: { type: String, required: true, minLength: 6 },
     favouriteMovies: [{ type: String }],
+    role: {
+      type: String,
+      enum: ["user", "admin"],
+      default: "user",
+    },
   },
   { timestamps: true }
 );

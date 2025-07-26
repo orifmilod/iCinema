@@ -8,7 +8,8 @@
     "setup": "npm install && npm run setup-frontend",
     "dev": "concurrently \"npm run server\" \"npm run frontend\"",
     "start": "node server.js",
-    "server": "nodemon server.js",
+    "seed": "node utils/seed.js",
+    "server": "cross-env PORT=5000 nodemon server.js",
     "frontend": "cd ./frontend && npm start",
     "setup-frontend": "cd frontend && npm install",
     "build-frontend": "npm run setup-frontend && cd frontend && npm run build",
@@ -38,6 +39,7 @@
     "webpack-sources": "^1.4.3"
   },
   "devDependencies": {
+    "cross-env": "^7.0.3",
     "nodemon": "^2.0.20"
   },
   "engines": {
