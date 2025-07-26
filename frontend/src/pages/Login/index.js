@@ -16,8 +16,17 @@ class Login extends React.Component {
     errors: {},
   };
 
+  componentDidUpdate(prevProps) {
+    if (this.props.loggedIn && !prevProps.loggedIn) {
+      this.props.history.push("/");
+    }
+  }
+
   schema = {
-    email: Joi.string().email().required().label("Email"),
+    email: Joi.string()
+      .email({ tlds: { allow: false } })
+      .required()
+      .label("Email"),
     password: Joi.string().required().label("Password"),
   };
 
@@ -36,18 +45,21 @@ class Login extends React.Component {
   validateProperty = (input) => {
     const { name, value } = input;
     const obj = { [name]: value };
-    const schema = { [name]: this.schema[name] };
-    const { error } = Joi.validate(obj, schema);
+    const subSchema = Joi.object({ [name]: this.schema[name] });
+    const { error } = subSchema.validate(obj);
     return error ? error.details[0].message : null;
   };
 
   validate = () => {
     const options = { abortEarly: false };
-    const result = Joi.validate(this.state.data, this.schema, options);
-    if (!result.error) return null;
+    const { error } = Joi.object(this.schema).validate(
+      this.state.data,
+      options
+    );
+    if (!error) return null;
 
     const errors = {};
-    result.error.details.forEach(
+    error.details.forEach(
       (element) => (errors[element.path[0]] = element.message)
     );
     return errors;
@@ -55,14 +67,14 @@ class Login extends React.Component {
   handleSubmit = (e) => {
     e.preventDefault();
     const errors = this.validate();
-    if (_.isEmpty(errors)) this.props.signIn(this.state.data);
+    if (_.isEmpty(errors))
+      this.props.signIn(this.state.data, this.props.history);
   };
 
   render() {
     const { data, errors } = this.state;
     const { email, password } = data;
-    const { authMessage, loggedIn } = this.props;
-    if (loggedIn) this.props.history.push("/");
+    const { authMessage } = this.props;
     return (
       <div className="background-container pt-5">
         <div className="container">
@@ -105,7 +117,7 @@ const mapStateToProps = (state) => {
 };
 const mapDispatchToProps = (dispatch) => {
   return {
-    signIn: (creds) => dispatch(signIn(creds)),
+    signIn: (creds, history) => dispatch(signIn(creds, history)),
   };
 };
 

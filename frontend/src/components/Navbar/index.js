@@ -28,8 +28,8 @@ function Navbar(props) {
 
   return (
     <nav className="nav-wrapper">
-      <div id="burger" class="ico-btn" onClick={toggleNav}>
-        <span class="ico-btn__burger"></span>
+      <div id="burger" className="ico-btn" onClick={toggleNav}>
+        <span className="ico-btn__burger"></span>
       </div>
 
       {/* <Link className="nav-brand" to="/">iCinema</Link> */}
@@ -45,7 +45,7 @@ function Navbar(props) {
                 Login
               </Link>
 
-              <Link onClick={toggleNav} to="/resigter">
+              <Link onClick={toggleNav} to="/register">
                 Register
               </Link>
             </>
@@ -60,6 +60,16 @@ function Navbar(props) {
               Log out
             </Link>
           )}
+          {props.user && props.user.role === "admin" && (
+            <>
+              <Link onClick={toggleNav} to="/movies/new">
+                Add Movie
+              </Link>
+              <Link onClick={toggleNav} to="/genres/new">
+                Add Genre
+              </Link>
+            </>
+          )}
         </ul>
       </div>
     </nav>
@@ -69,6 +79,7 @@ function Navbar(props) {
 const mapStateToProps = (state) => {
   return {
     loggedIn: state.auth.loggedIn,
+    user: state.auth.user,
   };
 };
 

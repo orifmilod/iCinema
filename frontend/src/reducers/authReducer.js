@@ -6,9 +6,11 @@ import {
   SIGNUP_SUCCESS,
 } from "../actions/actionTypes";
 
+const user = JSON.parse(localStorage.getItem("user"));
+
 const initState = {
-  loggedIn: false,
-  userData: {},
+  loggedIn: user ? true : false,
+  user: user ? user : null,
   authMessage: null,
 };
 
@@ -18,8 +20,8 @@ export default function (state = initState, action) {
       return {
         ...state,
         loggedIn: true,
-        userData: action.payload.data.userData,
-        authMessage: action.payload.data.message,
+        user: action.payload.user,
+        authMessage: action.payload.message,
       };
     case LOGIN_ERROR:
       return {
@@ -30,8 +32,8 @@ export default function (state = initState, action) {
       return {
         ...state,
         loggedIn: true,
-        userData: action.payload.data.userData,
-        authMessage: action.payload.data.message,
+        user: action.payload.user,
+        authMessage: action.payload.message,
       };
 
     case SIGNUP_ERROR:
@@ -43,7 +45,7 @@ export default function (state = initState, action) {
     case SIGNOUT:
       return {
         ...state,
-        userData: {},
+        user: null,
         loggedIn: false,
         authMessage: null,
       };

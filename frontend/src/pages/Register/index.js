@@ -15,11 +15,17 @@ class RegisterForm extends React.Component {
     passwordError: "",
   };
 
+  componentDidUpdate(prevProps) {
+    if (this.props.loggedIn && !prevProps.loggedIn) {
+      this.props.history.push("/");
+    }
+  }
+
   validateProperty = (input) => {
     const { name, value } = input;
     const obj = { [name]: value };
-    const schema = { [name]: this.schema[name] };
-    const { error } = Joi.validate(obj, schema);
+    const subSchema = Joi.object({ [name]: this.schema[name] });
+    const { error } = subSchema.validate(obj);
     return error ? error.details[0].message : null;
   };
 
@@ -37,11 +43,14 @@ class RegisterForm extends React.Component {
 
   validate = () => {
     const options = { abortEarly: false };
-    const result = Joi.validate(this.state.data, this.schema, options);
-    if (!result.error) return null;
+    const { error } = Joi.object(this.schema).validate(
+      this.state.data,
+      options
+    );
+    if (!error) return null;
 
     const errors = {};
-    result.error.details.forEach(
+    error.details.forEach(
       (element) => (errors[element.path[0]] = element.message)
     );
     return errors;
@@ -51,19 +60,21 @@ class RegisterForm extends React.Component {
     const { password, passwordRepeat, email } = this.state.data;
     if (password !== passwordRepeat)
       this.setState({ passwordError: "The passwords doesn not match." });
-    else this.props.signUp({ email, password });
+    else this.props.signUp({ email, password }, this.props.history);
   };
 
   schema = {
-    email: Joi.string().email().required().label("Email"),
+    email: Joi.string()
+      .email({ tlds: { allow: false } })
+      .required()
+      .label("Email"),
     password: Joi.string().min(8).required().label("Password"),
     passwordRepeat: Joi.string().required().label("Repear Password"),
   };
   render() {
-    const { authMessage, loggedIn } = this.props;
+    const { authMessage } = this.props;
     const { errors, passwordError } = this.state;
     const { email, password, passwordRepeat } = this.state.data;
-    if (loggedIn) this.props.history.push("/");
 
     return (
       <div className="background-container pt-5">
@@ -131,7 +142,7 @@ const mapStateToProps = (state) => {
 };
 const mapDispatchToProps = (dispatch) => {
   return {
-    signUp: (creds) => dispatch(signUp(creds)),
+    signUp: (creds, history) => dispatch(signUp(creds, history)),
   };
 };
 

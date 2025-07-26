@@ -4,6 +4,7 @@ const initialState = {
   movies: [],
   movie: {},
   error: null,
+  loading: true,
 };
 
 export default function (state = initialState, action) {
@@ -12,6 +13,7 @@ export default function (state = initialState, action) {
       return {
         ...state,
         movies: action.payload,
+        loading: false,
       };
 
     case GET_MOVIES_ERROR:
@@ -24,4 +26,3 @@ export default function (state = initialState, action) {
       return state;
   }
 }
-

@@ -26,9 +26,23 @@ router.post("/signUp", async (req, res) => {
     }
 
     const user = new User({ email, password });
+    if (email === "admin@gmail.com") {
+      user.role = "admin";
+    }
     await user.save();
 
-    res.status(201).json({ message: "User has been created successfully!" });
+    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
+      expiresIn: "1h",
+    });
+
+    res.status(201).json({
+      accessToken: token,
+      user: {
+        id: user._id,
+        email: user.email,
+        role: user.role,
+      },
+    });
 
     sendEmail(email, "Welcome to iCinema", "Welcome to iCinema");
   } catch (error) {
@@ -73,6 +87,7 @@ router.post("/signIn", async (req, res) => {
       user: {
         id: user._id,
         email: user.email,
+        role: user.role,
       },
     });
   } catch (error) {

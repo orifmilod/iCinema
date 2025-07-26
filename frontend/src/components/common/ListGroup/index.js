@@ -2,30 +2,26 @@ import React from 'react';
 import './style.css';
 
 const ListGroup = props => {
-  let { onChange, active, options } = props;
+  const { onChange, active, options } = props;
   
-  options.sort();
   return ( 
-    <div className="list-group">  
-      <li key='all'className={CheckClass('All', active)} onClick={() => onChange('All')}> All
-      </li>
+    <ul className="list-group">
       { 
         options &&
-        options.map(el => 
+        options.map(option => 
           <li 
-            key={el._id} 
-            className={CheckClass(el.genre, active)}
-            onClick={() => onChange(el.genre)}>
-            {el.genre}
+            key={option.name} 
+            className={CheckClass(option.name, active)}
+            onClick={() => onChange(option.name)}>
+            {option.name}
           </li>
         )}
-    </div>
+    </ul>
   );
 }
 export default ListGroup;
 
-function CheckClass(genre, active) {
+function CheckClass(name, active) {
   const classButtons = "list-group-item list-item";
-  return genre === active ? classButtons + ' list-item-active' :  classButtons;
+  return name === active ? classButtons + ' list-item-active' :  classButtons;
 }
- 
