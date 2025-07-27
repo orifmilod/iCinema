@@ -19,7 +19,7 @@ const Movies = (props) => {
   useEffect(() => {
     props.getMovies();
     props.getGenres();
-  }, [props.loggedIn]);
+  }, [props.loggedIn, props.getMovies, props.getGenres]);
 
   const handleChange = (name, value) => {
     if (name === "currentGenre") {
