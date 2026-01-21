@@ -8,7 +8,7 @@
     "bootstrap": "^5.0.0",
     "font-awesome": "^4.7.0",
     "joi": "^17.7.0",
-    "lodash": "^4.17.15",
+    "lodash": "^4.17.23",
     "mongoose": "^8.9.5",
     "prop-types": "^15.6.2",
     "react": "^17.0.0",
