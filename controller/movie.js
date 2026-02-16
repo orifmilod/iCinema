@@ -41,7 +41,7 @@ router.get("/:movieId", async (req, res) => {
     const movie = await Movie.findById({ _id: req.params.movieId })
       .populate("genre", "name")
       .exec(); // populate the genre associated with the movie
-    if (movie) return res.status(202).json(movie);
+    if (movie) return res.status(200).json(movie);
     return res
       .status(404)
       .json({ error: "The movie you are looking doesn't exist" });
