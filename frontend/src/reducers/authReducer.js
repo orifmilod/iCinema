@@ -6,11 +6,17 @@ import {
   SIGNUP_SUCCESS,
 } from "../actions/actionTypes";
 
-const user = JSON.parse(localStorage.getItem("user"));
+const extractAuthError = (actionError) =>
+  actionError?.response?.data?.error ||
+  actionError?.response?.data?.message ||
+  "Authentication failed";
+
+const stored = JSON.parse(localStorage.getItem("user"));
+const initialUser = stored?.user || null;
 
 const initState = {
-  loggedIn: user ? true : false,
-  user: user ? user : null,
+  loggedIn: !!stored?.accessToken,
+  user: initialUser,
   authMessage: null,
 };
 
@@ -26,7 +32,7 @@ export default function (state = initState, action) {
     case LOGIN_ERROR:
       return {
         ...state,
-        authMessage: action.error.response.data.error,
+        authMessage: extractAuthError(action.error),
       };
     case SIGNUP_SUCCESS:
       return {
@@ -39,7 +45,7 @@ export default function (state = initState, action) {
     case SIGNUP_ERROR:
       return {
         ...state,
-        authMessage: action.error.response.data.error,
+        authMessage: extractAuthError(action.error),
       };
 
     case SIGNOUT:

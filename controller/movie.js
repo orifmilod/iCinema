@@ -81,6 +81,13 @@ router.post(
       return res.status(400).json({ message: "Movie already exists" });
     }
 
+    // Validate genre IDs
+    const genreIds = Array.isArray(genre) ? genre : [genre];
+    const existingGenres = await Genre.find({ _id: { $in: genreIds } }).select("_id");
+    if (existingGenres.length !== genreIds.length) {
+      return res.status(400).json({ message: "Invalid genre selection" });
+    }
+
     const newMovie = new Movie({
       title,
       genre: genre,
@@ -88,7 +95,7 @@ router.post(
       description,
       trailerLink,
       movieLength,
-      image: req.file.path,
+      image: req.file ? req.file.path : "",
     });
     await newMovie.save();
     console.log("Movie saved successfully:", newMovie);

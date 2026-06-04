@@ -25,7 +25,8 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "heroku-postbuild": "npm run build"
+    "heroku-postbuild": "npm run build",
+    "test": "jest"
   },
   "browserslist": [
     ">0.2%",
@@ -34,7 +35,8 @@
     "not op_mini all"
   ],
   "devDependencies": {
-    "@fortawesome/fontawesome-free": "^5.5.0"
+    "@fortawesome/fontawesome-free": "^5.5.0",
+    "jest": "^30.4.2"
   },
   "proxy": "http://localhost:5000"
 }
