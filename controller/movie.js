@@ -90,7 +90,7 @@ router.post(
 
     const newMovie = new Movie({
       title,
-      genre: genre,
+      genre: genreIds,
       rate,
       description,
       trailerLink,

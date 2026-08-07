@@ -67,6 +67,17 @@ describe("authReducer", () => {
       };
       expect(state.loggedIn).toBe(false);
     });
+
+    test("should fall back safely when stored auth data is malformed", () => {
+      localStorage.setItem("user", "{bad json");
+
+      const state = authReducer(undefined, {});
+      expect(state).toEqual({
+        loggedIn: false,
+        user: null,
+        authMessage: null,
+      });
+    });
   });
 
   describe("LOGIN_SUCCESS", () => {

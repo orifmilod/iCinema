@@ -11,32 +11,50 @@ const extractAuthError = (actionError) =>
   actionError?.response?.data?.message ||
   "Authentication failed";
 
-const stored = JSON.parse(localStorage.getItem("user"));
-const initialUser = stored?.user || null;
+const getInitialState = () => {
+  let stored = null;
+  const storage =
+    typeof window !== "undefined" && window.localStorage
+      ? window.localStorage
+      : typeof globalThis !== "undefined" && globalThis.localStorage
+      ? globalThis.localStorage
+      : null;
 
-const initState = {
-  loggedIn: !!stored?.accessToken,
-  user: initialUser,
-  authMessage: null,
+  if (storage) {
+    try {
+      const savedUser = storage.getItem("user");
+      stored = savedUser ? JSON.parse(savedUser) : null;
+    } catch (error) {
+      stored = null;
+    }
+  }
+
+  return {
+    loggedIn: !!stored?.accessToken,
+    user: stored?.user || null,
+    authMessage: null,
+  };
 };
 
-export default function (state = initState, action) {
+export default function (state, action) {
+  const currentState = state || getInitialState();
+
   switch (action.type) {
     case LOGIN_SUCCESS:
       return {
-        ...state,
+        ...currentState,
         loggedIn: true,
         user: action.payload.user,
         authMessage: action.payload.message,
       };
     case LOGIN_ERROR:
       return {
-        ...state,
+        ...currentState,
         authMessage: extractAuthError(action.error),
       };
     case SIGNUP_SUCCESS:
       return {
-        ...state,
+        ...currentState,
         loggedIn: true,
         user: action.payload.user,
         authMessage: action.payload.message,
@@ -44,18 +62,18 @@ export default function (state = initState, action) {
 
     case SIGNUP_ERROR:
       return {
-        ...state,
+        ...currentState,
         authMessage: extractAuthError(action.error),
       };
 
     case SIGNOUT:
       return {
-        ...state,
+        ...currentState,
         user: null,
         loggedIn: false,
         authMessage: null,
       };
     default:
-      return state;
+      return currentState;
   }
 }
