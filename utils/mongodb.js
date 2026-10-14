@@ -11,4 +11,4 @@ mongoose
   .then(() => console.log("MongoDb connected ..."))
   .catch((err) => console.log(err));
 
-console.log(process.env.MONGO_URL);
+//console.log(process.env.MONGO_URL);
