@@ -1,6 +1,8 @@
 import User from "../models/user.js";
 import express from "express";
 const router = express.Router();
+import checkAuth from "../middleware/checkAuth.js";
+import checkAdmin from "../middleware/checkAuth.js";
 
 /**
  * Update a user by their ID.
@@ -9,7 +11,7 @@ const router = express.Router();
  * @returns {object} A success message and the updated user object.
  * @throws {Error} If the user is not found, an error occurs while updating them, or validation fails.
  */
-router.patch("/:userId", async (req, res) => {
+router.patch("/:userId", checkAuth, checkAdmin, async (req, res) => {
   try {
     const updateUser = await User.findByIdAndUpdate(
       { _id: req.params.userId },
@@ -29,7 +31,7 @@ router.patch("/:userId", async (req, res) => {
  * @returns {object} A success message and the deleted user object.
  * @throws {Error} If the user is not found or an error occurs while deleting them.
  */
-router.delete("/:userId", async (req, res) => {
+router.delete("/:userId", checkAuth, checkAdmin, async (req, res) => {
   try {
     const deleteUser = await User.findByIdAndDelete(req.params.userId);
     res.status(200).json({ msg: "User deleted successfully", deleteUser });
